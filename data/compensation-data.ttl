@@ -1,0 +1,56 @@
+@prefix hr:  <https://example.org/hr/ontology#> .
+@prefix hrv: <https://example.org/hr/vocab#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix grd: <https://example.org/hr/id/grade/> .
+@prefix emp: <https://example.org/hr/id/employment/> .
+@prefix pb:  <https://example.org/hr/id/payband/> .
+@prefix pay: <https://example.org/hr/id/compensation/> .
+@prefix plan: <https://example.org/hr/id/benefitplan/> .
+@prefix enr: <https://example.org/hr/id/enrollment/> .
+
+# =====================================================================
+# RESTRICTED. Synthetic pay and benefits data. Invented numbers.
+# Refers to employments by IRI only: no names or personal details here.
+# In a real deployment leave this data in the source system.
+# =====================================================================
+
+pb:G4-GBP a hr:PayBand ; hr:bandGrade grd:G4 ; hr:bandCurrency "GBP" ; hr:bandMin "38000.00"^^xsd:decimal ; hr:bandMax "52000.00"^^xsd:decimal ; hr:validFrom "2024-01-01"^^xsd:date ; hr:recordedOn "2023-12-01"^^xsd:date .
+pb:G5-GBP a hr:PayBand ; hr:bandGrade grd:G5 ; hr:bandCurrency "GBP" ; hr:bandMin "48000.00"^^xsd:decimal ; hr:bandMax "68000.00"^^xsd:decimal ; hr:validFrom "2024-01-01"^^xsd:date ; hr:recordedOn "2023-12-01"^^xsd:date .
+pb:G6-GBP a hr:PayBand ; hr:bandGrade grd:G6 ; hr:bandCurrency "GBP" ; hr:bandMin "62000.00"^^xsd:decimal ; hr:bandMax "88000.00"^^xsd:decimal ; hr:validFrom "2024-01-01"^^xsd:date ; hr:recordedOn "2023-12-01"^^xsd:date .
+pb:G7-GBP a hr:PayBand ; hr:bandGrade grd:G7 ; hr:bandCurrency "GBP" ; hr:bandMin "80000.00"^^xsd:decimal ; hr:bandMax "110000.00"^^xsd:decimal ; hr:validFrom "2024-01-01"^^xsd:date ; hr:recordedOn "2023-12-01"^^xsd:date .
+pb:G8-GBP a hr:PayBand ; hr:bandGrade grd:G8 ; hr:bandCurrency "GBP" ; hr:bandMin "105000.00"^^xsd:decimal ; hr:bandMax "145000.00"^^xsd:decimal ; hr:validFrom "2024-01-01"^^xsd:date ; hr:recordedOn "2023-12-01"^^xsd:date .
+pb:G9-GBP a hr:PayBand ; hr:bandGrade grd:G9 ; hr:bandCurrency "GBP" ; hr:bandMin "150000.00"^^xsd:decimal ; hr:bandMax "210000.00"^^xsd:decimal ; hr:validFrom "2024-01-01"^^xsd:date ; hr:recordedOn "2023-12-01"^^xsd:date .
+pb:G4-USD a hr:PayBand ; hr:bandGrade grd:G4 ; hr:bandCurrency "USD" ; hr:bandMin "50000.00"^^xsd:decimal ; hr:bandMax "68000.00"^^xsd:decimal ; hr:validFrom "2024-01-01"^^xsd:date ; hr:recordedOn "2023-12-01"^^xsd:date .
+pb:G7-USD a hr:PayBand ; hr:bandGrade grd:G7 ; hr:bandCurrency "USD" ; hr:bandMin "105000.00"^^xsd:decimal ; hr:bandMax "145000.00"^^xsd:decimal ; hr:validFrom "2024-01-01"^^xsd:date ; hr:recordedOn "2023-12-01"^^xsd:date .
+
+pay:P000001-1 a hr:Compensation ; hr:compensationOf emp:P000001-20180108 ; hr:atGrade grd:G9 ; hr:baseAmount "190000.00"^^xsd:decimal ; hr:currency "GBP" ; hr:payChangeReason hrv:PayHire ; hr:validFrom "2018-01-08"^^xsd:date ; hr:validTo "2024-12-31"^^xsd:date ; hr:recordedOn "2018-01-08"^^xsd:date .
+pay:P000001-2 a hr:Compensation ; hr:compensationOf emp:P000001-20180108 ; hr:atGrade grd:G9 ; hr:baseAmount "198000.00"^^xsd:decimal ; hr:currency "GBP" ; hr:payChangeReason hrv:PayMerit ; hr:validFrom "2025-01-01"^^xsd:date ; hr:recordedOn "2025-01-01"^^xsd:date ; hr:follows pay:P000001-1 .
+pay:P000002-1 a hr:Compensation ; hr:compensationOf emp:P000002-20190304 ; hr:atGrade grd:G8 ; hr:baseAmount "132000.00"^^xsd:decimal ; hr:currency "GBP" ; hr:payChangeReason hrv:PayHire ; hr:validFrom "2019-03-04"^^xsd:date ; hr:recordedOn "2019-03-04"^^xsd:date .
+pay:P000003-1 a hr:Compensation ; hr:compensationOf emp:P000003-20200203 ; hr:atGrade grd:G8 ; hr:baseAmount "125000.00"^^xsd:decimal ; hr:currency "GBP" ; hr:payChangeReason hrv:PayHire ; hr:validFrom "2020-02-03"^^xsd:date ; hr:recordedOn "2020-02-03"^^xsd:date .
+pay:P000004-1 a hr:Compensation ; hr:compensationOf emp:P000004-20190902 ; hr:atGrade grd:G8 ; hr:baseAmount "118000.00"^^xsd:decimal ; hr:currency "GBP" ; hr:payChangeReason hrv:PayHire ; hr:validFrom "2019-09-02"^^xsd:date ; hr:recordedOn "2019-09-02"^^xsd:date .
+pay:P000005-1 a hr:Compensation ; hr:compensationOf emp:P000005-20210412 ; hr:atGrade grd:G7 ; hr:baseAmount "118000.00"^^xsd:decimal ; hr:currency "USD" ; hr:payChangeReason hrv:PayHire ; hr:validFrom "2021-04-12"^^xsd:date ; hr:recordedOn "2021-04-12"^^xsd:date .
+pay:P000006-1 a hr:Compensation ; hr:compensationOf emp:P000006-20210111 ; hr:atGrade grd:G7 ; hr:baseAmount "92000.00"^^xsd:decimal ; hr:currency "GBP" ; hr:payChangeReason hrv:PayHire ; hr:validFrom "2021-01-11"^^xsd:date ; hr:validTo "2024-06-30"^^xsd:date ; hr:recordedOn "2021-01-11"^^xsd:date .
+pay:P000006-2 a hr:Compensation ; hr:compensationOf emp:P000006-20210111 ; hr:atGrade grd:G7 ; hr:baseAmount "101000.00"^^xsd:decimal ; hr:currency "GBP" ; hr:payChangeReason hrv:PayMerit ; hr:validFrom "2024-07-01"^^xsd:date ; hr:recordedOn "2024-07-01"^^xsd:date ; hr:follows pay:P000006-1 .
+pay:P000007-1a a hr:Compensation ; hr:compensationOf emp:P000007-20230109-b ; hr:atGrade grd:G6 ; hr:baseAmount "86000.00"^^xsd:decimal ; hr:currency "GBP" ; hr:payChangeReason hrv:PayHire ; hr:validFrom "2023-01-09"^^xsd:date ; hr:validTo "2024-06-30"^^xsd:date ; hr:recordedOn "2023-01-09"^^xsd:date .
+pay:P000007-1b a hr:Compensation ; hr:compensationOf emp:P000007-20230109-b ; hr:atGrade grd:G6 ; hr:baseAmount "76000.00"^^xsd:decimal ; hr:currency "GBP" ; hr:payChangeReason hrv:PayCorrection ; hr:validFrom "2023-01-09"^^xsd:date ; hr:validTo "2024-06-30"^^xsd:date ; hr:recordedOn "2023-07-03"^^xsd:date ; hr:supersedes pay:P000007-1a .
+pay:P000007-2 a hr:Compensation ; hr:compensationOf emp:P000007-20230109-b ; hr:atGrade grd:G6 ; hr:baseAmount "82000.00"^^xsd:decimal ; hr:currency "GBP" ; hr:payChangeReason hrv:PayMerit ; hr:validFrom "2024-07-01"^^xsd:date ; hr:recordedOn "2024-07-01"^^xsd:date ; hr:follows pay:P000007-1b .
+pay:P000008-1 a hr:Compensation ; hr:compensationOf emp:P000008-20240603 ; hr:atGrade grd:G5 ; hr:baseAmount "58000.00"^^xsd:decimal ; hr:currency "GBP" ; hr:payChangeReason hrv:PayHire ; hr:validFrom "2024-06-03"^^xsd:date ; hr:recordedOn "2024-06-03"^^xsd:date .
+pay:P000009-1 a hr:Compensation ; hr:compensationOf emp:P000009-20220905 ; hr:atGrade grd:G5 ; hr:baseAmount "60000.00"^^xsd:decimal ; hr:currency "GBP" ; hr:payChangeReason hrv:PayHire ; hr:validFrom "2022-09-05"^^xsd:date ; hr:validTo "2025-03-31"^^xsd:date ; hr:recordedOn "2022-09-05"^^xsd:date .
+pay:P000009-2 a hr:Compensation ; hr:compensationOf emp:P000009-20220905 ; hr:atGrade grd:G6 ; hr:baseAmount "79000.00"^^xsd:decimal ; hr:currency "GBP" ; hr:payChangeReason hrv:PayPromotion ; hr:validFrom "2025-04-01"^^xsd:date ; hr:recordedOn "2025-04-01"^^xsd:date ; hr:follows pay:P000009-1 .
+pay:P000010-1 a hr:Compensation ; hr:compensationOf emp:P000010-20230605 ; hr:atGrade grd:G5 ; hr:baseAmount "54000.00"^^xsd:decimal ; hr:currency "GBP" ; hr:payChangeReason hrv:PayHire ; hr:validFrom "2023-06-05"^^xsd:date ; hr:recordedOn "2023-06-05"^^xsd:date .
+pay:P000012-1 a hr:Compensation ; hr:compensationOf emp:P000012-20260105 ; hr:atGrade grd:G4 ; hr:baseAmount "47000.00"^^xsd:decimal ; hr:currency "USD" ; hr:payChangeReason hrv:PayHire ; hr:validFrom "2026-01-05"^^xsd:date ; hr:recordedOn "2026-01-05"^^xsd:date .
+
+plan:Medical a hr:BenefitPlan ; hr:planKind hrv:Medical ; hr:employerMatchPercent "0.0"^^xsd:decimal .
+plan:Retire a hr:BenefitPlan ; hr:planKind hrv:BenefitRetirement ; hr:employerMatchPercent "5.0"^^xsd:decimal .
+enr:01 a hr:BenefitEnrollment ; hr:enrolledEmployment emp:P000001-20180108 ; hr:inPlan plan:Medical ; hr:contributionPercent "0.0"^^xsd:decimal ; hr:validFrom "2018-01-08"^^xsd:date ; hr:recordedOn "2018-01-08"^^xsd:date .
+enr:02 a hr:BenefitEnrollment ; hr:enrolledEmployment emp:P000001-20180108 ; hr:inPlan plan:Retire ; hr:contributionPercent "5.0"^^xsd:decimal ; hr:validFrom "2018-01-08"^^xsd:date ; hr:recordedOn "2018-01-08"^^xsd:date .
+enr:03 a hr:BenefitEnrollment ; hr:enrolledEmployment emp:P000003-20200203 ; hr:inPlan plan:Medical ; hr:contributionPercent "0.0"^^xsd:decimal ; hr:validFrom "2020-02-03"^^xsd:date ; hr:recordedOn "2020-02-03"^^xsd:date .
+enr:04 a hr:BenefitEnrollment ; hr:enrolledEmployment emp:P000003-20200203 ; hr:inPlan plan:Retire ; hr:contributionPercent "3.0"^^xsd:decimal ; hr:validFrom "2020-02-03"^^xsd:date ; hr:recordedOn "2020-02-03"^^xsd:date .
+enr:05 a hr:BenefitEnrollment ; hr:enrolledEmployment emp:P000006-20210111 ; hr:inPlan plan:Medical ; hr:contributionPercent "0.0"^^xsd:decimal ; hr:validFrom "2021-01-11"^^xsd:date ; hr:recordedOn "2021-01-11"^^xsd:date .
+enr:06 a hr:BenefitEnrollment ; hr:enrolledEmployment emp:P000006-20210111 ; hr:inPlan plan:Retire ; hr:contributionPercent "5.0"^^xsd:decimal ; hr:validFrom "2021-01-11"^^xsd:date ; hr:recordedOn "2021-01-11"^^xsd:date .
+enr:07 a hr:BenefitEnrollment ; hr:enrolledEmployment emp:P000007-20230109-b ; hr:inPlan plan:Retire ; hr:contributionPercent "2.0"^^xsd:decimal ; hr:validFrom "2023-01-09"^^xsd:date ; hr:recordedOn "2023-01-09"^^xsd:date .
+enr:08 a hr:BenefitEnrollment ; hr:enrolledEmployment emp:P000009-20220905 ; hr:inPlan plan:Medical ; hr:contributionPercent "0.0"^^xsd:decimal ; hr:validFrom "2022-09-05"^^xsd:date ; hr:recordedOn "2022-09-05"^^xsd:date .
+enr:09 a hr:BenefitEnrollment ; hr:enrolledEmployment emp:P000009-20220905 ; hr:inPlan plan:Retire ; hr:contributionPercent "6.0"^^xsd:decimal ; hr:validFrom "2022-09-05"^^xsd:date ; hr:recordedOn "2022-09-05"^^xsd:date .
+enr:10 a hr:BenefitEnrollment ; hr:enrolledEmployment emp:P000010-20230605 ; hr:inPlan plan:Medical ; hr:contributionPercent "0.0"^^xsd:decimal ; hr:validFrom "2023-06-05"^^xsd:date ; hr:recordedOn "2023-06-05"^^xsd:date .
+enr:11 a hr:BenefitEnrollment ; hr:enrolledEmployment emp:P000010-20230605 ; hr:inPlan plan:Retire ; hr:contributionPercent "4.0"^^xsd:decimal ; hr:validFrom "2023-06-05"^^xsd:date ; hr:recordedOn "2023-06-05"^^xsd:date .
+enr:12 a hr:BenefitEnrollment ; hr:enrolledEmployment emp:P000008-20240603 ; hr:inPlan plan:Retire ; hr:contributionPercent "1.0"^^xsd:decimal ; hr:validFrom "2024-06-03"^^xsd:date ; hr:recordedOn "2024-06-03"^^xsd:date .

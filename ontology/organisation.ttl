@@ -1,0 +1,214 @@
+@prefix hr:      <https://example.org/hr/ontology#> .
+@prefix hrv:     <https://example.org/hr/vocab#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix schema:  <https://schema.org/> .
+@prefix org:     <http://www.w3.org/ns/org#> .
+
+# =====================================================================
+# HR Ontology, organisation module
+# Legal entities, units and their structure over time, cost centres,
+# job profiles, grades, positions (seats) and reporting lines.
+# A position is a seat that exists whether or not someone sits in it.
+# =====================================================================
+
+<https://example.org/hr/ontology/organisation> a owl:Ontology ;
+    owl:versionIRI <https://example.org/hr/ontology/organisation/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
+    owl:imports <https://example.org/hr/ontology/core> ;
+    dcterms:title "HR Ontology, organisation module"@en ;
+    dcterms:description "Legal entities, organisational units, cost centres, job profiles, grades, positions and reporting lines."@en ;
+    dcterms:created "2026-10-31"^^xsd:date ;
+    dcterms:modified "2026-10-31"^^xsd:date .
+
+# ---------------------------------------------------------------------
+# Legal entities and units
+# ---------------------------------------------------------------------
+
+hr:LegalEntity a owl:Class ;
+    rdfs:label "Legal entity"@en ;
+    skos:definition "A company registered in one country that can legally employ people and be the employer in an employment relationship."@en ;
+    rdfs:subClassOf org:FormalOrganization ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Legal" .
+
+hr:registeredIn a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "registered in"@en ;
+    skos:definition "The country in which a legal entity is registered."@en ;
+    rdfs:domain hr:LegalEntity ; rdfs:range hr:Country .
+
+hr:OrganizationalUnit a owl:Class ;
+    rdfs:label "Organizational unit"@en ;
+    skos:definition "A division, department or team inside a legal entity. Its place in the hierarchy is held in UnitStructure records, not on the unit itself, so reorganisations keep history."@en ;
+    rdfs:subClassOf org:OrganizationalUnit ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Organisation Design" .
+
+hr:unitCode a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "unit code"@en ;
+    skos:definition "Short unique code of the unit."@en ;
+    rdfs:domain hr:OrganizationalUnit ; rdfs:range xsd:string .
+
+hr:unitType a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "unit type"@en ;
+    skos:definition "Division, department or team. Value from the UnitType vocabulary."@en ;
+    rdfs:domain hr:OrganizationalUnit ; rdfs:range skos:Concept .
+
+hr:withinEntity a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "within entity"@en ;
+    skos:definition "The legal entity the unit belongs to."@en ;
+    rdfs:domain hr:OrganizationalUnit ; rdfs:range hr:LegalEntity .
+
+hr:UnitStructure a owl:Class ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    rdfs:label "Unit structure"@en ;
+    skos:definition "A period during which a unit reported into a parent unit. The top unit has no parent record. A reorganisation closes one record and opens another."@en ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Organisation Design" .
+
+hr:childUnit a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "child unit"@en ;
+    skos:definition "The unit that sits underneath in this structure record."@en ;
+    rdfs:domain hr:UnitStructure ; rdfs:range hr:OrganizationalUnit .
+
+hr:parentUnit a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "parent unit"@en ;
+    skos:definition "The unit that sits above in this structure record."@en ;
+    rdfs:domain hr:UnitStructure ; rdfs:range hr:OrganizationalUnit .
+
+hr:CostCenter a owl:Class ;
+    rdfs:label "Cost centre"@en ;
+    skos:definition "An accounting bucket to which the cost of positions is charged."@en ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Finance" .
+
+hr:costCenterCode a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "cost centre code"@en ;
+    skos:definition "Unique finance code of the cost centre."@en ;
+    rdfs:domain hr:CostCenter ; rdfs:range xsd:string .
+
+hr:costCenterOf a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "cost centre of"@en ;
+    skos:definition "The legal entity that owns the cost centre."@en ;
+    rdfs:domain hr:CostCenter ; rdfs:range hr:LegalEntity .
+
+# ---------------------------------------------------------------------
+# Grades and job profiles
+# ---------------------------------------------------------------------
+
+hr:Grade a owl:Class ;
+    rdfs:label "Grade"@en ;
+    skos:definition "A level in the organisation's job architecture. Pay bands attach to grades in the sensitive compensation module."@en ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Reward" .
+
+hr:gradeCode a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "grade code"@en ;
+    skos:definition "Unique code of the grade, for example G5."@en ;
+    rdfs:domain hr:Grade ; rdfs:range xsd:string .
+
+hr:gradeLevel a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "grade level"@en ;
+    skos:definition "Seniority as a whole number; a higher number is more senior."@en ;
+    rdfs:domain hr:Grade ; rdfs:range xsd:integer .
+
+hr:JobProfile a owl:Class ;
+    rdfs:label "Job profile"@en ;
+    skos:definition "A reusable description of a kind of job: its title, family and grade. Many positions can share one profile."@en ;
+    skos:closeMatch schema:Occupation ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Reward" .
+
+hr:jobTitle a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "job title"@en ;
+    skos:definition "The standard title of the job profile."@en ;
+    rdfs:domain hr:JobProfile ; rdfs:range xsd:string .
+
+hr:jobFamily a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "job family"@en ;
+    skos:definition "Group of related jobs, such as Engineering. Value from the JobFamily vocabulary."@en ;
+    rdfs:domain hr:JobProfile ; rdfs:range skos:Concept .
+
+hr:profileGrade a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "profile grade"@en ;
+    skos:definition "The grade of the job profile."@en ;
+    rdfs:domain hr:JobProfile ; rdfs:range hr:Grade .
+
+# ---------------------------------------------------------------------
+# Positions
+# ---------------------------------------------------------------------
+
+hr:Position a owl:Class ;
+    rdfs:label "Position"@en ;
+    skos:definition "A seat in the organisation that exists independently of the person in it. It can be filled, partly filled or vacant. Its attributes over time are held in PositionDetails records."@en ;
+    rdfs:subClassOf org:Post ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Organisation Design" .
+
+hr:positionId a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "position ID"@en ;
+    skos:definition "Stable identifier of the position (format POS followed by four digits)."@en ;
+    rdfs:domain hr:Position ; rdfs:range xsd:string .
+
+hr:PositionDetails a owl:Class ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    rdfs:label "Position details"@en ;
+    skos:definition "The unit, job profile, cost centre, location and budgeted FTE of a position for a period. Moving a position to another unit adds a record; the position keeps its identity."@en ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Organisation Design" .
+
+hr:detailsOf a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "details of"@en ;
+    skos:definition "The position these details describe."@en ;
+    rdfs:domain hr:PositionDetails ; rdfs:range hr:Position .
+
+hr:inUnit a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "in unit"@en ;
+    skos:definition "The organisational unit the position sits in."@en ;
+    rdfs:domain hr:PositionDetails ; rdfs:range hr:OrganizationalUnit .
+
+hr:hasProfile a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "has profile"@en ;
+    skos:definition "The job profile of the position."@en ;
+    rdfs:domain hr:PositionDetails ; rdfs:range hr:JobProfile .
+
+hr:chargedTo a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "charged to"@en ;
+    skos:definition "The cost centre that pays for the position."@en ;
+    rdfs:domain hr:PositionDetails ; rdfs:range hr:CostCenter .
+
+hr:basedAt a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "based at"@en ;
+    skos:definition "The location where the position is based."@en ;
+    rdfs:domain hr:PositionDetails ; rdfs:range hr:Location .
+
+hr:budgetedFte a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "budgeted FTE"@en ;
+    skos:definition "Full-time-equivalent capacity budgeted for the position, greater than 0 and at most 1 per seat."@en ;
+    rdfs:domain hr:PositionDetails ; rdfs:range xsd:decimal .
+
+hr:ReportingLine a owl:Class ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    rdfs:label "Reporting line"@en ;
+    skos:definition "A period during which one position reports to another. A solid line is the management line; a dotted line is a matrix relationship. Reporting follows seats, so a vacant seat keeps its line."@en ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Organisation Design" .
+
+hr:subordinatePosition a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "subordinate position"@en ;
+    skos:definition "The position that reports."@en ;
+    rdfs:domain hr:ReportingLine ; rdfs:range hr:Position .
+
+hr:supervisorPosition a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "supervisor position"@en ;
+    skos:definition "The position that is reported to."@en ;
+    rdfs:domain hr:ReportingLine ; rdfs:range hr:Position .
+
+hr:lineType a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "line type"@en ;
+    skos:definition "Solid (management) or dotted (matrix). Value from the ReportingLineType vocabulary."@en ;
+    rdfs:domain hr:ReportingLine ; rdfs:range skos:Concept .

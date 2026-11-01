@@ -1,0 +1,5 @@
+# fragment: PrimaryAssignment
+# params: asg emp pos fte asOf known
+# The position an employment fills as its primary assignment on the day.
+@{asg} a hr:Assignment ; hr:assignedEmployment @{emp} ; hr:assignedPosition @{pos} ; hr:assignmentType hrv:Primary ; hr:assignmentFte @{fte} .
+#include ValidRecord rec=@{asg} asOf=@{asOf} known=@{known}

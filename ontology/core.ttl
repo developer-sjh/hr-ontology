@@ -1,0 +1,174 @@
+@prefix hr:      <https://example.org/hr/ontology#> .
+@prefix hrv:     <https://example.org/hr/vocab#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix schema:  <https://schema.org/> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix org:     <http://www.w3.org/ns/org#> .
+
+# =====================================================================
+# HR Ontology, core module
+# Shared building blocks: annotation properties, the temporal record
+# pattern, people, names, places. Every other module builds on this one.
+# =====================================================================
+
+<https://example.org/hr/ontology/core> a owl:Ontology ;
+    owl:versionIRI <https://example.org/hr/ontology/core/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
+    dcterms:title "HR Ontology, core module"@en ;
+    dcterms:description "Annotation properties, the temporal record pattern, people, names and places shared by all other HR modules."@en ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:created "2026-10-31"^^xsd:date ;
+    dcterms:modified "2026-10-31"^^xsd:date ;
+    dcterms:creator "HR Ontology working group (fictional)" ;
+    skos:note "Fictional example for illustration. Contains no real data."@en .
+
+# ---------------------------------------------------------------------
+# Governance annotation properties
+# ---------------------------------------------------------------------
+
+hr:sensitivity a owl:AnnotationProperty ;
+    rdfs:label "sensitivity"@en ;
+    skos:definition "Classification of a class or property, taken from the SensitivityLevel vocabulary. Drives which data may be shared and which SHACL rule set applies."@en ;
+    rdfs:range skos:Concept .
+
+hr:retentionPeriod a owl:AnnotationProperty ;
+    rdfs:label "retention period"@en ;
+    skos:definition "How long records of this class may be kept after the end of the employment relationship, as an ISO 8601 duration. A design input for deletion jobs, not enforced here."@en ;
+    rdfs:range xsd:duration .
+
+hr:steward a owl:AnnotationProperty ;
+    rdfs:label "steward"@en ;
+    skos:definition "The role accountable for the definition of this term."@en .
+
+hr:implementedBy a owl:AnnotationProperty ;
+    rdfs:label "implemented by"@en ;
+    skos:definition "Points a glossary term to the file that implements its definition."@en .
+
+# ---------------------------------------------------------------------
+# Temporal record pattern (valid time and recorded time)
+# ---------------------------------------------------------------------
+
+hr:TemporalRecord a owl:Class ;
+    rdfs:label "Temporal record"@en ;
+    skos:definition "Any fact that is true for a period and may later be corrected. It carries when it was true (validFrom, validTo, both inclusive) and when the organisation recorded it (recordedOn). Nothing is overwritten: a change is a new record."@en ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Data Governance" .
+
+hr:validFrom a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "valid from"@en ;
+    skos:definition "First day on which the record is true (inclusive)."@en ;
+    rdfs:domain hr:TemporalRecord ; rdfs:range xsd:date .
+
+hr:validTo a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "valid to"@en ;
+    skos:definition "Last day on which the record is true (inclusive). Absent means the record is still current."@en ;
+    rdfs:domain hr:TemporalRecord ; rdfs:range xsd:date .
+
+hr:recordedOn a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "recorded on"@en ;
+    skos:definition "Date on which the organisation learned of and recorded this fact. Allows the question 'what did we know on date X'."@en ;
+    rdfs:domain hr:TemporalRecord ; rdfs:range xsd:date .
+
+hr:supersedes a owl:ObjectProperty ;
+    rdfs:label "supersedes"@en ;
+    skos:definition "This record corrects an earlier record about the same period. The earlier record stays in the graph; queries about what was known now ignore superseded records."@en ;
+    rdfs:domain hr:TemporalRecord ; rdfs:range hr:TemporalRecord .
+
+hr:follows a owl:ObjectProperty ;
+    rdfs:label "follows"@en ;
+    skos:definition "This record continues an earlier record of the same kind for a later period, for example a promotion following the previous position."@en ;
+    rdfs:domain hr:TemporalRecord ; rdfs:range hr:TemporalRecord .
+
+# ---------------------------------------------------------------------
+# People and names
+# ---------------------------------------------------------------------
+
+hr:Person a owl:Class ;
+    rdfs:label "Person"@en ;
+    skos:definition "A natural person known to the organisation: an employee, a former employee, a contractor or a candidate. Identified only by personId, never by name."@en ;
+    rdfs:subClassOf foaf:Person ;
+    skos:closeMatch schema:Person ;
+    hr:sensitivity hrv:Confidential ;
+    hr:retentionPeriod "P7Y"^^xsd:duration ;
+    hr:steward "HR Operations" .
+
+hr:personId a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "person ID"@en ;
+    skos:definition "Stable, immutable identifier issued once per person (format P followed by six digits). Never reused, never derived from a name."@en ;
+    rdfs:domain hr:Person ; rdfs:range xsd:string .
+
+hr:NameRecord a owl:Class ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    rdfs:label "Name record"@en ;
+    skos:definition "A name a person used for a period. A name change is a new record, so identity never depends on a name and former names stay available."@en ;
+    hr:sensitivity hrv:Confidential ;
+    hr:retentionPeriod "P7Y"^^xsd:duration ;
+    hr:steward "HR Operations" .
+
+hr:nameOf a owl:ObjectProperty ;
+    rdfs:label "name of"@en ;
+    skos:definition "The person this name record belongs to."@en ;
+    rdfs:domain hr:NameRecord ; rdfs:range hr:Person .
+
+hr:fullName a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "full name"@en ;
+    skos:definition "The name as written, in display order."@en ;
+    rdfs:domain hr:NameRecord ; rdfs:range xsd:string .
+
+hr:nameType a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "name type"@en ;
+    skos:definition "Whether the name is the legal name or a preferred name. Value from the NameType vocabulary."@en ;
+    rdfs:domain hr:NameRecord ; rdfs:range skos:Concept .
+
+# ---------------------------------------------------------------------
+# Places
+# ---------------------------------------------------------------------
+
+hr:Country a owl:Class ;
+    rdfs:label "Country"@en ;
+    skos:definition "A country, identified by its ISO 3166-1 alpha-2 code."@en ;
+    hr:sensitivity hrv:Public ;
+    hr:steward "Data Governance" .
+
+hr:countryCode a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "country code"@en ;
+    skos:definition "ISO 3166-1 alpha-2 code, two capital letters."@en ;
+    rdfs:domain hr:Country ; rdfs:range xsd:string .
+
+hr:Location a owl:Class ;
+    rdfs:label "Location"@en ;
+    skos:definition "A physical or remote work site where people are based."@en ;
+    skos:closeMatch schema:Place ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Facilities" .
+
+hr:locatedIn a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "located in"@en ;
+    skos:definition "The country a location is in."@en ;
+    rdfs:domain hr:Location ; rdfs:range hr:Country .
+
+# ---------------------------------------------------------------------
+# Access policy vocabulary (the policy itself is data: semantic/access-policy.ttl)
+# This describes who should see what. It does not enforce anything.
+# ---------------------------------------------------------------------
+
+hr:AccessRole a owl:Class ;
+    rdfs:label "Access role"@en ;
+    skos:definition "A kind of user of HR data, with the sensitivity levels that kind of user may read and the scope that limits it. A design input for the system that enforces access; nothing in this project enforces it."@en ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Data Governance" .
+
+hr:mayRead a owl:ObjectProperty ;
+    rdfs:label "may read"@en ;
+    skos:definition "A sensitivity level that holders of the role may read, within the role's scope."@en ;
+    rdfs:domain hr:AccessRole ; rdfs:range skos:Concept .
+
+hr:scope a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "scope"@en ;
+    skos:definition "The limit on what the role may read, in plain words, for example 'own team only'."@en ;
+    rdfs:domain hr:AccessRole ; rdfs:range xsd:string .

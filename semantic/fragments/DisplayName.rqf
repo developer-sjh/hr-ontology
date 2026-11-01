@@ -1,0 +1,5 @@
+# fragment: DisplayName
+# params: person name asOf known
+# The legal name of a person on the day. Names are for display only; always show the person ID beside them.
+@{_nr} a hr:NameRecord ; hr:nameOf @{person} ; hr:fullName @{name} ; hr:nameType hrv:LegalName .
+#include ValidRecord rec=@{_nr} asOf=@{asOf} known=@{known}

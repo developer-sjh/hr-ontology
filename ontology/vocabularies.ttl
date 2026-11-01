@@ -1,0 +1,134 @@
+@prefix hr:      <https://example.org/hr/ontology#> .
+@prefix hrv:     <https://example.org/hr/vocab#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# =====================================================================
+# HR Ontology, controlled vocabularies
+# Every coded value is a SKOS concept in a named scheme, so values can be
+# added, deprecated and mapped without changing the ontology. SHACL
+# checks that a value belongs to the scheme the property expects.
+# =====================================================================
+
+<https://example.org/hr/vocab> a owl:Ontology ;
+    owl:versionIRI <https://example.org/hr/vocab/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
+    dcterms:title "HR Ontology, controlled vocabularies"@en ;
+    dcterms:created "2026-10-31"^^xsd:date ;
+    dcterms:modified "2026-10-31"^^xsd:date .
+
+# ---- Sensitivity levels ------------------------------------------------
+hrv:SensitivityLevel a skos:ConceptScheme ; skos:prefLabel "Sensitivity level"@en .
+hrv:Public       a skos:Concept ; skos:inScheme hrv:SensitivityLevel ; skos:topConceptOf hrv:SensitivityLevel ; skos:prefLabel "Public"@en ;       skos:definition "Safe to share outside the organisation."@en .
+hrv:Internal     a skos:Concept ; skos:inScheme hrv:SensitivityLevel ; skos:topConceptOf hrv:SensitivityLevel ; skos:prefLabel "Internal"@en ;     skos:definition "For anyone in the organisation, not for outsiders."@en .
+hrv:Confidential a skos:Concept ; skos:inScheme hrv:SensitivityLevel ; skos:topConceptOf hrv:SensitivityLevel ; skos:prefLabel "Confidential"@en ; skos:definition "Personal data. Only people with an HR need to know."@en .
+hrv:Restricted   a skos:Concept ; skos:inScheme hrv:SensitivityLevel ; skos:topConceptOf hrv:SensitivityLevel ; skos:prefLabel "Restricted"@en ;   skos:definition "Pay, benefits and similar. Named individuals only, kept apart from other data."@en .
+
+# ---- Name type ----------------------------------------------------------
+hrv:NameType a skos:ConceptScheme ; skos:prefLabel "Name type"@en .
+hrv:LegalName     a skos:Concept ; skos:inScheme hrv:NameType ; skos:prefLabel "Legal name"@en .
+hrv:PreferredName a skos:Concept ; skos:inScheme hrv:NameType ; skos:prefLabel "Preferred name"@en .
+
+# ---- Unit type ----------------------------------------------------------
+hrv:UnitType a skos:ConceptScheme ; skos:prefLabel "Unit type"@en .
+hrv:Division   a skos:Concept ; skos:inScheme hrv:UnitType ; skos:prefLabel "Division"@en .
+hrv:Department a skos:Concept ; skos:inScheme hrv:UnitType ; skos:prefLabel "Department"@en .
+hrv:Team       a skos:Concept ; skos:inScheme hrv:UnitType ; skos:prefLabel "Team"@en .
+
+# ---- Job family ---------------------------------------------------------
+hrv:JobFamily a skos:ConceptScheme ; skos:prefLabel "Job family"@en .
+hrv:Executive   a skos:Concept ; skos:inScheme hrv:JobFamily ; skos:prefLabel "Executive"@en .
+hrv:Engineering a skos:Concept ; skos:inScheme hrv:JobFamily ; skos:prefLabel "Engineering"@en .
+hrv:Data        a skos:Concept ; skos:inScheme hrv:JobFamily ; skos:prefLabel "Data"@en .
+hrv:PeopleOps   a skos:Concept ; skos:inScheme hrv:JobFamily ; skos:prefLabel "People operations"@en .
+hrv:Finance     a skos:Concept ; skos:inScheme hrv:JobFamily ; skos:prefLabel "Finance"@en .
+
+# ---- Reporting line type ------------------------------------------------
+hrv:ReportingLineType a skos:ConceptScheme ; skos:prefLabel "Reporting line type"@en .
+hrv:Solid  a skos:Concept ; skos:inScheme hrv:ReportingLineType ; skos:prefLabel "Solid line"@en ;  skos:definition "The management line. Each position has at most one at a time."@en .
+hrv:Dotted a skos:Concept ; skos:inScheme hrv:ReportingLineType ; skos:prefLabel "Dotted line"@en ; skos:definition "A matrix relationship for work direction, not line management."@en .
+
+# ---- Employment type ----------------------------------------------------
+hrv:EmploymentType a skos:ConceptScheme ; skos:prefLabel "Employment type"@en .
+hrv:Permanent  a skos:Concept ; skos:inScheme hrv:EmploymentType ; skos:prefLabel "Permanent"@en .
+hrv:FixedTerm  a skos:Concept ; skos:inScheme hrv:EmploymentType ; skos:prefLabel "Fixed-term"@en .
+hrv:Contractor a skos:Concept ; skos:inScheme hrv:EmploymentType ; skos:prefLabel "Contractor"@en .
+hrv:Intern     a skos:Concept ; skos:inScheme hrv:EmploymentType ; skos:prefLabel "Intern"@en .
+
+# ---- Separation reason (two levels: category, then reason) -------------
+hrv:SeparationReason a skos:ConceptScheme ; skos:prefLabel "Separation reason"@en .
+hrv:Voluntary   a skos:Concept ; skos:inScheme hrv:SeparationReason ; skos:topConceptOf hrv:SeparationReason ; skos:prefLabel "Voluntary"@en ;   skos:definition "The person chose to leave."@en .
+hrv:Involuntary a skos:Concept ; skos:inScheme hrv:SeparationReason ; skos:topConceptOf hrv:SeparationReason ; skos:prefLabel "Involuntary"@en ; skos:definition "The employer ended the employment."@en .
+hrv:OtherExit   a skos:Concept ; skos:inScheme hrv:SeparationReason ; skos:topConceptOf hrv:SeparationReason ; skos:prefLabel "Other exit"@en ;   skos:definition "Neither side chose it, for example the contract ran out."@en .
+hrv:Resignation  a skos:Concept ; skos:inScheme hrv:SeparationReason ; skos:broader hrv:Voluntary ;   skos:prefLabel "Resignation"@en .
+hrv:Retirement   a skos:Concept ; skos:inScheme hrv:SeparationReason ; skos:broader hrv:Voluntary ;   skos:prefLabel "Retirement"@en .
+hrv:Redundancy   a skos:Concept ; skos:inScheme hrv:SeparationReason ; skos:broader hrv:Involuntary ; skos:prefLabel "Redundancy"@en .
+hrv:Dismissal    a skos:Concept ; skos:inScheme hrv:SeparationReason ; skos:broader hrv:Involuntary ; skos:prefLabel "Dismissal"@en .
+hrv:ContractEnd  a skos:Concept ; skos:inScheme hrv:SeparationReason ; skos:broader hrv:OtherExit ;   skos:prefLabel "End of contract"@en .
+
+# ---- Assignment type ----------------------------------------------------
+hrv:AssignmentType a skos:ConceptScheme ; skos:prefLabel "Assignment type"@en .
+hrv:Primary   a skos:Concept ; skos:inScheme hrv:AssignmentType ; skos:prefLabel "Primary"@en ;   skos:definition "The main position. One at a time per person."@en .
+hrv:Secondary a skos:Concept ; skos:inScheme hrv:AssignmentType ; skos:prefLabel "Secondary"@en .
+hrv:Acting    a skos:Concept ; skos:inScheme hrv:AssignmentType ; skos:prefLabel "Acting"@en .
+
+# ---- Leave type ---------------------------------------------------------
+hrv:LeaveType a skos:ConceptScheme ; skos:prefLabel "Leave type"@en .
+hrv:AnnualLeave   a skos:Concept ; skos:inScheme hrv:LeaveType ; skos:prefLabel "Annual leave"@en .
+hrv:SickLeave     a skos:Concept ; skos:inScheme hrv:LeaveType ; skos:prefLabel "Sick leave"@en .
+hrv:ParentalLeave a skos:Concept ; skos:inScheme hrv:LeaveType ; skos:prefLabel "Parental leave"@en .
+hrv:UnpaidLeave   a skos:Concept ; skos:inScheme hrv:LeaveType ; skos:prefLabel "Unpaid leave"@en .
+
+# ---- Skills: proficiency and evidence -----------------------------------
+hrv:ProficiencyLevel a skos:ConceptScheme ; skos:prefLabel "Proficiency level"@en .
+hrv:Awareness    a skos:Concept ; skos:inScheme hrv:ProficiencyLevel ; skos:prefLabel "Awareness"@en ;    hr:levelRank 1 .
+hrv:Working      a skos:Concept ; skos:inScheme hrv:ProficiencyLevel ; skos:prefLabel "Working"@en ;      hr:levelRank 2 .
+hrv:Advanced     a skos:Concept ; skos:inScheme hrv:ProficiencyLevel ; skos:prefLabel "Advanced"@en ;     hr:levelRank 3 .
+hrv:ExpertLevel  a skos:Concept ; skos:inScheme hrv:ProficiencyLevel ; skos:prefLabel "Expert"@en ;       hr:levelRank 4 .
+
+hrv:EvidenceSource a skos:ConceptScheme ; skos:prefLabel "Evidence source"@en .
+hrv:SelfDeclared      a skos:Concept ; skos:inScheme hrv:EvidenceSource ; skos:prefLabel "Self-declared"@en .
+hrv:ManagerConfirmed  a skos:Concept ; skos:inScheme hrv:EvidenceSource ; skos:prefLabel "Manager-confirmed"@en .
+hrv:Assessed          a skos:Concept ; skos:inScheme hrv:EvidenceSource ; skos:prefLabel "Formally assessed"@en .
+
+hrv:Readiness a skos:ConceptScheme ; skos:prefLabel "Readiness"@en .
+hrv:ReadyNow    a skos:Concept ; skos:inScheme hrv:Readiness ; skos:prefLabel "Ready now"@en .
+hrv:ReadyOneTwo a skos:Concept ; skos:inScheme hrv:Readiness ; skos:prefLabel "Ready in 1 to 2 years"@en .
+hrv:ReadyLater  a skos:Concept ; skos:inScheme hrv:Readiness ; skos:prefLabel "Ready later"@en .
+
+# ---- Hiring ---------------------------------------------------------------
+hrv:ApplicationStage a skos:ConceptScheme ; skos:prefLabel "Application stage"@en .
+hrv:StageApplied   a skos:Concept ; skos:inScheme hrv:ApplicationStage ; skos:prefLabel "Applied"@en ;   hr:levelRank 1 .
+hrv:StageScreen    a skos:Concept ; skos:inScheme hrv:ApplicationStage ; skos:prefLabel "Screen"@en ;    hr:levelRank 2 .
+hrv:StageInterview a skos:Concept ; skos:inScheme hrv:ApplicationStage ; skos:prefLabel "Interview"@en ; hr:levelRank 3 .
+hrv:StageOffer     a skos:Concept ; skos:inScheme hrv:ApplicationStage ; skos:prefLabel "Offer"@en ;     hr:levelRank 4 .
+hrv:StageHired     a skos:Concept ; skos:inScheme hrv:ApplicationStage ; skos:prefLabel "Hired"@en ;     hr:levelRank 5 .
+hrv:StageRejected  a skos:Concept ; skos:inScheme hrv:ApplicationStage ; skos:prefLabel "Rejected"@en ;  hr:levelRank 9 .
+hrv:StageWithdrawn a skos:Concept ; skos:inScheme hrv:ApplicationStage ; skos:prefLabel "Withdrawn"@en ; hr:levelRank 9 .
+
+hrv:ApplicationSource a skos:ConceptScheme ; skos:prefLabel "Application source"@en .
+hrv:Referral  a skos:Concept ; skos:inScheme hrv:ApplicationSource ; skos:prefLabel "Referral"@en .
+hrv:JobBoard  a skos:Concept ; skos:inScheme hrv:ApplicationSource ; skos:prefLabel "Job board"@en .
+hrv:Agency    a skos:Concept ; skos:inScheme hrv:ApplicationSource ; skos:prefLabel "Agency"@en .
+hrv:SourceInternal a skos:Concept ; skos:inScheme hrv:ApplicationSource ; skos:prefLabel "Internal move"@en .
+
+# ---- Compensation (restricted module) ------------------------------------
+hrv:PayChangeReason a skos:ConceptScheme ; skos:prefLabel "Pay change reason"@en .
+hrv:PayHire       a skos:Concept ; skos:inScheme hrv:PayChangeReason ; skos:prefLabel "Hire"@en .
+hrv:PayMerit      a skos:Concept ; skos:inScheme hrv:PayChangeReason ; skos:prefLabel "Merit"@en .
+hrv:PayPromotion  a skos:Concept ; skos:inScheme hrv:PayChangeReason ; skos:prefLabel "Promotion"@en .
+hrv:PayMarket     a skos:Concept ; skos:inScheme hrv:PayChangeReason ; skos:prefLabel "Market adjustment"@en .
+hrv:PayCorrection a skos:Concept ; skos:inScheme hrv:PayChangeReason ; skos:prefLabel "Correction"@en .
+
+hrv:BenefitKind a skos:ConceptScheme ; skos:prefLabel "Benefit kind"@en .
+hrv:Medical    a skos:Concept ; skos:inScheme hrv:BenefitKind ; skos:prefLabel "Medical"@en .
+hrv:Dental     a skos:Concept ; skos:inScheme hrv:BenefitKind ; skos:prefLabel "Dental"@en .
+hrv:BenefitRetirement a skos:Concept ; skos:inScheme hrv:BenefitKind ; skos:prefLabel "Retirement"@en .
+
+hr:levelRank a owl:DatatypeProperty ;
+    rdfs:label "level rank"@en ;
+    skos:definition "Order of a concept inside an ordered scheme, such as proficiency or application stage."@en ;
+    rdfs:domain skos:Concept ; rdfs:range xsd:integer .

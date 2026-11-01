@@ -1,0 +1,30 @@
+@prefix hr:   <https://example.org/hr/ontology#> .
+@prefix hrv:  <https://example.org/hr/vocab#> .
+@prefix hra:  <https://example.org/hr/access#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# =====================================================================
+# Access policy as data: which kind of user may read which sensitivity level.
+# Design input only. Enforcement belongs in the system that serves the data.
+# The build checks that every level is covered and that Restricted stays narrow.
+# =====================================================================
+
+hra:HRBusinessPartner a hr:AccessRole ; rdfs:label "HR business partner" ;
+    hr:mayRead hrv:Public, hrv:Internal, hrv:Confidential ;
+    hr:scope "Employees of the business units they support." .
+
+hra:LineManager a hr:AccessRole ; rdfs:label "Line manager" ;
+    hr:mayRead hrv:Public, hrv:Internal, hrv:Confidential ;
+    hr:scope "Own team only, and only the Confidential data needed to manage them. Never pay or benefits." .
+
+hra:PeopleAnalyst a hr:AccessRole ; rdfs:label "People analyst" ;
+    hr:mayRead hrv:Public, hrv:Internal ;
+    hr:scope "Aggregated Confidential data only, with small groups suppressed. No individual records." .
+
+hra:RewardAnalyst a hr:AccessRole ; rdfs:label "Reward analyst" ;
+    hr:mayRead hrv:Public, hrv:Internal, hrv:Restricted ;
+    hr:scope "Pay and benefits for named populations approved by the Head of Reward. Every query logged." .
+
+hra:Employee a hr:AccessRole ; rdfs:label "Employee (self-service)" ;
+    hr:mayRead hrv:Public, hrv:Internal, hrv:Confidential, hrv:Restricted ;
+    hr:scope "Their own record only." .

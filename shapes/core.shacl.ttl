@@ -1,0 +1,652 @@
+@prefix hrs:  <https://example.org/hr/shapes#> .
+@prefix hr:   <https://example.org/hr/ontology#> .
+@prefix hrv:  <https://example.org/hr/vocab#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+# =====================================================================
+# HR validation rules, ordinary data.
+# Authoring note: a FILTER inside a UNION branch cannot see variables bound outside that
+# branch, so each branch of the cycle rules repeats the focus-node pattern.
+# These rules never mention pay or benefits (see sensitive.shacl.ttl).
+# Every message starts with a RULE_NAME that tests and reports use.
+# "Current knowledge" means records that no later record supersedes.
+# =====================================================================
+
+<https://example.org/hr/shapes> a owl:Ontology ;
+    owl:versionInfo "1.0.0" ;
+    sh:declare
+        [ sh:prefix "hr"   ; sh:namespace "https://example.org/hr/ontology#"^^xsd:anyURI ] ,
+        [ sh:prefix "hrv"  ; sh:namespace "https://example.org/hr/vocab#"^^xsd:anyURI ] ,
+        [ sh:prefix "skos" ; sh:namespace "http://www.w3.org/2004/02/skos/core#"^^xsd:anyURI ] ,
+        [ sh:prefix "xsd"  ; sh:namespace "http://www.w3.org/2001/XMLSchema#"^^xsd:anyURI ] .
+
+# ---- reusable "value belongs to this scheme" shapes -----------------
+hrs:InNameType        a sh:NodeShape ; sh:property [ sh:path skos:inScheme ; sh:hasValue hrv:NameType ] .
+hrs:InUnitType        a sh:NodeShape ; sh:property [ sh:path skos:inScheme ; sh:hasValue hrv:UnitType ] .
+hrs:InJobFamily       a sh:NodeShape ; sh:property [ sh:path skos:inScheme ; sh:hasValue hrv:JobFamily ] .
+hrs:InLineType        a sh:NodeShape ; sh:property [ sh:path skos:inScheme ; sh:hasValue hrv:ReportingLineType ] .
+hrs:InEmploymentType  a sh:NodeShape ; sh:property [ sh:path skos:inScheme ; sh:hasValue hrv:EmploymentType ] .
+hrs:InSeparationReason a sh:NodeShape ; sh:property [ sh:path skos:inScheme ; sh:hasValue hrv:SeparationReason ] .
+hrs:InAssignmentType  a sh:NodeShape ; sh:property [ sh:path skos:inScheme ; sh:hasValue hrv:AssignmentType ] .
+hrs:InLeaveType       a sh:NodeShape ; sh:property [ sh:path skos:inScheme ; sh:hasValue hrv:LeaveType ] .
+hrs:InProficiency     a sh:NodeShape ; sh:property [ sh:path skos:inScheme ; sh:hasValue hrv:ProficiencyLevel ] .
+hrs:InEvidenceSource  a sh:NodeShape ; sh:property [ sh:path skos:inScheme ; sh:hasValue hrv:EvidenceSource ] .
+hrs:InReadiness       a sh:NodeShape ; sh:property [ sh:path skos:inScheme ; sh:hasValue hrv:Readiness ] .
+hrs:InStage           a sh:NodeShape ; sh:property [ sh:path skos:inScheme ; sh:hasValue hrv:ApplicationStage ] .
+hrs:InSource          a sh:NodeShape ; sh:property [ sh:path skos:inScheme ; sh:hasValue hrv:ApplicationSource ] .
+
+# =====================================================================
+# Temporal records: every record says when it was true and when recorded
+# =====================================================================
+
+hrs:TemporalRecordShape a sh:NodeShape ;
+    sh:targetClass hr:TemporalRecord ;
+    sh:property [
+        sh:path hr:validFrom ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ;
+        sh:message "TEMPORAL_FROM: a record needs exactly one validFrom date." ] ;
+    sh:property [
+        sh:path hr:recordedOn ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ;
+        sh:message "TEMPORAL_RECORDED: a record needs exactly one recordedOn date." ] ;
+    sh:property [
+        sh:path hr:validTo ; sh:maxCount 1 ; sh:datatype xsd:date ;
+        sh:message "TEMPORAL_TO: validTo, if present, must be a single date." ] ;
+    sh:property [
+        sh:path hr:validFrom ; sh:lessThanOrEquals hr:validTo ;
+        sh:message "TEMPORAL_ORDER: validFrom must not be after validTo." ] .
+
+# =====================================================================
+# People and names
+# =====================================================================
+
+hrs:PersonShape a sh:NodeShape ;
+    sh:targetClass hr:Person ;
+    sh:property [
+        sh:path hr:personId ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ;
+        sh:pattern "^P[0-9]{6}$" ;
+        sh:message "PERSON_ID: personId must be exactly one value, P followed by six digits." ] ;
+    sh:sparql [
+        sh:message "PERSON_IRI: the person IRI must end with the personId, so identity never depends on a name." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:personId ?value .
+              FILTER(STR($this) != CONCAT("https://example.org/hr/id/person/", ?value))
+            }""" ] ;
+    sh:sparql [
+        sh:message "PERSON_ID_UNIQUE: two different people share the same personId." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:personId ?value .
+              ?other hr:personId ?value .
+              FILTER(?other != $this)
+            }""" ] ;
+    sh:sparql [
+        sh:message "PERSON_NAME: a person needs at least one name record." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this WHERE {
+              $this hr:personId ?id .
+              FILTER NOT EXISTS { ?n hr:nameOf $this }
+            }""" ] .
+
+hrs:NameRecordShape a sh:NodeShape ;
+    sh:targetClass hr:NameRecord ;
+    sh:property [ sh:path hr:nameOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Person ;
+        sh:message "NAME_OWNER: a name record belongs to exactly one person." ] ;
+    sh:property [ sh:path hr:fullName ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ;
+        sh:message "NAME_TEXT: a name record needs one non-empty fullName." ] ;
+    sh:property [ sh:path hr:nameType ; sh:minCount 1 ; sh:maxCount 1 ; sh:node hrs:InNameType ;
+        sh:message "NAME_TYPE: nameType must be a NameType value." ] ;
+    sh:sparql [
+        sh:message "NAME_OVERLAP: a person has two names of the same type for overlapping periods." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:nameOf ?value ; hr:nameType ?t ; hr:validFrom ?f1 .
+              OPTIONAL { $this hr:validTo ?t1 }
+              ?o hr:nameOf ?value ; hr:nameType ?t ; hr:validFrom ?f2 .
+              OPTIONAL { ?o hr:validTo ?t2 }
+              FILTER(?o != $this)
+              FILTER NOT EXISTS { ?s hr:supersedes $this }
+              FILTER NOT EXISTS { ?s2 hr:supersedes ?o }
+              FILTER(?f2 <= COALESCE(?t1, "9999-12-31"^^xsd:date) && ?f1 <= COALESCE(?t2, "9999-12-31"^^xsd:date))
+            }""" ] .
+
+# =====================================================================
+# Places and organisation
+# =====================================================================
+
+hrs:CountryShape a sh:NodeShape ;
+    sh:targetClass hr:Country ;
+    sh:property [ sh:path hr:countryCode ; sh:minCount 1 ; sh:maxCount 1 ; sh:pattern "^[A-Z]{2}$" ;
+        sh:message "COUNTRY_CODE: countryCode must be two capital letters (ISO 3166-1 alpha-2)." ] .
+
+hrs:LocationShape a sh:NodeShape ;
+    sh:targetClass hr:Location ;
+    sh:property [ sh:path hr:locatedIn ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Country ;
+        sh:message "LOCATION_COUNTRY: a location is in exactly one country." ] .
+
+hrs:LegalEntityShape a sh:NodeShape ;
+    sh:targetClass hr:LegalEntity ;
+    sh:property [ sh:path hr:registeredIn ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Country ;
+        sh:message "ENTITY_COUNTRY: a legal entity is registered in exactly one country." ] .
+
+hrs:UnitShape a sh:NodeShape ;
+    sh:targetClass hr:OrganizationalUnit ;
+    sh:property [ sh:path hr:unitCode ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "UNIT_CODE: a unit needs exactly one unitCode." ] ;
+    sh:property [ sh:path hr:unitType ; sh:minCount 1 ; sh:maxCount 1 ; sh:node hrs:InUnitType ;
+        sh:message "UNIT_TYPE: unitType must be a UnitType value." ] ;
+    sh:property [ sh:path hr:withinEntity ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:LegalEntity ;
+        sh:message "UNIT_ENTITY: a unit belongs to exactly one legal entity." ] .
+
+hrs:UnitStructureShape a sh:NodeShape ;
+    sh:targetClass hr:UnitStructure ;
+    sh:property [ sh:path hr:childUnit ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:OrganizationalUnit ;
+        sh:message "UNIT_STRUCTURE_CHILD: a structure record names exactly one child unit." ] ;
+    sh:property [ sh:path hr:parentUnit ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:OrganizationalUnit ;
+        sh:message "UNIT_STRUCTURE_PARENT: a structure record names exactly one parent unit." ] ;
+    sh:sparql [
+        sh:message "UNIT_CYCLE: a unit is its own parent or ancestor (cycle of up to four units)." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+            {
+              $this hr:childUnit ?a ; hr:parentUnit ?b ; hr:validFrom ?d .
+              FILTER NOT EXISTS { ?s hr:supersedes $this }
+              FILTER(?a = ?b)
+              BIND(?a AS ?value)
+            }
+            UNION {
+              $this hr:childUnit ?a ; hr:parentUnit ?b ; hr:validFrom ?d .
+              FILTER NOT EXISTS { ?s hr:supersedes $this }
+              ?l2 hr:childUnit ?b ; hr:parentUnit ?a ; hr:validFrom ?f2 . OPTIONAL { ?l2 hr:validTo ?t2 }
+              FILTER(?f2 <= ?d && COALESCE(?t2, "9999-12-31"^^xsd:date) >= ?d) FILTER NOT EXISTS { ?s2 hr:supersedes ?l2 }
+              BIND(?a AS ?value)
+            }
+            UNION {
+              $this hr:childUnit ?a ; hr:parentUnit ?b ; hr:validFrom ?d .
+              FILTER NOT EXISTS { ?s hr:supersedes $this }
+              ?l2 hr:childUnit ?b ; hr:parentUnit ?c ; hr:validFrom ?f2 . OPTIONAL { ?l2 hr:validTo ?t2 }
+              ?l3 hr:childUnit ?c ; hr:parentUnit ?a ; hr:validFrom ?f3 . OPTIONAL { ?l3 hr:validTo ?t3 }
+              FILTER(?f2 <= ?d && COALESCE(?t2, "9999-12-31"^^xsd:date) >= ?d) FILTER NOT EXISTS { ?s2 hr:supersedes ?l2 }
+              FILTER(?f3 <= ?d && COALESCE(?t3, "9999-12-31"^^xsd:date) >= ?d) FILTER NOT EXISTS { ?s3 hr:supersedes ?l3 }
+              BIND(?a AS ?value)
+            }
+            UNION {
+              $this hr:childUnit ?a ; hr:parentUnit ?b ; hr:validFrom ?d .
+              FILTER NOT EXISTS { ?s hr:supersedes $this }
+              ?l2 hr:childUnit ?b ; hr:parentUnit ?c ; hr:validFrom ?f2 . OPTIONAL { ?l2 hr:validTo ?t2 }
+              ?l3 hr:childUnit ?c ; hr:parentUnit ?e ; hr:validFrom ?f3 . OPTIONAL { ?l3 hr:validTo ?t3 }
+              ?l4 hr:childUnit ?e ; hr:parentUnit ?a ; hr:validFrom ?f4 . OPTIONAL { ?l4 hr:validTo ?t4 }
+              FILTER(?f2 <= ?d && COALESCE(?t2, "9999-12-31"^^xsd:date) >= ?d) FILTER NOT EXISTS { ?s2 hr:supersedes ?l2 }
+              FILTER(?f3 <= ?d && COALESCE(?t3, "9999-12-31"^^xsd:date) >= ?d) FILTER NOT EXISTS { ?s3 hr:supersedes ?l3 }
+              FILTER(?f4 <= ?d && COALESCE(?t4, "9999-12-31"^^xsd:date) >= ?d) FILTER NOT EXISTS { ?s4 hr:supersedes ?l4 }
+              BIND(?a AS ?value)
+            }
+            }""" ] ;
+    sh:sparql [
+        sh:message "UNIT_ONE_PARENT: a unit has two parents at the same time." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:childUnit ?value ; hr:validFrom ?f1 . OPTIONAL { $this hr:validTo ?t1 }
+              ?o hr:childUnit ?value ; hr:validFrom ?f2 . OPTIONAL { ?o hr:validTo ?t2 }
+              FILTER(?o != $this)
+              FILTER NOT EXISTS { ?s hr:supersedes $this } FILTER NOT EXISTS { ?s2 hr:supersedes ?o }
+              FILTER(?f2 <= COALESCE(?t1, "9999-12-31"^^xsd:date) && ?f1 <= COALESCE(?t2, "9999-12-31"^^xsd:date))
+            }""" ] .
+
+hrs:CostCenterShape a sh:NodeShape ;
+    sh:targetClass hr:CostCenter ;
+    sh:property [ sh:path hr:costCenterCode ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "COSTCENTER_CODE: a cost centre needs exactly one code." ] ;
+    sh:property [ sh:path hr:costCenterOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:LegalEntity ;
+        sh:message "COSTCENTER_ENTITY: a cost centre belongs to exactly one legal entity." ] .
+
+hrs:GradeShape a sh:NodeShape ;
+    sh:targetClass hr:Grade ;
+    sh:property [ sh:path hr:gradeCode ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "GRADE_CODE: a grade needs exactly one code." ] ;
+    sh:property [ sh:path hr:gradeLevel ; sh:minCount 1 ; sh:maxCount 1 ; sh:minInclusive 1 ;
+        sh:message "GRADE_LEVEL: gradeLevel must be a whole number of at least 1." ] .
+
+hrs:JobProfileShape a sh:NodeShape ;
+    sh:targetClass hr:JobProfile ;
+    sh:property [ sh:path hr:jobTitle ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "PROFILE_TITLE: a job profile needs exactly one title." ] ;
+    sh:property [ sh:path hr:jobFamily ; sh:minCount 1 ; sh:maxCount 1 ; sh:node hrs:InJobFamily ;
+        sh:message "PROFILE_FAMILY: jobFamily must be a JobFamily value." ] ;
+    sh:property [ sh:path hr:profileGrade ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Grade ;
+        sh:message "PROFILE_GRADE: a job profile has exactly one grade." ] .
+
+# =====================================================================
+# Positions and reporting lines
+# =====================================================================
+
+hrs:PositionShape a sh:NodeShape ;
+    sh:targetClass hr:Position ;
+    sh:property [ sh:path hr:positionId ; sh:minCount 1 ; sh:maxCount 1 ; sh:pattern "^POS[0-9]{4}$" ;
+        sh:message "POSITION_ID: positionId must be exactly one value, POS followed by four digits." ] ;
+    sh:sparql [
+        sh:message "POSITION_DETAILS: a position needs at least one details record." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this WHERE {
+              $this hr:positionId ?id .
+              FILTER NOT EXISTS { ?d hr:detailsOf $this }
+            }""" ] .
+
+hrs:PositionDetailsShape a sh:NodeShape ;
+    sh:targetClass hr:PositionDetails ;
+    sh:property [ sh:path hr:detailsOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Position ;
+        sh:message "DETAILS_POSITION: details describe exactly one position." ] ;
+    sh:property [ sh:path hr:inUnit ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:OrganizationalUnit ;
+        sh:message "DETAILS_UNIT: details name exactly one unit." ] ;
+    sh:property [ sh:path hr:hasProfile ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:JobProfile ;
+        sh:message "DETAILS_PROFILE: details name exactly one job profile." ] ;
+    sh:property [ sh:path hr:chargedTo ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:CostCenter ;
+        sh:message "DETAILS_COSTCENTER: details name exactly one cost centre." ] ;
+    sh:property [ sh:path hr:basedAt ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Location ;
+        sh:message "DETAILS_LOCATION: details name exactly one location." ] ;
+    sh:property [ sh:path hr:budgetedFte ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:minExclusive 0 ; sh:maxInclusive 1 ;
+        sh:message "DETAILS_FTE: budgetedFte must be above 0 and at most 1." ] ;
+    sh:sparql [
+        sh:message "DETAILS_OVERLAP: a position has two details records for overlapping periods." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:detailsOf ?value ; hr:validFrom ?f1 . OPTIONAL { $this hr:validTo ?t1 }
+              ?o hr:detailsOf ?value ; hr:validFrom ?f2 . OPTIONAL { ?o hr:validTo ?t2 }
+              FILTER(?o != $this)
+              FILTER NOT EXISTS { ?s hr:supersedes $this } FILTER NOT EXISTS { ?s2 hr:supersedes ?o }
+              FILTER(?f2 <= COALESCE(?t1, "9999-12-31"^^xsd:date) && ?f1 <= COALESCE(?t2, "9999-12-31"^^xsd:date))
+            }""" ] .
+
+hrs:ReportingLineShape a sh:NodeShape ;
+    sh:targetClass hr:ReportingLine ;
+    sh:property [ sh:path hr:subordinatePosition ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Position ;
+        sh:message "LINE_SUBORDINATE: a reporting line names exactly one subordinate position." ] ;
+    sh:property [ sh:path hr:supervisorPosition ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Position ;
+        sh:message "LINE_SUPERVISOR: a reporting line names exactly one supervisor position." ] ;
+    sh:property [ sh:path hr:lineType ; sh:minCount 1 ; sh:maxCount 1 ; sh:node hrs:InLineType ;
+        sh:message "LINE_TYPE: lineType must be a ReportingLineType value." ] ;
+    sh:sparql [
+        sh:message "LINE_SELF: a position cannot report to itself." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:subordinatePosition ?value ; hr:supervisorPosition ?value .
+            }""" ] ;
+    sh:sparql [
+        sh:message "LINE_ONE_SOLID: a position has two solid lines at the same time." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:subordinatePosition ?value ; hr:lineType hrv:Solid ; hr:validFrom ?f1 .
+              OPTIONAL { $this hr:validTo ?t1 }
+              ?o hr:subordinatePosition ?value ; hr:lineType hrv:Solid ; hr:validFrom ?f2 .
+              OPTIONAL { ?o hr:validTo ?t2 }
+              FILTER(?o != $this)
+              FILTER NOT EXISTS { ?s hr:supersedes $this } FILTER NOT EXISTS { ?s2 hr:supersedes ?o }
+              FILTER(?f2 <= COALESCE(?t1, "9999-12-31"^^xsd:date) && ?f1 <= COALESCE(?t2, "9999-12-31"^^xsd:date))
+            }""" ] ;
+    sh:sparql [
+        sh:message "MANAGER_CYCLE: solid reporting lines form a loop (up to four positions) that is valid on the same day." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+            {
+              $this hr:subordinatePosition ?a ; hr:supervisorPosition ?b ; hr:lineType hrv:Solid ; hr:validFrom ?d .
+              FILTER NOT EXISTS { ?s hr:supersedes $this }
+              ?l2 hr:subordinatePosition ?b ; hr:supervisorPosition ?a ; hr:lineType hrv:Solid ; hr:validFrom ?f2 . OPTIONAL { ?l2 hr:validTo ?t2 }
+              FILTER(?f2 <= ?d && COALESCE(?t2, "9999-12-31"^^xsd:date) >= ?d) FILTER NOT EXISTS { ?s2 hr:supersedes ?l2 }
+              BIND(?a AS ?value)
+            }
+            UNION {
+              $this hr:subordinatePosition ?a ; hr:supervisorPosition ?b ; hr:lineType hrv:Solid ; hr:validFrom ?d .
+              FILTER NOT EXISTS { ?s hr:supersedes $this }
+              ?l2 hr:subordinatePosition ?b ; hr:supervisorPosition ?c ; hr:lineType hrv:Solid ; hr:validFrom ?f2 . OPTIONAL { ?l2 hr:validTo ?t2 }
+              ?l3 hr:subordinatePosition ?c ; hr:supervisorPosition ?a ; hr:lineType hrv:Solid ; hr:validFrom ?f3 . OPTIONAL { ?l3 hr:validTo ?t3 }
+              FILTER(?f2 <= ?d && COALESCE(?t2, "9999-12-31"^^xsd:date) >= ?d) FILTER NOT EXISTS { ?s2 hr:supersedes ?l2 }
+              FILTER(?f3 <= ?d && COALESCE(?t3, "9999-12-31"^^xsd:date) >= ?d) FILTER NOT EXISTS { ?s3 hr:supersedes ?l3 }
+              BIND(?a AS ?value)
+            }
+            UNION {
+              $this hr:subordinatePosition ?a ; hr:supervisorPosition ?b ; hr:lineType hrv:Solid ; hr:validFrom ?d .
+              FILTER NOT EXISTS { ?s hr:supersedes $this }
+              ?l2 hr:subordinatePosition ?b ; hr:supervisorPosition ?c ; hr:lineType hrv:Solid ; hr:validFrom ?f2 . OPTIONAL { ?l2 hr:validTo ?t2 }
+              ?l3 hr:subordinatePosition ?c ; hr:supervisorPosition ?e ; hr:lineType hrv:Solid ; hr:validFrom ?f3 . OPTIONAL { ?l3 hr:validTo ?t3 }
+              ?l4 hr:subordinatePosition ?e ; hr:supervisorPosition ?a ; hr:lineType hrv:Solid ; hr:validFrom ?f4 . OPTIONAL { ?l4 hr:validTo ?t4 }
+              FILTER(?f2 <= ?d && COALESCE(?t2, "9999-12-31"^^xsd:date) >= ?d) FILTER NOT EXISTS { ?s2 hr:supersedes ?l2 }
+              FILTER(?f3 <= ?d && COALESCE(?t3, "9999-12-31"^^xsd:date) >= ?d) FILTER NOT EXISTS { ?s3 hr:supersedes ?l3 }
+              FILTER(?f4 <= ?d && COALESCE(?t4, "9999-12-31"^^xsd:date) >= ?d) FILTER NOT EXISTS { ?s4 hr:supersedes ?l4 }
+              BIND(?a AS ?value)
+            }
+            }""" ] .
+
+# =====================================================================
+# Employment, separation, assignment, leave
+# =====================================================================
+
+hrs:EmploymentShape a sh:NodeShape ;
+    sh:targetClass hr:Employment ;
+    sh:property [ sh:path hr:employee ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Person ;
+        sh:message "EMPLOYMENT_OWNER: an employment belongs to exactly one person." ] ;
+    sh:property [ sh:path hr:employer ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:LegalEntity ;
+        sh:message "EMPLOYMENT_EMPLOYER: an employment has exactly one legal entity as employer." ] ;
+    sh:property [ sh:path hr:employmentType ; sh:minCount 1 ; sh:maxCount 1 ; sh:node hrs:InEmploymentType ;
+        sh:message "EMPLOYMENT_TYPE: employmentType must be an EmploymentType value." ] ;
+    sh:property [ sh:path hr:fte ; sh:minCount 1 ; sh:maxCount 1 ; sh:minExclusive 0 ; sh:maxInclusive 1 ;
+        sh:message "EMPLOYMENT_FTE: fte must be above 0 and at most 1." ] ;
+    sh:property [ sh:path hr:noticePeriodDays ; sh:maxCount 1 ;
+        sh:message "EMPLOYMENT_NOTICE: at most one notice period." ] ;
+    sh:property [ sh:path hr:probationEnd ; sh:maxCount 1 ; sh:datatype xsd:date ;
+        sh:message "EMPLOYMENT_PROBATION: probationEnd must be one date." ] ;
+    sh:property [ sh:path hr:validFrom ; sh:lessThanOrEquals hr:probationEnd ;
+        sh:message "EMPLOYMENT_PROBATION_ORDER: probation cannot end before the employment starts." ] ;
+    sh:sparql [
+        sh:message "EMPLOYMENT_FIXEDTERM: a fixed-term employment needs a contractEnd date." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this WHERE {
+              $this hr:employmentType hrv:FixedTerm .
+              FILTER NOT EXISTS { $this hr:contractEnd ?c }
+            }""" ] ;
+    sh:sparql [
+        sh:message "EMPLOYMENT_OVERLAP: a person has two employments with the same employer for overlapping periods. A person has only one open employment per employer." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:employee ?value ; hr:employer ?er ; hr:validFrom ?f1 . OPTIONAL { $this hr:validTo ?t1 }
+              ?o hr:employee ?value ; hr:employer ?er ; hr:validFrom ?f2 . OPTIONAL { ?o hr:validTo ?t2 }
+              FILTER(?o != $this)
+              FILTER NOT EXISTS { ?s hr:supersedes $this } FILTER NOT EXISTS { ?s2 hr:supersedes ?o }
+              FILTER(?f2 <= COALESCE(?t1, "9999-12-31"^^xsd:date) && ?f1 <= COALESCE(?t2, "9999-12-31"^^xsd:date))
+            }""" ] ;
+    sh:sparql [
+        sh:message "EMPLOYMENT_REHIRE: previousEmployment must be an earlier employment of the same person that ended before this one starts." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:previousEmployment ?value ; hr:employee ?p ; hr:validFrom ?f .
+              OPTIONAL { ?value hr:employee ?p2 } OPTIONAL { ?value hr:validTo ?pt }
+              FILTER(!BOUND(?p2) || ?p2 != ?p || !BOUND(?pt) || ?pt >= ?f)
+            }""" ] ;
+    sh:sparql [
+        sh:message "EMPLOYMENT_NEEDS_SEPARATION: an ended employment needs a Separation record that says why." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this WHERE {
+              $this hr:validTo ?end .
+              FILTER NOT EXISTS { ?s hr:separationOf $this }
+              FILTER NOT EXISTS { ?x hr:supersedes $this }
+            }""" ] .
+
+hrs:SeparationShape a sh:NodeShape ;
+    sh:targetClass hr:Separation ;
+    sh:property [ sh:path hr:separationOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Employment ;
+        sh:message "SEPARATION_OWNER: a separation ends exactly one employment." ] ;
+    sh:property [ sh:path hr:separationReason ; sh:minCount 1 ; sh:maxCount 1 ; sh:node hrs:InSeparationReason ;
+        sh:message "SEPARATION_REASON: separationReason must be a SeparationReason value." ] ;
+    sh:property [ sh:path hr:noticeGivenOn ; sh:maxCount 1 ; sh:datatype xsd:date ;
+        sh:message "SEPARATION_NOTICE: noticeGivenOn must be one date." ] ;
+    sh:sparql [
+        sh:message "SEPARATION_REASON_LEAF: the reason must be a specific reason (with a category above it), not a category itself." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:separationReason ?value .
+              FILTER NOT EXISTS { ?value skos:broader ?cat }
+            }""" ] ;
+    sh:sparql [
+        sh:message "SEPARATION_ENDED: the employment must have a validTo date (the last day) for a separation to apply." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:separationOf ?value .
+              FILTER NOT EXISTS { ?value hr:validTo ?e }
+            }""" ] ;
+    sh:sparql [
+        sh:message "SEPARATION_UNIQUE: an employment has more than one separation." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:separationOf ?value .
+              ?o hr:separationOf ?value .
+              FILTER(?o != $this)
+            }""" ] ;
+    sh:sparql [
+        sh:message "SEPARATION_NOTICE_ORDER: notice cannot be given after the last day of employment." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:separationOf ?e ; hr:noticeGivenOn ?value .
+              ?e hr:validTo ?end .
+              FILTER(?value > ?end)
+            }""" ] .
+
+hrs:AssignmentShape a sh:NodeShape ;
+    sh:targetClass hr:Assignment ;
+    sh:property [ sh:path hr:assignedEmployment ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Employment ;
+        sh:message "ASSIGNMENT_EMPLOYMENT: an assignment belongs to exactly one employment." ] ;
+    sh:property [ sh:path hr:assignedPosition ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Position ;
+        sh:message "ASSIGNMENT_POSITION: an assignment fills exactly one position." ] ;
+    sh:property [ sh:path hr:assignmentType ; sh:minCount 1 ; sh:maxCount 1 ; sh:node hrs:InAssignmentType ;
+        sh:message "ASSIGNMENT_TYPE: assignmentType must be an AssignmentType value." ] ;
+    sh:property [ sh:path hr:assignmentFte ; sh:minCount 1 ; sh:maxCount 1 ; sh:minExclusive 0 ; sh:maxInclusive 1 ;
+        sh:message "ASSIGNMENT_FTE: assignmentFte must be above 0 and at most 1." ] ;
+    sh:sparql [
+        sh:message "ASSIGNMENT_WITHIN_EMPLOYMENT: an assignment must lie inside its employment period." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:assignedEmployment ?value ; hr:validFrom ?f .
+              OPTIONAL { $this hr:validTo ?t }
+              ?value hr:validFrom ?ef . OPTIONAL { ?value hr:validTo ?et }
+              FILTER( ?f < ?ef
+                   || (BOUND(?et) && (!BOUND(?t) || ?t > ?et)) )
+            }""" ] ;
+    sh:sparql [
+        sh:message "ONE_PRIMARY_ASSIGNMENT: a person has two primary assignments at the same time." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:assignedEmployment ?e1 ; hr:assignmentType hrv:Primary ; hr:validFrom ?f1 .
+              OPTIONAL { $this hr:validTo ?t1 }
+              ?e1 hr:employee ?value .
+              ?e2 hr:employee ?value .
+              ?o hr:assignedEmployment ?e2 ; hr:assignmentType hrv:Primary ; hr:validFrom ?f2 .
+              OPTIONAL { ?o hr:validTo ?t2 }
+              FILTER(?o != $this)
+              FILTER NOT EXISTS { ?s hr:supersedes $this } FILTER NOT EXISTS { ?s2 hr:supersedes ?o }
+              FILTER(?f2 <= COALESCE(?t1, "9999-12-31"^^xsd:date) && ?f1 <= COALESCE(?t2, "9999-12-31"^^xsd:date))
+            }""" ] ;
+    sh:sparql [
+        sh:message "POSITION_CAPACITY: the people assigned to a position exceed its budgeted FTE on the day this assignment starts." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              { SELECT $this ?value (SUM(?f) AS ?total) WHERE {
+                  $this hr:assignedPosition ?value ; hr:validFrom ?d .
+                  ?o hr:assignedPosition ?value ; hr:assignmentFte ?f ; hr:validFrom ?os .
+                  OPTIONAL { ?o hr:validTo ?oe }
+                  FILTER(?os <= ?d && COALESCE(?oe, "9999-12-31"^^xsd:date) >= ?d)
+                  FILTER NOT EXISTS { ?s hr:supersedes ?o }
+                } GROUP BY $this ?value }
+              $this hr:validFrom ?d2 .
+              ?det hr:detailsOf ?value ; hr:budgetedFte ?cap ; hr:validFrom ?ds .
+              OPTIONAL { ?det hr:validTo ?de }
+              FILTER(?ds <= ?d2 && COALESCE(?de, "9999-12-31"^^xsd:date) >= ?d2)
+              FILTER(?total > ?cap)
+            }""" ] .
+
+hrs:LeaveShape a sh:NodeShape ;
+    sh:targetClass hr:LeaveRecord ;
+    sh:property [ sh:path hr:leaveOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Employment ;
+        sh:message "LEAVE_EMPLOYMENT: a leave record belongs to exactly one employment." ] ;
+    sh:property [ sh:path hr:leaveType ; sh:minCount 1 ; sh:maxCount 1 ; sh:node hrs:InLeaveType ;
+        sh:message "LEAVE_TYPE: leaveType must be a LeaveType value." ] ;
+    sh:property [ sh:path hr:validTo ; sh:minCount 1 ;
+        sh:message "LEAVE_END: a leave record needs an end date." ] .
+
+# =====================================================================
+# Talent
+# =====================================================================
+
+hrs:SkillAssertionShape a sh:NodeShape ;
+    sh:targetClass hr:SkillAssertion ;
+    sh:property [ sh:path hr:assertedFor ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Person ;
+        sh:message "SKILL_PERSON: a skill assertion is about exactly one person." ] ;
+    sh:property [ sh:path hr:assertsSkill ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Skill ;
+        sh:message "SKILL_SKILL: a skill assertion names exactly one skill from the taxonomy." ] ;
+    sh:property [ sh:path hr:proficiency ; sh:minCount 1 ; sh:maxCount 1 ; sh:node hrs:InProficiency ;
+        sh:message "SKILL_LEVEL: proficiency must be a ProficiencyLevel value." ] ;
+    sh:property [ sh:path hr:evidenceSource ; sh:minCount 1 ; sh:maxCount 1 ; sh:node hrs:InEvidenceSource ;
+        sh:message "SKILL_EVIDENCE: evidenceSource must be an EvidenceSource value." ] ;
+    sh:sparql [
+        sh:message "SKILL_ONE_LEVEL: a person has two levels for the same skill at the same time." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:assertedFor ?value ; hr:assertsSkill ?sk ; hr:validFrom ?f1 . OPTIONAL { $this hr:validTo ?t1 }
+              ?o hr:assertedFor ?value ; hr:assertsSkill ?sk ; hr:validFrom ?f2 . OPTIONAL { ?o hr:validTo ?t2 }
+              FILTER(?o != $this)
+              FILTER NOT EXISTS { ?s hr:supersedes $this } FILTER NOT EXISTS { ?s2 hr:supersedes ?o }
+              FILTER(?f2 <= COALESCE(?t1, "9999-12-31"^^xsd:date) && ?f1 <= COALESCE(?t2, "9999-12-31"^^xsd:date))
+            }""" ] .
+
+hrs:CertificationShape a sh:NodeShape ;
+    sh:targetClass hr:Certification ;
+    sh:property [ sh:path hr:issuer ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "CERTIFICATION_ISSUER: a certification names exactly one issuer." ] .
+
+hrs:CredentialShape a sh:NodeShape ;
+    sh:targetClass hr:Credential ;
+    sh:property [ sh:path hr:heldBy ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Person ;
+        sh:message "CREDENTIAL_HOLDER: a credential is held by exactly one person." ] ;
+    sh:property [ sh:path hr:ofCertification ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Certification ;
+        sh:message "CREDENTIAL_CERT: a credential is for exactly one certification." ] ;
+    sh:sparql [
+        sh:message "CREDENTIAL_RENEWAL: a renewal must follow an earlier credential of the same person and certification." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:follows ?value ; hr:heldBy ?p ; hr:ofCertification ?c .
+              FILTER NOT EXISTS { ?value hr:heldBy ?p ; hr:ofCertification ?c }
+            }""" ] .
+
+hrs:CourseShape a sh:NodeShape ;
+    sh:targetClass hr:Course ;
+    sh:property [ sh:path hr:isMandatory ; sh:maxCount 1 ; sh:datatype xsd:boolean ;
+        sh:message "COURSE_MANDATORY: isMandatory must be a single true or false." ] .
+
+hrs:LearningShape a sh:NodeShape ;
+    sh:targetClass hr:LearningRecord ;
+    sh:property [ sh:path hr:learner ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Person ;
+        sh:message "LEARNING_PERSON: a learning record belongs to exactly one person." ] ;
+    sh:property [ sh:path hr:completedCourse ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Course ;
+        sh:message "LEARNING_COURSE: a learning record names exactly one course." ] .
+
+hrs:ReviewShape a sh:NodeShape ;
+    sh:targetClass hr:PerformanceReview ;
+    sh:property [ sh:path hr:reviewOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Employment ;
+        sh:message "REVIEW_EMPLOYMENT: a review is of exactly one employment." ] ;
+    sh:property [ sh:path hr:reviewer ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Person ;
+        sh:message "REVIEW_REVIEWER: a review has exactly one reviewer." ] ;
+    sh:property [ sh:path hr:rating ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ;
+        sh:minInclusive 1 ; sh:maxInclusive 5 ;
+        sh:message "REVIEW_RATING: rating must be a whole number from 1 to 5." ] ;
+    sh:sparql [
+        sh:message "REVIEW_SELF: nobody reviews their own employment." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:reviewOf ?e ; hr:reviewer ?value .
+              ?e hr:employee ?value .
+            }""" ] .
+
+hrs:SuccessorShape a sh:NodeShape ;
+    sh:targetClass hr:SuccessorNomination ;
+    sh:property [ sh:path hr:nominatedFor ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Position ;
+        sh:message "SUCCESSOR_POSITION: a nomination is for exactly one position." ] ;
+    sh:property [ sh:path hr:nominee ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Person ;
+        sh:message "SUCCESSOR_PERSON: a nomination names exactly one person." ] ;
+    sh:property [ sh:path hr:readiness ; sh:minCount 1 ; sh:maxCount 1 ; sh:node hrs:InReadiness ;
+        sh:message "SUCCESSOR_READINESS: readiness must be a Readiness value." ] .
+
+# =====================================================================
+# Hiring
+# =====================================================================
+
+hrs:RequisitionShape a sh:NodeShape ;
+    sh:targetClass hr:Requisition ;
+    sh:property [ sh:path hr:requisitionFor ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Position ;
+        sh:message "REQUISITION_POSITION: a requisition is for exactly one position." ] ;
+    sh:property [ sh:path hr:openedOn ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ;
+        sh:message "REQUISITION_OPENED: a requisition has exactly one opening date." ] ;
+    sh:property [ sh:path hr:closedOn ; sh:maxCount 1 ; sh:datatype xsd:date ;
+        sh:message "REQUISITION_CLOSED: closedOn must be one date." ] ;
+    sh:property [ sh:path hr:openedOn ; sh:lessThanOrEquals hr:closedOn ;
+        sh:message "REQUISITION_ORDER: a requisition cannot close before it opens." ] .
+
+hrs:ApplicationShape a sh:NodeShape ;
+    sh:targetClass hr:Application ;
+    sh:property [ sh:path hr:applicant ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Person ;
+        sh:message "APPLICATION_PERSON: an application has exactly one applicant." ] ;
+    sh:property [ sh:path hr:appliesTo ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Requisition ;
+        sh:message "APPLICATION_REQUISITION: an application is for exactly one requisition." ] ;
+    sh:property [ sh:path hr:appliedOn ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ;
+        sh:message "APPLICATION_DATE: an application has exactly one date." ] ;
+    sh:property [ sh:path hr:applicationSource ; sh:minCount 1 ; sh:maxCount 1 ; sh:node hrs:InSource ;
+        sh:message "APPLICATION_SOURCE: applicationSource must be an ApplicationSource value." ] ;
+    sh:sparql [
+        sh:message "APPLICATION_BEFORE_OPEN: an application cannot be dated before its requisition opened." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:appliesTo ?value ; hr:appliedOn ?d .
+              ?value hr:openedOn ?o .
+              FILTER(?d < ?o)
+            }""" ] .
+
+hrs:StageEntryShape a sh:NodeShape ;
+    sh:targetClass hr:StageEntry ;
+    sh:property [ sh:path hr:stageOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Application ;
+        sh:message "STAGE_APPLICATION: a stage entry belongs to exactly one application." ] ;
+    sh:property [ sh:path hr:stage ; sh:minCount 1 ; sh:maxCount 1 ; sh:node hrs:InStage ;
+        sh:message "STAGE_VALUE: stage must be an ApplicationStage value." ] ;
+    sh:property [ sh:path hr:enteredOn ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ;
+        sh:message "STAGE_DATE: a stage entry has exactly one date." ] .
+
+hrs:OfferShape a sh:NodeShape ;
+    sh:targetClass hr:Offer ;
+    sh:property [ sh:path hr:offerFor ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Application ;
+        sh:message "OFFER_APPLICATION: an offer is made on exactly one application." ] ;
+    sh:property [ sh:path hr:offeredOn ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ;
+        sh:message "OFFER_DATE: an offer has exactly one offer date." ] ;
+    sh:property [ sh:path hr:offeredOn ; sh:lessThanOrEquals hr:acceptedOn ;
+        sh:message "OFFER_ACCEPT_ORDER: an offer cannot be accepted before it is made." ] ;
+    sh:property [ sh:path hr:offeredOn ; sh:lessThanOrEquals hr:declinedOn ;
+        sh:message "OFFER_DECLINE_ORDER: an offer cannot be declined before it is made." ] ;
+    sh:sparql [
+        sh:message "OFFER_OUTCOME: an offer cannot be both accepted and declined." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this WHERE { $this hr:acceptedOn ?a ; hr:declinedOn ?d }""" ] ;
+    sh:sparql [
+        sh:message "OFFER_RESULT: only an accepted offer can result in an employment, and the employment must be of the applicant." ;
+        sh:prefixes <https://example.org/hr/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:resultsIn ?value ; hr:offerFor ?app .
+              ?app hr:applicant ?p .
+              FILTER( NOT EXISTS { $this hr:acceptedOn ?a } || NOT EXISTS { ?value hr:employee ?p } )
+            }""" ] .

@@ -1,0 +1,142 @@
+@prefix hr:      <https://example.org/hr/ontology#> .
+@prefix hrv:     <https://example.org/hr/vocab#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix org:     <http://www.w3.org/ns/org#> .
+
+# =====================================================================
+# HR Ontology, employment module
+# When a person worked for a legal entity (Employment), how it ended
+# (Separation), and which seat they filled while employed (Assignment).
+# =====================================================================
+
+<https://example.org/hr/ontology/employment> a owl:Ontology ;
+    owl:versionIRI <https://example.org/hr/ontology/employment/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
+    owl:imports <https://example.org/hr/ontology/core>, <https://example.org/hr/ontology/organisation> ;
+    dcterms:title "HR Ontology, employment module"@en ;
+    dcterms:description "Employment periods, separations, assignments to positions and leave."@en ;
+    dcterms:created "2026-10-31"^^xsd:date ;
+    dcterms:modified "2026-10-31"^^xsd:date .
+
+hr:Employment a owl:Class ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    rdfs:label "Employment"@en ;
+    skos:definition "A period during which a person worked for one legal entity under one set of terms (type and FTE). A change of terms is a new record. A person who leaves and returns has two records. It says when someone worked here; Assignment says which seat they filled."@en ;
+    skos:closeMatch org:Membership ;
+    hr:sensitivity hrv:Confidential ;
+    hr:retentionPeriod "P7Y"^^xsd:duration ;
+    hr:steward "HR Operations" .
+
+hr:employee a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "employee"@en ;
+    skos:definition "The person who is employed."@en ;
+    rdfs:domain hr:Employment ; rdfs:range hr:Person .
+
+hr:employer a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "employer"@en ;
+    skos:definition "The legal entity that employs the person."@en ;
+    rdfs:domain hr:Employment ; rdfs:range hr:LegalEntity .
+
+hr:employmentType a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "employment type"@en ;
+    skos:definition "Permanent, fixed-term, contractor or intern. Value from the EmploymentType vocabulary. Whether someone is full-time or part-time follows from fte, not from type."@en ;
+    rdfs:domain hr:Employment ; rdfs:range skos:Concept .
+
+hr:fte a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "FTE"@en ;
+    skos:definition "Full-time equivalent of the employment: 1.0 is full time, 0.5 is half time. Greater than 0 and at most 1."@en ;
+    rdfs:domain hr:Employment ; rdfs:range xsd:decimal .
+
+hr:probationEnd a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "probation end"@en ;
+    skos:definition "Last day of the probation period, if there is one."@en ;
+    rdfs:domain hr:Employment ; rdfs:range xsd:date .
+
+hr:noticePeriodDays a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "notice period (days)"@en ;
+    skos:definition "Contractual notice period in calendar days."@en ;
+    rdfs:domain hr:Employment ; rdfs:range xsd:nonNegativeInteger .
+
+hr:contractEnd a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "contract end"@en ;
+    skos:definition "Planned end date of a fixed-term contract."@en ;
+    rdfs:domain hr:Employment ; rdfs:range xsd:date .
+
+hr:previousEmployment a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "previous employment"@en ;
+    rdfs:subPropertyOf hr:follows ;
+    skos:definition "The earlier employment period of the same person. Set on a rehire to link back to the period that ended."@en ;
+    rdfs:domain hr:Employment ; rdfs:range hr:Employment .
+
+hr:Separation a owl:Class ;
+    rdfs:label "Separation"@en ;
+    skos:definition "The event that ends an employment: its reason and notice. The last day is the validTo of the employment, which is the single place that date is held."@en ;
+    hr:sensitivity hrv:Confidential ;
+    hr:retentionPeriod "P7Y"^^xsd:duration ;
+    hr:steward "HR Operations" .
+
+hr:separationOf a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "separation of"@en ;
+    skos:definition "The employment that this separation ends."@en ;
+    rdfs:domain hr:Separation ; rdfs:range hr:Employment .
+
+hr:separationReason a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "separation reason"@en ;
+    skos:definition "Why the employment ended. Value from the SeparationReason vocabulary; its broader concept gives the category (voluntary, involuntary or other), so the category is never stored twice."@en ;
+    rdfs:domain hr:Separation ; rdfs:range skos:Concept .
+
+hr:noticeGivenOn a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "notice given on"@en ;
+    skos:definition "Date on which notice was given or received."@en ;
+    rdfs:domain hr:Separation ; rdfs:range xsd:date .
+
+hr:Assignment a owl:Class ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    rdfs:label "Assignment"@en ;
+    skos:definition "A period during which an employment filled (part of) a position. It must lie inside the employment. A person has one primary assignment at a time and may also have secondary or acting ones."@en ;
+    hr:sensitivity hrv:Confidential ;
+    hr:retentionPeriod "P7Y"^^xsd:duration ;
+    hr:steward "HR Operations" .
+
+hr:assignedEmployment a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "assigned employment"@en ;
+    skos:definition "The employment that holds the position."@en ;
+    rdfs:domain hr:Assignment ; rdfs:range hr:Employment .
+
+hr:assignedPosition a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "assigned position"@en ;
+    skos:definition "The position that is filled."@en ;
+    rdfs:domain hr:Assignment ; rdfs:range hr:Position .
+
+hr:assignmentType a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "assignment type"@en ;
+    skos:definition "Primary, secondary or acting. Value from the AssignmentType vocabulary."@en ;
+    rdfs:domain hr:Assignment ; rdfs:range skos:Concept .
+
+hr:assignmentFte a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "assignment FTE"@en ;
+    skos:definition "Share of full-time capacity the person gives to this position. Greater than 0 and at most 1."@en ;
+    rdfs:domain hr:Assignment ; rdfs:range xsd:decimal .
+
+hr:LeaveRecord a owl:Class ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    rdfs:label "Leave record"@en ;
+    skos:definition "A period of approved absence of an employment. Entitlements and accrual rules are not modelled yet."@en ;
+    hr:sensitivity hrv:Confidential ;
+    hr:retentionPeriod "P3Y"^^xsd:duration ;
+    hr:steward "HR Operations" .
+
+hr:leaveOf a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "leave of"@en ;
+    skos:definition "The employment that is absent."@en ;
+    rdfs:domain hr:LeaveRecord ; rdfs:range hr:Employment .
+
+hr:leaveType a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "leave type"@en ;
+    skos:definition "Annual, sick, parental or unpaid. Value from the LeaveType vocabulary. Medical detail is never stored."@en ;
+    rdfs:domain hr:LeaveRecord ; rdfs:range skos:Concept .

@@ -1,0 +1,5 @@
+# fragment: ActiveEmployment
+# params: emp person asOf known
+# THE definition of a current employee: a person with an employment valid on the day.
+@{emp} a hr:Employment ; hr:employee @{person} .
+#include ValidRecord rec=@{emp} asOf=@{asOf} known=@{known}

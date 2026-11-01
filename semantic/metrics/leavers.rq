@@ -1,0 +1,13 @@
+# metric: leavers
+# term: Leaver
+# params: periodStart periodEnd known
+# description: Employments that ended in the period, with the reason and its category.
+SELECT ?personId ?name ?lastDay ?reasonLabel ?categoryLabel WHERE {
+#include LeaverInPeriod emp=?emp sep=?sep reason=?reason start=?periodStart end=?periodEnd known=?known
+  ?emp hr:employee ?person ; hr:validTo ?lastDay .
+  ?person hr:personId ?personId .
+  ?reason skos:prefLabel ?reasonLabel ; skos:broader ?category .
+  ?category skos:prefLabel ?categoryLabel .
+#include DisplayName person=?person name=?name asOf=?lastDay known=?known
+}
+ORDER BY ?lastDay ?personId

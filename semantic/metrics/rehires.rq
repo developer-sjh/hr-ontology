@@ -1,0 +1,11 @@
+# metric: rehires
+# term: Rehire
+# params: asOf known
+# description: Valid employments that continue an earlier period of the same person, with the gap between them.
+SELECT ?personId ?left ?returned WHERE {
+#include ActiveEmployment emp=?emp person=?person asOf=?asOf known=?known
+  ?emp hr:previousEmployment ?prev ; hr:validFrom ?returned .
+  ?prev hr:validTo ?left .
+  ?person hr:personId ?personId .
+}
+ORDER BY ?personId

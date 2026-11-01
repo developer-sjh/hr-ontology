@@ -1,0 +1,5 @@
+# fragment: PositionDetailsAt
+# params: det pos asOf known
+# The details (unit, profile, budget) of a position on the day.
+@{det} a hr:PositionDetails ; hr:detailsOf @{pos} .
+#include ValidRecord rec=@{det} asOf=@{asOf} known=@{known}

@@ -1,0 +1,39 @@
+classDiagram
+direction LR
+class Person
+class NameRecord
+class Employment
+class Separation
+class Assignment
+class Position
+class PositionDetails
+class ReportingLine
+class OrganizationalUnit
+class UnitStructure
+class LegalEntity
+class JobProfile
+class Grade
+class Compensation {
+  RESTRICTED
+}
+class PayBand {
+  RESTRICTED
+}
+note for Employment "When someone worked here.<br/>Rehire = a later record with previousEmployment."
+note for Assignment "Which seat they filled.<br/>Must sit inside the employment."
+note for Position "A seat. Can be vacant.<br/>Its unit, profile and budget<br/>change through PositionDetails."
+Person "1" <-- "1..*" NameRecord : nameOf
+Person "1" <-- "0..*" Employment : employee
+Employment "0..*" --> "1" LegalEntity : employer
+Employment "1" <-- "0..1" Separation : separationOf
+Assignment "0..*" --> "1" Employment : assignedEmployment
+Assignment "0..*" --> "1" Position : assignedPosition
+PositionDetails "1..*" --> "1" Position : detailsOf
+PositionDetails "0..*" --> "1" OrganizationalUnit : inUnit
+PositionDetails "0..*" --> "1" JobProfile : hasProfile
+JobProfile "0..*" --> "1" Grade : profileGrade
+ReportingLine "0..*" --> "1" Position : subordinate / supervisor
+UnitStructure "0..*" --> "1" OrganizationalUnit : child / parent
+Compensation "0..*" --> "1" Employment : compensationOf
+Compensation "0..*" --> "1" Grade : atGrade
+PayBand "0..*" --> "1" Grade : bandGrade

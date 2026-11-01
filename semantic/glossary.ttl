@@ -1,0 +1,97 @@
+@prefix hr:      <https://example.org/hr/ontology#> .
+@prefix hrg:     <https://example.org/hr/glossary#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# =====================================================================
+# Business glossary. One agreed definition per term, one owner, and the
+# file that implements it. Metrics may only use a term listed here.
+# "As of" is the day being asked about. "Known on" is what the
+# organisation had recorded by then (use it to reproduce an old report).
+# =====================================================================
+
+<https://example.org/hr/glossary> a owl:Ontology ;
+    owl:versionInfo "1.0.0" ;
+    dcterms:title "HR business glossary"@en .
+
+hrg:Scheme a skos:ConceptScheme ; skos:prefLabel "HR business glossary"@en .
+
+hrg:CurrentEmployee a skos:Concept ; skos:inScheme hrg:Scheme ;
+    skos:prefLabel "Current employee"@en ;
+    skos:definition "A person with an employment record that is valid on the day, as known on the day asked about. Contractors and fixed-term staff count; candidates and former employees do not."@en ;
+    hr:steward "HR Operations" ;
+    hr:implementedBy "semantic/fragments/ActiveEmployment.rqf" .
+
+hrg:Headcount a skos:Concept ; skos:inScheme hrg:Scheme ;
+    skos:prefLabel "Headcount"@en ;
+    skos:definition "The number of current employees on the day. A part-timer counts as one person. A person with two employments at once is counted once."@en ;
+    hr:steward "HR Operations" ;
+    hr:implementedBy "semantic/metrics/headcount.rq", "semantic/metrics/headcount_by_unit.rq" .
+
+hrg:FTE a skos:Concept ; skos:inScheme hrg:Scheme ;
+    skos:prefLabel "FTE"@en ;
+    skos:definition "Full-time equivalent: the sum of the fte of all employments valid on the day. Two half-time employees are 1.0 FTE."@en ;
+    hr:steward "HR Operations" ;
+    hr:implementedBy "semantic/metrics/fte.rq" .
+
+hrg:Leaver a skos:Concept ; skos:inScheme hrg:Scheme ;
+    skos:prefLabel "Leaver"@en ;
+    skos:definition "An employment whose last day falls inside the period and that has a recorded separation. A person who leaves twice in a period appears twice."@en ;
+    hr:steward "HR Operations" ;
+    hr:implementedBy "semantic/fragments/LeaverInPeriod.rqf", "semantic/metrics/leavers.rq" .
+
+hrg:AttritionRate a skos:Concept ; skos:inScheme hrg:Scheme ;
+    skos:prefLabel "Attrition rate"@en ;
+    skos:definition "Leavers in the period divided by the average of the headcount on the first and last day of the period. Voluntary, involuntary and other exits are reported separately by category."@en ;
+    hr:steward "People Analytics" ;
+    hr:implementedBy "semantic/metrics/attrition_rate.rq", "semantic/metrics/attrition_by_category.rq" .
+
+hrg:Rehire a skos:Concept ; skos:inScheme hrg:Scheme ;
+    skos:prefLabel "Rehire"@en ;
+    skos:definition "A valid employment that links back to an earlier employment of the same person with previousEmployment."@en ;
+    hr:steward "HR Operations" ;
+    hr:implementedBy "semantic/metrics/rehires.rq" .
+
+hrg:Tenure a skos:Concept ; skos:inScheme hrg:Scheme ;
+    skos:prefLabel "Tenure"@en ;
+    skos:definition "Completed years since the start of the current employment. A rehire starts again from the day of return; earlier service is not added."@en ;
+    hr:steward "HR Operations" ;
+    hr:implementedBy "semantic/metrics/tenure.rq" .
+
+hrg:SpanOfControl a skos:Concept ; skos:inScheme hrg:Scheme ;
+    skos:prefLabel "Span of control"@en ;
+    skos:definition "The number of current employees whose primary position reports on a solid line to a position the manager holds. Dotted (matrix) lines and vacant positions are not counted."@en ;
+    hr:steward "Organisation Design" ;
+    hr:implementedBy "semantic/metrics/span_of_control.rq" .
+
+hrg:Vacancy a skos:Concept ; skos:inScheme hrg:Scheme ;
+    skos:prefLabel "Vacancy"@en ;
+    skos:definition "A position that exists on the day whose primary assignments add up to less than its budgeted FTE. The gap is the unfilled FTE. A position whose details have ended is not a vacancy."@en ;
+    hr:steward "Organisation Design" ;
+    hr:implementedBy "semantic/metrics/vacancy.rq" .
+
+hrg:TimeToFill a skos:Concept ; skos:inScheme hrg:Scheme ;
+    skos:prefLabel "Time to fill"@en ;
+    skos:definition "Calendar days from the day a requisition opened to the first day of the employment that resulted from the accepted offer."@en ;
+    hr:steward "Talent Acquisition" ;
+    hr:implementedBy "semantic/metrics/time_to_fill.rq" .
+
+hrg:ExpiringCredential a skos:Concept ; skos:inScheme hrg:Scheme ;
+    skos:prefLabel "Expiring credential"@en ;
+    skos:definition "A credential valid on the day whose last valid day is within the chosen number of days and that has not been renewed."@en ;
+    hr:steward "Talent" ;
+    hr:implementedBy "semantic/metrics/expiring_credentials.rq" .
+
+hrg:PayOutsideBand a skos:Concept ; skos:inScheme hrg:Scheme ;
+    skos:prefLabel "Pay outside band"@en ;
+    skos:definition "RESTRICTED. A pay record valid on the day whose full-time base amount is below the minimum or above the maximum of the pay band for its grade and currency."@en ;
+    hr:steward "Reward" ;
+    hr:implementedBy "semantic/metrics-sensitive/pay_outside_band.rq" .
+
+hrg:AveragePay a skos:Concept ; skos:inScheme hrg:Scheme ;
+    skos:prefLabel "Average pay"@en ;
+    skos:definition "RESTRICTED. The mean full-time base amount of pay records valid on the day for the current employees of a unit, per currency. Currencies are never converted or mixed."@en ;
+    hr:steward "Reward" ;
+    hr:implementedBy "semantic/metrics-sensitive/average_pay_by_unit.rq" .

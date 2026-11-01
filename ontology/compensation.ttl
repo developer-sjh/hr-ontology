@@ -1,0 +1,126 @@
+@prefix hr:      <https://example.org/hr/ontology#> .
+@prefix hrv:     <https://example.org/hr/vocab#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# =====================================================================
+# HR Ontology, compensation module (RESTRICTED)
+# Pay bands, pay records, benefit plans and enrolments.
+# Everything that describes an individual's pay or benefits is Restricted. It lives in its own file,
+# has its own SHACL rules and its own sample data. In a real deployment
+# leave this data in the source system and query it there.
+# =====================================================================
+
+<https://example.org/hr/ontology/compensation> a owl:Ontology ;
+    owl:versionIRI <https://example.org/hr/ontology/compensation/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
+    owl:imports <https://example.org/hr/ontology/core>, <https://example.org/hr/ontology/organisation>, <https://example.org/hr/ontology/employment> ;
+    dcterms:title "HR Ontology, compensation module"@en ;
+    dcterms:description "Restricted: pay bands, compensation records, benefit plans and enrolments."@en ;
+    dcterms:created "2026-10-31"^^xsd:date ;
+    dcterms:modified "2026-10-31"^^xsd:date ;
+    hr:sensitivity hrv:Restricted .
+
+hr:PayBand a owl:Class ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    rdfs:label "Pay band"@en ;
+    skos:definition "The minimum and maximum annual base pay allowed for a grade in a currency, for a period."@en ;
+    hr:sensitivity hrv:Restricted ;
+    hr:retentionPeriod "P7Y"^^xsd:duration ;
+    hr:steward "Reward" .
+
+hr:bandGrade a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "band grade"@en ;
+    skos:definition "The grade the band applies to."@en ;
+    rdfs:domain hr:PayBand ; rdfs:range hr:Grade .
+
+hr:bandCurrency a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "band currency"@en ;
+    skos:definition "ISO 4217 currency code of the band amounts."@en ;
+    rdfs:domain hr:PayBand ; rdfs:range xsd:string .
+
+hr:bandMin a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "band minimum"@en ;
+    skos:definition "Lowest annual base pay in the band."@en ;
+    rdfs:domain hr:PayBand ; rdfs:range xsd:decimal .
+
+hr:bandMax a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "band maximum"@en ;
+    skos:definition "Highest annual base pay in the band."@en ;
+    rdfs:domain hr:PayBand ; rdfs:range xsd:decimal .
+
+hr:Compensation a owl:Class ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    rdfs:label "Compensation"@en ;
+    skos:definition "The annual base pay of an employment for a period, at a grade, with the reason it was set. Each pay change is a new record that follows the previous one. Every record must name a grade."@en ;
+    hr:sensitivity hrv:Restricted ;
+    hr:retentionPeriod "P7Y"^^xsd:duration ;
+    hr:steward "Reward" .
+
+hr:compensationOf a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "compensation of"@en ;
+    skos:definition "The employment that is paid."@en ;
+    rdfs:domain hr:Compensation ; rdfs:range hr:Employment .
+
+hr:atGrade a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "at grade"@en ;
+    skos:definition "The grade the pay is set against. Required."@en ;
+    rdfs:domain hr:Compensation ; rdfs:range hr:Grade .
+
+hr:baseAmount a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "base amount"@en ;
+    skos:definition "Annual base pay before tax, stated as the full-time rate. It is not scaled by the employment FTE."@en ;
+    rdfs:domain hr:Compensation ; rdfs:range xsd:decimal .
+
+hr:currency a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "currency"@en ;
+    skos:definition "ISO 4217 currency code of the pay amount."@en ;
+    rdfs:domain hr:Compensation ; rdfs:range xsd:string .
+
+hr:payChangeReason a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "pay change reason"@en ;
+    skos:definition "Why the pay was set or changed: hire, merit, promotion, market adjustment or correction. Value from the PayChangeReason vocabulary."@en ;
+    rdfs:domain hr:Compensation ; rdfs:range skos:Concept .
+
+hr:BenefitPlan a owl:Class ;
+    rdfs:label "Benefit plan"@en ;
+    skos:definition "A benefit the employer offers, such as medical cover or a retirement plan, with its employer match. Plan terms are company information, not personal data."@en ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Benefits" .
+
+hr:planKind a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "plan kind"@en ;
+    skos:definition "Medical, dental or retirement. Value from the BenefitKind vocabulary."@en ;
+    rdfs:domain hr:BenefitPlan ; rdfs:range skos:Concept .
+
+hr:employerMatchPercent a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "employer match percent"@en ;
+    skos:definition "Percent of salary the employer matches when the employee contributes at least this much. Zero if the plan has no match."@en ;
+    rdfs:domain hr:BenefitPlan ; rdfs:range xsd:decimal .
+
+hr:BenefitEnrollment a owl:Class ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    rdfs:label "Benefit enrollment"@en ;
+    skos:definition "An employment's participation in a benefit plan for a period, with the contribution the employee chose. Only the fact of enrolment is stored, never health information."@en ;
+    hr:sensitivity hrv:Restricted ;
+    hr:retentionPeriod "P7Y"^^xsd:duration ;
+    hr:steward "Benefits" .
+
+hr:enrolledEmployment a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "enrolled employment"@en ;
+    skos:definition "The employment that participates."@en ;
+    rdfs:domain hr:BenefitEnrollment ; rdfs:range hr:Employment .
+
+hr:inPlan a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "in plan"@en ;
+    skos:definition "The plan the employment participates in."@en ;
+    rdfs:domain hr:BenefitEnrollment ; rdfs:range hr:BenefitPlan .
+
+hr:contributionPercent a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "contribution percent"@en ;
+    skos:definition "Percent of salary the employee contributes, from 0 to 100."@en ;
+    rdfs:domain hr:BenefitEnrollment ; rdfs:range xsd:decimal .

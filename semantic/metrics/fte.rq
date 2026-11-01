@@ -1,0 +1,8 @@
+# metric: fte
+# term: FTE
+# params: asOf known
+# description: Sum of the FTE of all valid employments on the day.
+SELECT (SUM(?fte) AS ?totalFte) WHERE {
+#include ActiveEmployment emp=?emp person=?person asOf=?asOf known=?known
+  ?emp hr:fte ?fte .
+}

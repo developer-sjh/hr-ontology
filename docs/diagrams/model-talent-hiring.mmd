@@ -1,0 +1,31 @@
+classDiagram
+direction LR
+class Person
+class Employment
+class Position
+class Skill
+class SkillAssertion {
+  validFrom, validTo
+}
+class Credential {
+  validFrom, validTo (= expiry)
+}
+class Certification
+class Requisition
+class Application
+class StageEntry
+class Offer
+note for SkillAssertion "A level change is a new record that follows the old one,<br/>so growth and loss both show."
+note for Offer "An accepted offer leads to the Employment it created.<br/>That is how time to fill is measured."
+SkillAssertion "0..*" --> "1" Person : assertedFor
+SkillAssertion "0..*" --> "1" Skill : assertsSkill
+Credential "0..*" --> "1" Person : heldBy
+Credential "0..*" --> "1" Certification : ofCertification
+Certification "0..*" --> "0..*" Skill : certifiesSkill
+Requisition "0..*" --> "1" Position : requisitionFor
+Application "0..*" --> "1" Requisition : appliesTo
+Application "0..*" --> "1" Person : applicant
+StageEntry "1..*" --> "1" Application : stageOf
+Offer "0..*" --> "1" Application : offerFor
+Offer "0..1" --> "0..1" Employment : resultsIn
+Employment "0..*" --> "1" Person : employee

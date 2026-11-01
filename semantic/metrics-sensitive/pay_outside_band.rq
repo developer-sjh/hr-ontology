@@ -1,0 +1,15 @@
+# metric: pay_outside_band
+# term: Pay outside band
+# sensitivity: Restricted
+# params: asOf known
+# description: Pay records valid on the day whose base amount is below the minimum or above the maximum of the pay band for their grade and currency.
+SELECT ?personId ?grade ?amount ?bandMin ?bandMax WHERE {
+  ?pay a hr:Compensation ; hr:compensationOf ?emp ; hr:atGrade ?g ; hr:baseAmount ?amount ; hr:currency ?cur .
+#include ValidRecord rec=?pay asOf=?asOf known=?known
+  ?band a hr:PayBand ; hr:bandGrade ?g ; hr:bandCurrency ?cur ; hr:bandMin ?bandMin ; hr:bandMax ?bandMax .
+#include ValidRecord rec=?band asOf=?asOf known=?known
+  FILTER(?amount < ?bandMin || ?amount > ?bandMax)
+  ?emp hr:employee ?person . ?person hr:personId ?personId .
+  ?g hr:gradeCode ?grade .
+}
+ORDER BY ?personId

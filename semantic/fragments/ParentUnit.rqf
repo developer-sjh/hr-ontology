@@ -1,0 +1,5 @@
+# fragment: ParentUnit
+# params: child parent asOf known
+# The parent of a unit on the day, from the unit structure records.
+@{_us} a hr:UnitStructure ; hr:childUnit @{child} ; hr:parentUnit @{parent} .
+#include ValidRecord rec=@{_us} asOf=@{asOf} known=@{known}

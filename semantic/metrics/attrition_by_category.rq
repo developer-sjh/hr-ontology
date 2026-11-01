@@ -1,0 +1,17 @@
+# metric: attrition_by_category
+# term: Attrition rate
+# params: periodStart periodEnd known
+# description: Attrition split into voluntary, involuntary and other exits, each as leavers over the same average headcount.
+SELECT ?categoryLabel ?leavers ((?leavers / ((?hs + ?he) / 2)) AS ?rate) WHERE {
+  { SELECT ?categoryLabel (COUNT(DISTINCT ?emp) AS ?leavers) WHERE {
+#include LeaverInPeriod emp=?emp sep=?sep reason=?reason start=?periodStart end=?periodEnd known=?known
+      ?reason skos:broader ?category . ?category skos:prefLabel ?categoryLabel .
+  } GROUP BY ?categoryLabel }
+  { SELECT (COUNT(DISTINCT ?p1) AS ?hs) WHERE {
+#include ActiveEmployment emp=?e1 person=?p1 asOf=?periodStart known=?known
+  } }
+  { SELECT (COUNT(DISTINCT ?p2) AS ?he) WHERE {
+#include ActiveEmployment emp=?e2 person=?p2 asOf=?periodEnd known=?known
+  } }
+}
+ORDER BY ?categoryLabel

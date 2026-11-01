@@ -1,0 +1,104 @@
+@prefix hr:      <https://example.org/hr/ontology#> .
+@prefix hrv:     <https://example.org/hr/vocab#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix ctry:    <https://example.org/hr/id/country/> .
+@prefix ent:     <https://example.org/hr/id/entity/> .
+@prefix loc:     <https://example.org/hr/id/location/> .
+@prefix unit:    <https://example.org/hr/id/unit/> .
+@prefix us:      <https://example.org/hr/id/unit-structure/> .
+@prefix cc:      <https://example.org/hr/id/costcenter/> .
+@prefix grd:     <https://example.org/hr/id/grade/> .
+@prefix job:     <https://example.org/hr/id/jobprofile/> .
+@prefix sk:      <https://example.org/hr/id/skill/> .
+@prefix cert:    <https://example.org/hr/id/certification/> .
+@prefix crs:     <https://example.org/hr/id/course/> .
+
+# =====================================================================
+# Fictional reference data for "Northwind Analytics" (not a real company).
+# Organisation, grades, job profiles, skill taxonomy, certifications, courses.
+# =====================================================================
+
+ctry:GB a hr:Country ; hr:countryCode "GB" .
+ctry:US a hr:Country ; hr:countryCode "US" .
+
+ent:UK a hr:LegalEntity ; rdfs:label "Northwind Analytics UK Ltd" ; hr:registeredIn ctry:GB .
+ent:US a hr:LegalEntity ; rdfs:label "Northwind Analytics US Inc" ; hr:registeredIn ctry:US .
+
+loc:London     a hr:Location ; rdfs:label "London office" ;     hr:locatedIn ctry:GB .
+loc:Manchester a hr:Location ; rdfs:label "Manchester office" ; hr:locatedIn ctry:GB .
+loc:Austin     a hr:Location ; rdfs:label "Austin office" ;     hr:locatedIn ctry:US .
+
+# ---- organisational units ----------------------------------------------
+unit:EXEC a hr:OrganizationalUnit ; rdfs:label "Executive Office" ;  hr:unitCode "EXEC" ; hr:unitType hrv:Division   ; hr:withinEntity ent:UK .
+unit:ENG  a hr:OrganizationalUnit ; rdfs:label "Engineering" ;       hr:unitCode "ENG"  ; hr:unitType hrv:Division   ; hr:withinEntity ent:UK .
+unit:PLAT a hr:OrganizationalUnit ; rdfs:label "Platform" ;          hr:unitCode "PLAT" ; hr:unitType hrv:Department ; hr:withinEntity ent:UK .
+unit:DATA a hr:OrganizationalUnit ; rdfs:label "Data & AI" ;         hr:unitCode "DATA" ; hr:unitType hrv:Department ; hr:withinEntity ent:UK .
+unit:PEOP a hr:OrganizationalUnit ; rdfs:label "People & Culture" ;  hr:unitCode "PEOP" ; hr:unitType hrv:Department ; hr:withinEntity ent:UK .
+unit:RECR a hr:OrganizationalUnit ; rdfs:label "Recruiting" ;        hr:unitCode "RECR" ; hr:unitType hrv:Team       ; hr:withinEntity ent:UK .
+unit:FIN  a hr:OrganizationalUnit ; rdfs:label "Finance" ;           hr:unitCode "FIN"  ; hr:unitType hrv:Department ; hr:withinEntity ent:UK .
+
+# The structure over time. Data & AI moved from Engineering to the Executive Office on 2025-07-01.
+us:ENG-1  a hr:UnitStructure ; hr:childUnit unit:ENG  ; hr:parentUnit unit:EXEC ; hr:validFrom "2018-01-01"^^xsd:date ; hr:recordedOn "2018-01-01"^^xsd:date .
+us:PLAT-1 a hr:UnitStructure ; hr:childUnit unit:PLAT ; hr:parentUnit unit:ENG  ; hr:validFrom "2018-01-01"^^xsd:date ; hr:recordedOn "2018-01-01"^^xsd:date .
+us:DATA-1 a hr:UnitStructure ; hr:childUnit unit:DATA ; hr:parentUnit unit:ENG  ; hr:validFrom "2020-02-03"^^xsd:date ; hr:validTo "2025-06-30"^^xsd:date ; hr:recordedOn "2025-06-15"^^xsd:date .
+us:DATA-2 a hr:UnitStructure ; hr:childUnit unit:DATA ; hr:parentUnit unit:EXEC ; hr:validFrom "2025-07-01"^^xsd:date ; hr:recordedOn "2025-06-15"^^xsd:date ; hr:follows us:DATA-1 .
+us:PEOP-1 a hr:UnitStructure ; hr:childUnit unit:PEOP ; hr:parentUnit unit:EXEC ; hr:validFrom "2018-01-01"^^xsd:date ; hr:recordedOn "2018-01-01"^^xsd:date .
+us:RECR-1 a hr:UnitStructure ; hr:childUnit unit:RECR ; hr:parentUnit unit:PEOP ; hr:validFrom "2019-09-02"^^xsd:date ; hr:recordedOn "2019-09-02"^^xsd:date .
+us:FIN-1  a hr:UnitStructure ; hr:childUnit unit:FIN  ; hr:parentUnit unit:EXEC ; hr:validFrom "2018-01-01"^^xsd:date ; hr:recordedOn "2018-01-01"^^xsd:date .
+
+# ---- cost centres ----------------------------------------------------------
+cc:C100 a hr:CostCenter ; hr:costCenterCode "CC-100" ; rdfs:label "UK Engineering" ;      hr:costCenterOf ent:UK .
+cc:C200 a hr:CostCenter ; hr:costCenterCode "CC-200" ; rdfs:label "UK Data & AI" ;        hr:costCenterOf ent:UK .
+cc:C300 a hr:CostCenter ; hr:costCenterCode "CC-300" ; rdfs:label "UK People & Culture" ; hr:costCenterOf ent:UK .
+cc:C400 a hr:CostCenter ; hr:costCenterCode "CC-400" ; rdfs:label "UK Executive" ;         hr:costCenterOf ent:UK .
+cc:C500 a hr:CostCenter ; hr:costCenterCode "CC-500" ; rdfs:label "US Finance" ;          hr:costCenterOf ent:US .
+
+# ---- grades and job profiles ---------------------------------------------------
+grd:G4 a hr:Grade ; hr:gradeCode "G4" ; hr:gradeLevel 4 .
+grd:G5 a hr:Grade ; hr:gradeCode "G5" ; hr:gradeLevel 5 .
+grd:G6 a hr:Grade ; hr:gradeCode "G6" ; hr:gradeLevel 6 .
+grd:G7 a hr:Grade ; hr:gradeCode "G7" ; hr:gradeLevel 7 .
+grd:G8 a hr:Grade ; hr:gradeCode "G8" ; hr:gradeLevel 8 .
+grd:G9 a hr:Grade ; hr:gradeCode "G9" ; hr:gradeLevel 9 .
+
+job:CEO        a hr:JobProfile ; hr:jobTitle "Chief Executive Officer" ; hr:jobFamily hrv:Executive   ; hr:profileGrade grd:G9 .
+job:VPENG      a hr:JobProfile ; hr:jobTitle "VP Engineering" ;          hr:jobFamily hrv:Engineering ; hr:profileGrade grd:G8 .
+job:HEADDATA   a hr:JobProfile ; hr:jobTitle "Head of Data & AI" ;       hr:jobFamily hrv:Data        ; hr:profileGrade grd:G8 .
+job:PEOPDIR    a hr:JobProfile ; hr:jobTitle "People Director" ;         hr:jobFamily hrv:PeopleOps   ; hr:profileGrade grd:G8 .
+job:FINMGR     a hr:JobProfile ; hr:jobTitle "Finance Manager" ;         hr:jobFamily hrv:Finance     ; hr:profileGrade grd:G7 .
+job:ENGMGR     a hr:JobProfile ; hr:jobTitle "Engineering Manager" ;     hr:jobFamily hrv:Engineering ; hr:profileGrade grd:G7 .
+job:SRENG      a hr:JobProfile ; hr:jobTitle "Senior Engineer" ;         hr:jobFamily hrv:Engineering ; hr:profileGrade grd:G6 .
+job:ENG        a hr:JobProfile ; hr:jobTitle "Engineer" ;                hr:jobFamily hrv:Engineering ; hr:profileGrade grd:G5 .
+job:DSCI       a hr:JobProfile ; hr:jobTitle "Data Scientist" ;          hr:jobFamily hrv:Data        ; hr:profileGrade grd:G5 .
+job:SRDSCI     a hr:JobProfile ; hr:jobTitle "Senior Data Scientist" ;   hr:jobFamily hrv:Data        ; hr:profileGrade grd:G6 .
+job:DENG       a hr:JobProfile ; hr:jobTitle "Data Engineer" ;           hr:jobFamily hrv:Data        ; hr:profileGrade grd:G5 .
+job:PAYROLL    a hr:JobProfile ; hr:jobTitle "Payroll Analyst" ;         hr:jobFamily hrv:Finance     ; hr:profileGrade grd:G4 .
+job:RECRUITER  a hr:JobProfile ; hr:jobTitle "Recruiter" ;               hr:jobFamily hrv:PeopleOps   ; hr:profileGrade grd:G4 .
+
+# ---- skill taxonomy (a SKOS scheme; map to ESCO or O*NET with skos:closeMatch) --------
+sk:Scheme a skos:ConceptScheme ; skos:prefLabel "Northwind skill taxonomy"@en .
+
+sk:Cloud     a hr:Skill ; skos:inScheme sk:Scheme ; skos:topConceptOf sk:Scheme ; skos:prefLabel "Cloud infrastructure"@en .
+sk:K8s       a hr:Skill ; skos:inScheme sk:Scheme ; skos:broader sk:Cloud ; skos:prefLabel "Kubernetes"@en .
+sk:Terraform a hr:Skill ; skos:inScheme sk:Scheme ; skos:broader sk:Cloud ; skos:prefLabel "Terraform"@en .
+sk:Prog      a hr:Skill ; skos:inScheme sk:Scheme ; skos:topConceptOf sk:Scheme ; skos:prefLabel "Programming"@en .
+sk:Python    a hr:Skill ; skos:inScheme sk:Scheme ; skos:broader sk:Prog ; skos:prefLabel "Python"@en .
+sk:Go        a hr:Skill ; skos:inScheme sk:Scheme ; skos:broader sk:Prog ; skos:prefLabel "Go"@en .
+sk:DataSci   a hr:Skill ; skos:inScheme sk:Scheme ; skos:topConceptOf sk:Scheme ; skos:prefLabel "Data science"@en .
+sk:ML        a hr:Skill ; skos:inScheme sk:Scheme ; skos:broader sk:DataSci ; skos:prefLabel "Machine learning"@en .
+sk:Stats     a hr:Skill ; skos:inScheme sk:Scheme ; skos:broader sk:DataSci ; skos:prefLabel "Statistics"@en .
+sk:DataEng   a hr:Skill ; skos:inScheme sk:Scheme ; skos:topConceptOf sk:Scheme ; skos:prefLabel "Data engineering"@en .
+sk:SQL       a hr:Skill ; skos:inScheme sk:Scheme ; skos:broader sk:DataEng ; skos:prefLabel "SQL"@en .
+sk:Spark     a hr:Skill ; skos:inScheme sk:Scheme ; skos:broader sk:DataEng ; skos:prefLabel "Apache Spark"@en .
+sk:Hiring    a hr:Skill ; skos:inScheme sk:Scheme ; skos:topConceptOf sk:Scheme ; skos:prefLabel "Talent acquisition"@en .
+sk:Interview a hr:Skill ; skos:inScheme sk:Scheme ; skos:broader sk:Hiring ; skos:prefLabel "Structured interviewing"@en .
+
+# ---- certifications and courses ---------------------------------------------------------
+cert:CloudArch a hr:Certification ; rdfs:label "Cloud Architect Certificate" ; hr:issuer "Skyline Cloud Institute" ; hr:certifiesSkill sk:Cloud, sk:K8s .
+cert:Privacy   a hr:Certification ; rdfs:label "Data Privacy Practitioner" ; hr:issuer "Privacy Standards Board" .
+
+crs:K8sPractice a hr:Course ; rdfs:label "Kubernetes in Practice" ; hr:teachesSkill sk:K8s ; hr:isMandatory false .
+crs:AdvSQL      a hr:Course ; rdfs:label "Advanced SQL" ;           hr:teachesSkill sk:SQL ; hr:isMandatory false .
+crs:PrivacyEss  a hr:Course ; rdfs:label "Data Privacy Essentials" ; hr:isMandatory true .

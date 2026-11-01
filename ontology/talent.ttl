@@ -1,0 +1,189 @@
+@prefix hr:      <https://example.org/hr/ontology#> .
+@prefix hrv:     <https://example.org/hr/vocab#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix schema:  <https://schema.org/> .
+
+# =====================================================================
+# HR Ontology, talent module
+# Skills and evidence, certifications, learning, reviews, succession.
+# =====================================================================
+
+<https://example.org/hr/ontology/talent> a owl:Ontology ;
+    owl:versionIRI <https://example.org/hr/ontology/talent/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
+    owl:imports <https://example.org/hr/ontology/core>, <https://example.org/hr/ontology/organisation>, <https://example.org/hr/ontology/employment> ;
+    dcterms:title "HR Ontology, talent module"@en ;
+    dcterms:description "Skills, skill assertions, certifications, learning, performance reviews and succession."@en ;
+    dcterms:created "2026-10-31"^^xsd:date ;
+    dcterms:modified "2026-10-31"^^xsd:date .
+
+# ---------------------------------------------------------------------
+# Skills
+# ---------------------------------------------------------------------
+
+hr:Skill a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    rdfs:label "Skill"@en ;
+    skos:definition "A capability from the organisation's skill taxonomy. Skills form a hierarchy with skos:broader so that 'Kubernetes' is understood as a kind of 'Cloud infrastructure'. Map each skill to ESCO or O*NET with skos:closeMatch."@en ;
+    hr:sensitivity hrv:Public ;
+    hr:steward "Talent" .
+
+hr:SkillAssertion a owl:Class ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    rdfs:label "Skill assertion"@en ;
+    skos:definition "A statement that a person has a skill at a proficiency level for a period, with its source. A change of level is a new record that follows the old one, so skill growth and loss are visible."@en ;
+    hr:sensitivity hrv:Confidential ;
+    hr:retentionPeriod "P3Y"^^xsd:duration ;
+    hr:steward "Talent" .
+
+hr:assertedFor a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "asserted for"@en ;
+    skos:definition "The person the skill statement is about."@en ;
+    rdfs:domain hr:SkillAssertion ; rdfs:range hr:Person .
+
+hr:assertsSkill a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "asserts skill"@en ;
+    skos:definition "The skill that is claimed."@en ;
+    rdfs:domain hr:SkillAssertion ; rdfs:range hr:Skill .
+
+hr:proficiency a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "proficiency"@en ;
+    skos:definition "Level from Awareness to Expert. Value from the ProficiencyLevel vocabulary."@en ;
+    rdfs:domain hr:SkillAssertion ; rdfs:range skos:Concept .
+
+hr:evidenceSource a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "evidence source"@en ;
+    skos:definition "How the level is known: self-declared, manager-confirmed or formally assessed. Value from the EvidenceSource vocabulary."@en ;
+    rdfs:domain hr:SkillAssertion ; rdfs:range skos:Concept .
+
+# ---------------------------------------------------------------------
+# Certifications
+# ---------------------------------------------------------------------
+
+hr:Certification a owl:Class ;
+    rdfs:label "Certification"@en ;
+    skos:definition "A qualification that an issuer can award, for example a cloud architect certificate. The award to a person is a Credential."@en ;
+    hr:sensitivity hrv:Public ;
+    hr:steward "Talent" .
+
+hr:issuer a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "issuer"@en ;
+    skos:definition "Name of the body that awards the certification."@en ;
+    rdfs:domain hr:Certification ; rdfs:range xsd:string .
+
+hr:certifiesSkill a owl:ObjectProperty ;
+    rdfs:label "certifies skill"@en ;
+    skos:definition "A skill that holding the certification is evidence of."@en ;
+    rdfs:domain hr:Certification ; rdfs:range hr:Skill .
+
+hr:Credential a owl:Class ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    rdfs:label "Credential"@en ;
+    skos:definition "The award of a certification to a person. It is valid from the issue date to the day before expiry. A renewal is a new credential that follows the old one."@en ;
+    hr:sensitivity hrv:Confidential ;
+    hr:retentionPeriod "P3Y"^^xsd:duration ;
+    hr:steward "Talent" .
+
+hr:heldBy a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "held by"@en ;
+    skos:definition "The person who holds the credential."@en ;
+    rdfs:domain hr:Credential ; rdfs:range hr:Person .
+
+hr:ofCertification a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "of certification"@en ;
+    skos:definition "The certification that was awarded."@en ;
+    rdfs:domain hr:Credential ; rdfs:range hr:Certification .
+
+# ---------------------------------------------------------------------
+# Learning
+# ---------------------------------------------------------------------
+
+hr:Course a owl:Class ;
+    rdfs:label "Course"@en ;
+    skos:definition "A training course the organisation offers or recognises."@en ;
+    skos:closeMatch schema:Course ;
+    hr:sensitivity hrv:Public ;
+    hr:steward "Learning" .
+
+hr:teachesSkill a owl:ObjectProperty ;
+    rdfs:label "teaches skill"@en ;
+    skos:definition "A skill that completing the course builds."@en ;
+    rdfs:domain hr:Course ; rdfs:range hr:Skill .
+
+hr:isMandatory a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "is mandatory"@en ;
+    skos:definition "True when everyone in scope must complete the course (for example compliance training)."@en ;
+    rdfs:domain hr:Course ; rdfs:range xsd:boolean .
+
+hr:LearningRecord a owl:Class ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    rdfs:label "Learning record"@en ;
+    skos:definition "A person's completion of a course. The valid period is the day completed; it never expires on its own."@en ;
+    hr:sensitivity hrv:Confidential ;
+    hr:retentionPeriod "P3Y"^^xsd:duration ;
+    hr:steward "Learning" .
+
+hr:learner a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "learner"@en ;
+    skos:definition "The person who took the course."@en ;
+    rdfs:domain hr:LearningRecord ; rdfs:range hr:Person .
+
+hr:completedCourse a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "completed course"@en ;
+    skos:definition "The course that was completed."@en ;
+    rdfs:domain hr:LearningRecord ; rdfs:range hr:Course .
+
+# ---------------------------------------------------------------------
+# Performance and succession
+# ---------------------------------------------------------------------
+
+hr:PerformanceReview a owl:Class ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    rdfs:label "Performance review"@en ;
+    skos:definition "A rating of an employment for a review period, given by a reviewer. Valid for the review period it covers."@en ;
+    hr:sensitivity hrv:Confidential ;
+    hr:retentionPeriod "P3Y"^^xsd:duration ;
+    hr:steward "Talent" .
+
+hr:reviewOf a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "review of"@en ;
+    skos:definition "The employment that was reviewed."@en ;
+    rdfs:domain hr:PerformanceReview ; rdfs:range hr:Employment .
+
+hr:reviewer a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "reviewer"@en ;
+    skos:definition "The person who gave the rating."@en ;
+    rdfs:domain hr:PerformanceReview ; rdfs:range hr:Person .
+
+hr:rating a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "rating"@en ;
+    skos:definition "Whole number from 1 (lowest) to 5 (highest)."@en ;
+    rdfs:domain hr:PerformanceReview ; rdfs:range xsd:integer .
+
+hr:SuccessorNomination a owl:Class ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    rdfs:label "Successor nomination"@en ;
+    skos:definition "A person named as a possible successor for a position, with how ready they are, for a period."@en ;
+    hr:sensitivity hrv:Confidential ;
+    hr:retentionPeriod "P3Y"^^xsd:duration ;
+    hr:steward "Talent" .
+
+hr:nominatedFor a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "nominated for"@en ;
+    skos:definition "The position the nominee could succeed into."@en ;
+    rdfs:domain hr:SuccessorNomination ; rdfs:range hr:Position .
+
+hr:nominee a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "nominee"@en ;
+    skos:definition "The person nominated."@en ;
+    rdfs:domain hr:SuccessorNomination ; rdfs:range hr:Person .
+
+hr:readiness a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "readiness"@en ;
+    skos:definition "Ready now, ready in one to two years, or later. Value from the Readiness vocabulary."@en ;
+    rdfs:domain hr:SuccessorNomination ; rdfs:range skos:Concept .

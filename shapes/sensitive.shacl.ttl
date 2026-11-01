@@ -1,0 +1,140 @@
+@prefix hrs:  <https://example.org/hr/sensitive-shapes#> .
+@prefix hr:   <https://example.org/hr/ontology#> .
+@prefix hrv:  <https://example.org/hr/vocab#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+# =====================================================================
+# HR validation rules, RESTRICTED data (pay bands, pay, benefits).
+# Kept apart from core.shacl.ttl on purpose: these rules run only on the
+# compensation data, and the ordinary rules never mention pay.
+# Some rules need an employment's dates. For those the employment
+# records are loaded as read-only context; this rule set never targets
+# them, so their content is not validated here.
+# Rules marked sh:Warning are reported but do not fail the check.
+# =====================================================================
+
+<https://example.org/hr/sensitive-shapes> a owl:Ontology ;
+    owl:versionInfo "1.0.0" ;
+    sh:declare
+        [ sh:prefix "hr"   ; sh:namespace "https://example.org/hr/ontology#"^^xsd:anyURI ] ,
+        [ sh:prefix "hrv"  ; sh:namespace "https://example.org/hr/vocab#"^^xsd:anyURI ] ,
+        [ sh:prefix "skos" ; sh:namespace "http://www.w3.org/2004/02/skos/core#"^^xsd:anyURI ] ,
+        [ sh:prefix "xsd"  ; sh:namespace "http://www.w3.org/2001/XMLSchema#"^^xsd:anyURI ] .
+
+hrs:InPayReason a sh:NodeShape ; sh:property [ sh:path skos:inScheme ; sh:hasValue hrv:PayChangeReason ] .
+hrs:InBenefitKind a sh:NodeShape ; sh:property [ sh:path skos:inScheme ; sh:hasValue hrv:BenefitKind ] .
+
+hrs:PayBandShape a sh:NodeShape ;
+    sh:targetClass hr:PayBand ;
+    sh:property [ sh:path hr:bandGrade ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Grade ;
+        sh:message "BAND_GRADE: a pay band is for exactly one grade." ] ;
+    sh:property [ sh:path hr:bandCurrency ; sh:minCount 1 ; sh:maxCount 1 ; sh:pattern "^[A-Z]{3}$" ;
+        sh:message "BAND_CURRENCY: bandCurrency must be a three-letter ISO 4217 code." ] ;
+    sh:property [ sh:path hr:bandMin ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ; sh:minExclusive 0 ;
+        sh:message "BAND_MIN: bandMin must be one decimal above 0." ] ;
+    sh:property [ sh:path hr:bandMax ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ;
+        sh:message "BAND_MAX: bandMax must be one decimal." ] ;
+    sh:property [ sh:path hr:bandMin ; sh:lessThanOrEquals hr:bandMax ;
+        sh:message "GRADE_RANGE: a pay band minimum must not exceed its maximum." ] ;
+    sh:sparql [
+        sh:message "BAND_OVERLAP: a grade has two pay bands in the same currency for overlapping periods." ;
+        sh:prefixes <https://example.org/hr/sensitive-shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:bandGrade ?value ; hr:bandCurrency ?c ; hr:validFrom ?f1 . OPTIONAL { $this hr:validTo ?t1 }
+              ?o hr:bandGrade ?value ; hr:bandCurrency ?c ; hr:validFrom ?f2 . OPTIONAL { ?o hr:validTo ?t2 }
+              FILTER(?o != $this)
+              FILTER NOT EXISTS { ?s hr:supersedes $this } FILTER NOT EXISTS { ?s2 hr:supersedes ?o }
+              FILTER(?f2 <= COALESCE(?t1, "9999-12-31"^^xsd:date) && ?f1 <= COALESCE(?t2, "9999-12-31"^^xsd:date))
+            }""" ] .
+
+hrs:CompensationShape a sh:NodeShape ;
+    sh:targetClass hr:Compensation ;
+    sh:property [ sh:path hr:atGrade ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Grade ;
+        sh:message "COMP_GRADE: a compensation record requires exactly one grade." ] ;
+    sh:property [ sh:path hr:compensationOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Employment ;
+        sh:message "COMP_OWNER: a compensation record belongs to exactly one employment." ] ;
+    sh:property [ sh:path hr:baseAmount ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ; sh:minExclusive 0 ;
+        sh:message "COMP_SALARY: baseAmount must be one decimal above 0." ] ;
+    sh:property [ sh:path hr:currency ; sh:minCount 1 ; sh:maxCount 1 ; sh:pattern "^[A-Z]{3}$" ;
+        sh:message "COMP_CURRENCY: currency must be a three-letter ISO 4217 code." ] ;
+    sh:property [ sh:path hr:payChangeReason ; sh:minCount 1 ; sh:maxCount 1 ; sh:node hrs:InPayReason ;
+        sh:message "COMP_REASON: payChangeReason must be a PayChangeReason value." ] ;
+    sh:sparql [
+        sh:message "COMP_OVERLAP: an employment has two pay records for overlapping periods." ;
+        sh:prefixes <https://example.org/hr/sensitive-shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:compensationOf ?value ; hr:validFrom ?f1 . OPTIONAL { $this hr:validTo ?t1 }
+              ?o hr:compensationOf ?value ; hr:validFrom ?f2 . OPTIONAL { ?o hr:validTo ?t2 }
+              FILTER(?o != $this)
+              FILTER NOT EXISTS { ?s hr:supersedes $this } FILTER NOT EXISTS { ?s2 hr:supersedes ?o }
+              FILTER(?f2 <= COALESCE(?t1, "9999-12-31"^^xsd:date) && ?f1 <= COALESCE(?t2, "9999-12-31"^^xsd:date))
+            }""" ] ;
+    sh:sparql [
+        sh:message "COMP_WITHIN_EMPLOYMENT: pay must lie inside the employment period it belongs to." ;
+        sh:prefixes <https://example.org/hr/sensitive-shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:compensationOf ?value ; hr:validFrom ?f . OPTIONAL { $this hr:validTo ?t }
+              ?value hr:validFrom ?ef . OPTIONAL { ?value hr:validTo ?et }
+              FILTER( ?f < ?ef || (BOUND(?et) && (!BOUND(?t) || ?t > ?et)) )
+            }""" ] .
+
+# A warning rule lives in its own shape so its severity is reported correctly.
+hrs:CompensationBandShape a sh:NodeShape ;
+    sh:targetClass hr:Compensation ;
+    sh:severity sh:Warning ;
+    sh:sparql [
+        sh:message "COMP_BAND: base pay is outside the pay band for its grade on the day the record starts. Review, it may be intended." ;
+        sh:prefixes <https://example.org/hr/sensitive-shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:atGrade ?g ; hr:baseAmount ?value ; hr:currency ?c ; hr:validFrom ?d .
+              ?b hr:bandGrade ?g ; hr:bandCurrency ?c ; hr:bandMin ?lo ; hr:bandMax ?hi ; hr:validFrom ?bf .
+              OPTIONAL { ?b hr:validTo ?bt }
+              FILTER(?bf <= ?d && COALESCE(?bt, "9999-12-31"^^xsd:date) >= ?d)
+              FILTER(?value < ?lo || ?value > ?hi)
+            }""" ] .
+
+hrs:BenefitPlanShape a sh:NodeShape ;
+    sh:targetClass hr:BenefitPlan ;
+    sh:property [ sh:path hr:planKind ; sh:minCount 1 ; sh:maxCount 1 ; sh:node hrs:InBenefitKind ;
+        sh:message "PLAN_KIND: planKind must be a BenefitKind value." ] ;
+    sh:property [ sh:path hr:employerMatchPercent ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:minInclusive 0 ; sh:maxInclusive 100 ;
+        sh:message "PLAN_MATCH: employerMatchPercent must be between 0 and 100." ] .
+
+hrs:EnrollmentShape a sh:NodeShape ;
+    sh:targetClass hr:BenefitEnrollment ;
+    sh:property [ sh:path hr:enrolledEmployment ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:Employment ;
+        sh:message "ENROLL_OWNER: an enrolment belongs to exactly one employment." ] ;
+    sh:property [ sh:path hr:inPlan ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:BenefitPlan ;
+        sh:message "ENROLL_PLAN: an enrolment is in exactly one plan." ] ;
+    sh:property [ sh:path hr:contributionPercent ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:minInclusive 0 ; sh:maxInclusive 100 ;
+        sh:message "ENROLL_CONTRIBUTION: contributionPercent must be between 0 and 100." ] ;
+    sh:sparql [
+        sh:message "ENROLL_OVERLAP: an employment is enrolled twice in the same plan for overlapping periods." ;
+        sh:prefixes <https://example.org/hr/sensitive-shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:enrolledEmployment ?value ; hr:inPlan ?pl ; hr:validFrom ?f1 . OPTIONAL { $this hr:validTo ?t1 }
+              ?o hr:enrolledEmployment ?value ; hr:inPlan ?pl ; hr:validFrom ?f2 . OPTIONAL { ?o hr:validTo ?t2 }
+              FILTER(?o != $this)
+              FILTER NOT EXISTS { ?s hr:supersedes $this } FILTER NOT EXISTS { ?s2 hr:supersedes ?o }
+              FILTER(?f2 <= COALESCE(?t1, "9999-12-31"^^xsd:date) && ?f1 <= COALESCE(?t2, "9999-12-31"^^xsd:date))
+            }""" ] ;
+    sh:sparql [
+        sh:message "ENROLL_WITHIN_EMPLOYMENT: an enrolment must lie inside the employment period." ;
+        sh:prefixes <https://example.org/hr/sensitive-shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+              $this hr:enrolledEmployment ?value ; hr:validFrom ?f . OPTIONAL { $this hr:validTo ?t }
+              ?value hr:validFrom ?ef . OPTIONAL { ?value hr:validTo ?et }
+              FILTER( ?f < ?ef || (BOUND(?et) && (!BOUND(?t) || ?t > ?et)) )
+            }""" ] .

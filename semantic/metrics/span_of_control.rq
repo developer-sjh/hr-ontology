@@ -1,0 +1,16 @@
+# metric: span_of_control
+# term: Span of control
+# params: asOf known
+# description: Number of people who report on a solid line to each manager. Reporting follows seats: the manager is whoever holds the supervisor position.
+SELECT ?managerId ?managerName (COUNT(DISTINCT ?report) AS ?directReports) WHERE {
+  ?line a hr:ReportingLine ; hr:subordinatePosition ?sub ; hr:supervisorPosition ?sup ; hr:lineType hrv:Solid .
+#include ValidRecord rec=?line asOf=?asOf known=?known
+#include PrimaryAssignment asg=?asg1 emp=?emp1 pos=?sup fte=?f1 asOf=?asOf known=?known
+#include ActiveEmployment emp=?emp1 person=?manager asOf=?asOf known=?known
+#include PrimaryAssignment asg=?asg2 emp=?emp2 pos=?sub fte=?f2 asOf=?asOf known=?known
+#include ActiveEmployment emp=?emp2 person=?report asOf=?asOf known=?known
+  ?manager hr:personId ?managerId .
+#include DisplayName person=?manager name=?managerName asOf=?asOf known=?known
+}
+GROUP BY ?managerId ?managerName
+ORDER BY DESC(?directReports) ?managerId

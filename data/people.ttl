@@ -1,0 +1,911 @@
+@prefix hr:  <https://example.org/hr/ontology#> .
+@prefix hrv: <https://example.org/hr/vocab#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ent: <https://example.org/hr/id/entity/> .
+@prefix loc: <https://example.org/hr/id/location/> .
+@prefix unit: <https://example.org/hr/id/unit/> .
+@prefix cc:  <https://example.org/hr/id/costcenter/> .
+@prefix job: <https://example.org/hr/id/jobprofile/> .
+@prefix sk:  <https://example.org/hr/id/skill/> .
+@prefix cert: <https://example.org/hr/id/certification/> .
+@prefix crs: <https://example.org/hr/id/course/> .
+@prefix p:   <https://example.org/hr/id/person/> .
+@prefix nm:  <https://example.org/hr/id/name/> .
+@prefix emp: <https://example.org/hr/id/employment/> .
+@prefix sep: <https://example.org/hr/id/separation/> .
+@prefix asg: <https://example.org/hr/id/assignment/> .
+@prefix pos: <https://example.org/hr/id/position/> .
+@prefix pd:  <https://example.org/hr/id/position-details/> .
+@prefix rl:  <https://example.org/hr/id/reporting-line/> .
+@prefix lv:  <https://example.org/hr/id/leave/> .
+@prefix sa:  <https://example.org/hr/id/skill-assertion/> .
+@prefix cred: <https://example.org/hr/id/credential/> .
+@prefix lr:  <https://example.org/hr/id/learning/> .
+@prefix rev: <https://example.org/hr/id/review/> .
+@prefix sn:  <https://example.org/hr/id/successor/> .
+@prefix req: <https://example.org/hr/id/requisition/> .
+@prefix app: <https://example.org/hr/id/application/> .
+@prefix st:  <https://example.org/hr/id/stage/> .
+@prefix off: <https://example.org/hr/id/offer/> .
+
+# =====================================================================
+# Fictional people and records for "Northwind Analytics".
+# Every name is invented. Identity is the personId, never the name.
+# Sample cases: duplicate names (two Daniel Kims), a name change (Chloe),
+# a leaver (Daniel Kim, redundancy), a rehire (Nina), a correction
+# (Aisha's FTE), a vacancy (POS0009), a reorganisation (Data & AI moved),
+# matrix reporting (dotted line), a promotion (Chloe), skill growth and
+# loss, a renewed and an expiring credential.
+# =====================================================================
+
+p:P000001 a hr:Person ; hr:personId "P000001" .
+p:P000002 a hr:Person ; hr:personId "P000002" .
+p:P000003 a hr:Person ; hr:personId "P000003" .
+p:P000004 a hr:Person ; hr:personId "P000004" .
+p:P000005 a hr:Person ; hr:personId "P000005" .
+p:P000006 a hr:Person ; hr:personId "P000006" .
+p:P000007 a hr:Person ; hr:personId "P000007" .
+p:P000008 a hr:Person ; hr:personId "P000008" .
+p:P000009 a hr:Person ; hr:personId "P000009" .
+p:P000010 a hr:Person ; hr:personId "P000010" .
+p:P000011 a hr:Person ; hr:personId "P000011" .
+p:P000012 a hr:Person ; hr:personId "P000012" .
+p:P000013 a hr:Person ; hr:personId "P000013" .
+p:P000014 a hr:Person ; hr:personId "P000014" .
+p:P000015 a hr:Person ; hr:personId "P000015" .
+p:P000016 a hr:Person ; hr:personId "P000016" .
+
+nm:P000001-1 a hr:NameRecord ;
+    hr:nameOf p:P000001 ;
+    hr:fullName "Maya Hartley" ;
+    hr:nameType hrv:LegalName ;
+    hr:validFrom "2018-01-08"^^xsd:date ;
+    hr:recordedOn "2018-01-08"^^xsd:date .
+nm:P000002-1 a hr:NameRecord ;
+    hr:nameOf p:P000002 ;
+    hr:fullName "Omar Haddad" ;
+    hr:nameType hrv:LegalName ;
+    hr:validFrom "2019-03-04"^^xsd:date ;
+    hr:recordedOn "2019-03-04"^^xsd:date .
+nm:P000003-1 a hr:NameRecord ;
+    hr:nameOf p:P000003 ;
+    hr:fullName "Priya Nair" ;
+    hr:nameType hrv:LegalName ;
+    hr:validFrom "2020-02-03"^^xsd:date ;
+    hr:recordedOn "2020-02-03"^^xsd:date .
+nm:P000004-1 a hr:NameRecord ;
+    hr:nameOf p:P000004 ;
+    hr:fullName "Lukas Weber" ;
+    hr:nameType hrv:LegalName ;
+    hr:validFrom "2019-09-02"^^xsd:date ;
+    hr:recordedOn "2019-09-02"^^xsd:date .
+nm:P000005-1 a hr:NameRecord ;
+    hr:nameOf p:P000005 ;
+    hr:fullName "Ines Costa" ;
+    hr:nameType hrv:LegalName ;
+    hr:validFrom "2021-04-12"^^xsd:date ;
+    hr:recordedOn "2021-04-12"^^xsd:date .
+nm:P000006-1 a hr:NameRecord ;
+    hr:nameOf p:P000006 ;
+    hr:fullName "Daniel Kim" ;
+    hr:nameType hrv:LegalName ;
+    hr:validFrom "2021-01-11"^^xsd:date ;
+    hr:recordedOn "2021-01-11"^^xsd:date .
+nm:P000007-1 a hr:NameRecord ;
+    hr:nameOf p:P000007 ;
+    hr:fullName "Aisha Rahman" ;
+    hr:nameType hrv:LegalName ;
+    hr:validFrom "2023-01-09"^^xsd:date ;
+    hr:recordedOn "2023-01-09"^^xsd:date .
+nm:P000008-1 a hr:NameRecord ;
+    hr:nameOf p:P000008 ;
+    hr:fullName "Tomas Novak" ;
+    hr:nameType hrv:LegalName ;
+    hr:validFrom "2024-03-20"^^xsd:date ;
+    hr:recordedOn "2024-03-20"^^xsd:date .
+nm:P000010-1 a hr:NameRecord ;
+    hr:nameOf p:P000010 ;
+    hr:fullName "Ravi Menon" ;
+    hr:nameType hrv:LegalName ;
+    hr:validFrom "2023-06-05"^^xsd:date ;
+    hr:recordedOn "2023-06-05"^^xsd:date .
+nm:P000011-1 a hr:NameRecord ;
+    hr:nameOf p:P000011 ;
+    hr:fullName "Daniel Kim" ;
+    hr:nameType hrv:LegalName ;
+    hr:validFrom "2022-05-02"^^xsd:date ;
+    hr:recordedOn "2022-05-02"^^xsd:date .
+nm:P000012-1 a hr:NameRecord ;
+    hr:nameOf p:P000012 ;
+    hr:fullName "Hana Sato" ;
+    hr:nameType hrv:LegalName ;
+    hr:validFrom "2026-01-05"^^xsd:date ;
+    hr:recordedOn "2026-01-05"^^xsd:date .
+nm:P000013-1 a hr:NameRecord ;
+    hr:nameOf p:P000013 ;
+    hr:fullName "Nina Alvarez" ;
+    hr:nameType hrv:LegalName ;
+    hr:validFrom "2023-03-13"^^xsd:date ;
+    hr:recordedOn "2023-03-13"^^xsd:date .
+nm:P000014-1 a hr:NameRecord ;
+    hr:nameOf p:P000014 ;
+    hr:fullName "Zoe Fischer" ;
+    hr:nameType hrv:LegalName ;
+    hr:validFrom "2024-03-22"^^xsd:date ;
+    hr:recordedOn "2024-03-22"^^xsd:date .
+nm:P000015-1 a hr:NameRecord ;
+    hr:nameOf p:P000015 ;
+    hr:fullName "Marcus Bell" ;
+    hr:nameType hrv:LegalName ;
+    hr:validFrom "2024-04-02"^^xsd:date ;
+    hr:recordedOn "2024-04-02"^^xsd:date .
+nm:P000016-1 a hr:NameRecord ;
+    hr:nameOf p:P000016 ;
+    hr:fullName "Elena Rossi" ;
+    hr:nameType hrv:LegalName ;
+    hr:validFrom "2026-09-20"^^xsd:date ;
+    hr:recordedOn "2026-09-20"^^xsd:date .
+nm:P000006-2 a hr:NameRecord ;
+    hr:nameOf p:P000006 ;
+    hr:fullName "Dan Kim" ;
+    hr:nameType hrv:PreferredName ;
+    hr:validFrom "2021-01-11"^^xsd:date ;
+    hr:recordedOn "2021-01-11"^^xsd:date .
+nm:P000009-1a a hr:NameRecord ;
+    hr:nameOf p:P000009 ;
+    hr:fullName "Chloe Martin" ;
+    hr:nameType hrv:LegalName ;
+    hr:validFrom "2022-09-05"^^xsd:date ;
+    hr:recordedOn "2022-09-05"^^xsd:date .
+nm:P000009-1b a hr:NameRecord ;
+    hr:nameOf p:P000009 ;
+    hr:fullName "Chloe Martin" ;
+    hr:nameType hrv:LegalName ;
+    hr:validFrom "2022-09-05"^^xsd:date ;
+    hr:validTo "2025-03-31"^^xsd:date ;
+    hr:recordedOn "2025-04-02"^^xsd:date ;
+    hr:supersedes nm:P000009-1a .
+nm:P000009-2 a hr:NameRecord ;
+    hr:nameOf p:P000009 ;
+    hr:fullName "Chloe Dubois" ;
+    hr:nameType hrv:LegalName ;
+    hr:validFrom "2025-04-01"^^xsd:date ;
+    hr:recordedOn "2025-04-02"^^xsd:date ;
+    hr:follows nm:P000009-1b .
+
+emp:P000001-20180108 a hr:Employment ;
+    hr:employee p:P000001 ;
+    hr:employer ent:UK ;
+    hr:employmentType hrv:Permanent ;
+    hr:fte "1.0"^^xsd:decimal ;
+    hr:noticePeriodDays 90 ;
+    hr:validFrom "2018-01-08"^^xsd:date ;
+    hr:recordedOn "2018-01-08"^^xsd:date .
+emp:P000002-20190304 a hr:Employment ;
+    hr:employee p:P000002 ;
+    hr:employer ent:UK ;
+    hr:employmentType hrv:Permanent ;
+    hr:fte "1.0"^^xsd:decimal ;
+    hr:noticePeriodDays 90 ;
+    hr:validFrom "2019-03-04"^^xsd:date ;
+    hr:recordedOn "2019-03-04"^^xsd:date .
+emp:P000003-20200203 a hr:Employment ;
+    hr:employee p:P000003 ;
+    hr:employer ent:UK ;
+    hr:employmentType hrv:Permanent ;
+    hr:fte "1.0"^^xsd:decimal ;
+    hr:noticePeriodDays 90 ;
+    hr:validFrom "2020-02-03"^^xsd:date ;
+    hr:recordedOn "2020-02-03"^^xsd:date .
+emp:P000004-20190902 a hr:Employment ;
+    hr:employee p:P000004 ;
+    hr:employer ent:UK ;
+    hr:employmentType hrv:Permanent ;
+    hr:fte "1.0"^^xsd:decimal ;
+    hr:noticePeriodDays 90 ;
+    hr:validFrom "2019-09-02"^^xsd:date ;
+    hr:recordedOn "2019-09-02"^^xsd:date .
+emp:P000005-20210412 a hr:Employment ;
+    hr:employee p:P000005 ;
+    hr:employer ent:US ;
+    hr:employmentType hrv:Permanent ;
+    hr:fte "1.0"^^xsd:decimal ;
+    hr:noticePeriodDays 90 ;
+    hr:validFrom "2021-04-12"^^xsd:date ;
+    hr:recordedOn "2021-04-12"^^xsd:date .
+emp:P000006-20210111 a hr:Employment ;
+    hr:employee p:P000006 ;
+    hr:employer ent:UK ;
+    hr:employmentType hrv:Permanent ;
+    hr:fte "1.0"^^xsd:decimal ;
+    hr:noticePeriodDays 90 ;
+    hr:validFrom "2021-01-11"^^xsd:date ;
+    hr:recordedOn "2021-01-11"^^xsd:date .
+emp:P000009-20220905 a hr:Employment ;
+    hr:employee p:P000009 ;
+    hr:employer ent:UK ;
+    hr:employmentType hrv:Permanent ;
+    hr:fte "1.0"^^xsd:decimal ;
+    hr:noticePeriodDays 90 ;
+    hr:validFrom "2022-09-05"^^xsd:date ;
+    hr:recordedOn "2022-09-05"^^xsd:date .
+emp:P000010-20230605 a hr:Employment ;
+    hr:employee p:P000010 ;
+    hr:employer ent:UK ;
+    hr:employmentType hrv:Permanent ;
+    hr:fte "1.0"^^xsd:decimal ;
+    hr:noticePeriodDays 90 ;
+    hr:validFrom "2023-06-05"^^xsd:date ;
+    hr:recordedOn "2023-06-05"^^xsd:date .
+emp:P000007-20230109-a a hr:Employment ;
+    hr:employee p:P000007 ;
+    hr:employer ent:UK ;
+    hr:employmentType hrv:Permanent ;
+    hr:fte "1.0"^^xsd:decimal ;
+    hr:validFrom "2023-01-09"^^xsd:date ;
+    hr:recordedOn "2023-01-09"^^xsd:date .
+emp:P000007-20230109-b a hr:Employment ;
+    hr:employee p:P000007 ;
+    hr:employer ent:UK ;
+    hr:employmentType hrv:Permanent ;
+    hr:fte "0.8"^^xsd:decimal ;
+    hr:validFrom "2023-01-09"^^xsd:date ;
+    hr:recordedOn "2023-06-01"^^xsd:date ;
+    hr:supersedes emp:P000007-20230109-a .
+emp:P000008-20240603 a hr:Employment ;
+    hr:employee p:P000008 ;
+    hr:employer ent:UK ;
+    hr:employmentType hrv:Permanent ;
+    hr:fte "1.0"^^xsd:decimal ;
+    hr:probationEnd "2024-12-02"^^xsd:date ;
+    hr:validFrom "2024-06-03"^^xsd:date ;
+    hr:recordedOn "2024-06-03"^^xsd:date .
+emp:P000011-20220502-a a hr:Employment ;
+    hr:employee p:P000011 ;
+    hr:employer ent:UK ;
+    hr:employmentType hrv:Permanent ;
+    hr:fte "0.5"^^xsd:decimal ;
+    hr:validFrom "2022-05-02"^^xsd:date ;
+    hr:recordedOn "2022-05-02"^^xsd:date .
+emp:P000011-20220502-b a hr:Employment ;
+    hr:employee p:P000011 ;
+    hr:employer ent:UK ;
+    hr:employmentType hrv:Permanent ;
+    hr:fte "0.5"^^xsd:decimal ;
+    hr:validFrom "2022-05-02"^^xsd:date ;
+    hr:validTo "2024-02-29"^^xsd:date ;
+    hr:recordedOn "2024-01-15"^^xsd:date ;
+    hr:supersedes emp:P000011-20220502-a .
+emp:P000012-20260105 a hr:Employment ;
+    hr:employee p:P000012 ;
+    hr:employer ent:US ;
+    hr:employmentType hrv:FixedTerm ;
+    hr:fte "1.0"^^xsd:decimal ;
+    hr:contractEnd "2026-12-31"^^xsd:date ;
+    hr:validFrom "2026-01-05"^^xsd:date ;
+    hr:recordedOn "2026-01-05"^^xsd:date .
+emp:P000013-20230313-a a hr:Employment ;
+    hr:employee p:P000013 ;
+    hr:employer ent:UK ;
+    hr:employmentType hrv:Permanent ;
+    hr:fte "1.0"^^xsd:decimal ;
+    hr:validFrom "2023-03-13"^^xsd:date ;
+    hr:recordedOn "2023-03-13"^^xsd:date .
+emp:P000013-20230313-b a hr:Employment ;
+    hr:employee p:P000013 ;
+    hr:employer ent:UK ;
+    hr:employmentType hrv:Permanent ;
+    hr:fte "1.0"^^xsd:decimal ;
+    hr:validFrom "2023-03-13"^^xsd:date ;
+    hr:validTo "2023-09-30"^^xsd:date ;
+    hr:recordedOn "2023-08-15"^^xsd:date ;
+    hr:supersedes emp:P000013-20230313-a .
+emp:P000013-20240115 a hr:Employment ;
+    hr:employee p:P000013 ;
+    hr:employer ent:UK ;
+    hr:employmentType hrv:Permanent ;
+    hr:fte "1.0"^^xsd:decimal ;
+    hr:previousEmployment emp:P000013-20230313-b ;
+    hr:validFrom "2024-01-15"^^xsd:date ;
+    hr:recordedOn "2024-01-15"^^xsd:date .
+
+sep:P000011 a hr:Separation ; hr:separationOf emp:P000011-20220502-b ; hr:separationReason hrv:Redundancy ; hr:noticeGivenOn "2024-01-15"^^xsd:date .
+sep:P000013 a hr:Separation ; hr:separationOf emp:P000013-20230313-b ; hr:separationReason hrv:Resignation ; hr:noticeGivenOn "2023-08-15"^^xsd:date .
+
+pos:POS0001 a hr:Position ; hr:positionId "POS0001" .
+pos:POS0002 a hr:Position ; hr:positionId "POS0002" .
+pos:POS0003 a hr:Position ; hr:positionId "POS0003" .
+pos:POS0004 a hr:Position ; hr:positionId "POS0004" .
+pos:POS0005 a hr:Position ; hr:positionId "POS0005" .
+pos:POS0006 a hr:Position ; hr:positionId "POS0006" .
+pos:POS0007 a hr:Position ; hr:positionId "POS0007" .
+pos:POS0008 a hr:Position ; hr:positionId "POS0008" .
+pos:POS0009 a hr:Position ; hr:positionId "POS0009" .
+pos:POS0010 a hr:Position ; hr:positionId "POS0010" .
+pos:POS0011 a hr:Position ; hr:positionId "POS0011" .
+pos:POS0012 a hr:Position ; hr:positionId "POS0012" .
+pos:POS0013 a hr:Position ; hr:positionId "POS0013" .
+pos:POS0014 a hr:Position ; hr:positionId "POS0014" .
+pd:POS0001-1 a hr:PositionDetails ;
+    hr:detailsOf pos:POS0001 ;
+    hr:inUnit unit:EXEC ;
+    hr:hasProfile job:CEO ;
+    hr:chargedTo cc:C400 ;
+    hr:basedAt loc:London ;
+    hr:budgetedFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2018-01-01"^^xsd:date ;
+    hr:recordedOn "2018-01-01"^^xsd:date .
+pd:POS0002-1 a hr:PositionDetails ;
+    hr:detailsOf pos:POS0002 ;
+    hr:inUnit unit:ENG ;
+    hr:hasProfile job:VPENG ;
+    hr:chargedTo cc:C100 ;
+    hr:basedAt loc:London ;
+    hr:budgetedFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2019-01-01"^^xsd:date ;
+    hr:recordedOn "2019-01-01"^^xsd:date .
+pd:POS0003-1 a hr:PositionDetails ;
+    hr:detailsOf pos:POS0003 ;
+    hr:inUnit unit:DATA ;
+    hr:hasProfile job:HEADDATA ;
+    hr:chargedTo cc:C200 ;
+    hr:basedAt loc:London ;
+    hr:budgetedFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2020-01-01"^^xsd:date ;
+    hr:recordedOn "2020-01-01"^^xsd:date .
+pd:POS0004-1 a hr:PositionDetails ;
+    hr:detailsOf pos:POS0004 ;
+    hr:inUnit unit:PEOP ;
+    hr:hasProfile job:PEOPDIR ;
+    hr:chargedTo cc:C300 ;
+    hr:basedAt loc:London ;
+    hr:budgetedFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2019-01-01"^^xsd:date ;
+    hr:recordedOn "2019-01-01"^^xsd:date .
+pd:POS0005-1 a hr:PositionDetails ;
+    hr:detailsOf pos:POS0005 ;
+    hr:inUnit unit:FIN ;
+    hr:hasProfile job:FINMGR ;
+    hr:chargedTo cc:C500 ;
+    hr:basedAt loc:Austin ;
+    hr:budgetedFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2021-01-01"^^xsd:date ;
+    hr:recordedOn "2021-01-01"^^xsd:date .
+pd:POS0006-1 a hr:PositionDetails ;
+    hr:detailsOf pos:POS0006 ;
+    hr:inUnit unit:PLAT ;
+    hr:hasProfile job:ENGMGR ;
+    hr:chargedTo cc:C100 ;
+    hr:basedAt loc:London ;
+    hr:budgetedFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2021-01-01"^^xsd:date ;
+    hr:recordedOn "2021-01-01"^^xsd:date .
+pd:POS0007-1 a hr:PositionDetails ;
+    hr:detailsOf pos:POS0007 ;
+    hr:inUnit unit:PLAT ;
+    hr:hasProfile job:SRENG ;
+    hr:chargedTo cc:C100 ;
+    hr:basedAt loc:London ;
+    hr:budgetedFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2023-01-01"^^xsd:date ;
+    hr:recordedOn "2023-01-01"^^xsd:date .
+pd:POS0009-1 a hr:PositionDetails ;
+    hr:detailsOf pos:POS0009 ;
+    hr:inUnit unit:PLAT ;
+    hr:hasProfile job:ENG ;
+    hr:chargedTo cc:C100 ;
+    hr:basedAt loc:London ;
+    hr:budgetedFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2026-09-01"^^xsd:date ;
+    hr:recordedOn "2026-09-01"^^xsd:date .
+pd:POS0010-1 a hr:PositionDetails ;
+    hr:detailsOf pos:POS0010 ;
+    hr:inUnit unit:DATA ;
+    hr:hasProfile job:DSCI ;
+    hr:chargedTo cc:C200 ;
+    hr:basedAt loc:London ;
+    hr:budgetedFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2022-08-01"^^xsd:date ;
+    hr:validTo "2025-03-31"^^xsd:date ;
+    hr:recordedOn "2025-03-31"^^xsd:date .
+pd:POS0011-1 a hr:PositionDetails ;
+    hr:detailsOf pos:POS0011 ;
+    hr:inUnit unit:DATA ;
+    hr:hasProfile job:SRDSCI ;
+    hr:chargedTo cc:C200 ;
+    hr:basedAt loc:London ;
+    hr:budgetedFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2025-04-01"^^xsd:date ;
+    hr:recordedOn "2025-04-01"^^xsd:date .
+pd:POS0012-1 a hr:PositionDetails ;
+    hr:detailsOf pos:POS0012 ;
+    hr:inUnit unit:DATA ;
+    hr:hasProfile job:DENG ;
+    hr:chargedTo cc:C200 ;
+    hr:basedAt loc:Manchester ;
+    hr:budgetedFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2023-05-01"^^xsd:date ;
+    hr:recordedOn "2023-05-01"^^xsd:date .
+pd:POS0013-1 a hr:PositionDetails ;
+    hr:detailsOf pos:POS0013 ;
+    hr:inUnit unit:FIN ;
+    hr:hasProfile job:PAYROLL ;
+    hr:chargedTo cc:C500 ;
+    hr:basedAt loc:Austin ;
+    hr:budgetedFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2025-12-01"^^xsd:date ;
+    hr:recordedOn "2025-12-01"^^xsd:date .
+pd:POS0014-1 a hr:PositionDetails ;
+    hr:detailsOf pos:POS0014 ;
+    hr:inUnit unit:RECR ;
+    hr:hasProfile job:RECRUITER ;
+    hr:chargedTo cc:C300 ;
+    hr:basedAt loc:London ;
+    hr:budgetedFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2019-09-02"^^xsd:date ;
+    hr:recordedOn "2019-09-02"^^xsd:date .
+pd:POS0008-1 a hr:PositionDetails ;
+    hr:detailsOf pos:POS0008 ;
+    hr:inUnit unit:PLAT ;
+    hr:hasProfile job:ENG ;
+    hr:chargedTo cc:C100 ;
+    hr:basedAt loc:London ;
+    hr:budgetedFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2022-04-01"^^xsd:date ;
+    hr:validTo "2024-05-31"^^xsd:date ;
+    hr:recordedOn "2024-05-31"^^xsd:date .
+pd:POS0008-2 a hr:PositionDetails ;
+    hr:detailsOf pos:POS0008 ;
+    hr:inUnit unit:PLAT ;
+    hr:hasProfile job:ENG ;
+    hr:chargedTo cc:C100 ;
+    hr:basedAt loc:Manchester ;
+    hr:budgetedFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2024-06-01"^^xsd:date ;
+    hr:recordedOn "2024-06-01"^^xsd:date .
+
+rl:L001 a hr:ReportingLine ;
+    hr:subordinatePosition pos:POS0002 ;
+    hr:supervisorPosition pos:POS0001 ;
+    hr:lineType hrv:Solid ;
+    hr:validFrom "2019-03-04"^^xsd:date ;
+    hr:recordedOn "2019-03-04"^^xsd:date .
+rl:L002 a hr:ReportingLine ;
+    hr:subordinatePosition pos:POS0003 ;
+    hr:supervisorPosition pos:POS0002 ;
+    hr:lineType hrv:Solid ;
+    hr:validFrom "2020-02-03"^^xsd:date ;
+    hr:validTo "2025-06-30"^^xsd:date ;
+    hr:recordedOn "2025-06-30"^^xsd:date .
+rl:L003 a hr:ReportingLine ;
+    hr:subordinatePosition pos:POS0003 ;
+    hr:supervisorPosition pos:POS0001 ;
+    hr:lineType hrv:Solid ;
+    hr:validFrom "2025-07-01"^^xsd:date ;
+    hr:recordedOn "2025-07-01"^^xsd:date ;
+    hr:follows rl:L002 .
+rl:L004 a hr:ReportingLine ;
+    hr:subordinatePosition pos:POS0004 ;
+    hr:supervisorPosition pos:POS0001 ;
+    hr:lineType hrv:Solid ;
+    hr:validFrom "2019-09-02"^^xsd:date ;
+    hr:recordedOn "2019-09-02"^^xsd:date .
+rl:L005 a hr:ReportingLine ;
+    hr:subordinatePosition pos:POS0005 ;
+    hr:supervisorPosition pos:POS0001 ;
+    hr:lineType hrv:Solid ;
+    hr:validFrom "2021-04-12"^^xsd:date ;
+    hr:recordedOn "2021-04-12"^^xsd:date .
+rl:L006 a hr:ReportingLine ;
+    hr:subordinatePosition pos:POS0006 ;
+    hr:supervisorPosition pos:POS0002 ;
+    hr:lineType hrv:Solid ;
+    hr:validFrom "2021-01-11"^^xsd:date ;
+    hr:recordedOn "2021-01-11"^^xsd:date .
+rl:L007 a hr:ReportingLine ;
+    hr:subordinatePosition pos:POS0007 ;
+    hr:supervisorPosition pos:POS0006 ;
+    hr:lineType hrv:Solid ;
+    hr:validFrom "2023-01-09"^^xsd:date ;
+    hr:recordedOn "2023-01-09"^^xsd:date .
+rl:L008 a hr:ReportingLine ;
+    hr:subordinatePosition pos:POS0008 ;
+    hr:supervisorPosition pos:POS0006 ;
+    hr:lineType hrv:Solid ;
+    hr:validFrom "2022-05-02"^^xsd:date ;
+    hr:recordedOn "2022-05-02"^^xsd:date .
+rl:L009 a hr:ReportingLine ;
+    hr:subordinatePosition pos:POS0009 ;
+    hr:supervisorPosition pos:POS0006 ;
+    hr:lineType hrv:Solid ;
+    hr:validFrom "2026-09-01"^^xsd:date ;
+    hr:recordedOn "2026-09-01"^^xsd:date .
+rl:L010 a hr:ReportingLine ;
+    hr:subordinatePosition pos:POS0010 ;
+    hr:supervisorPosition pos:POS0003 ;
+    hr:lineType hrv:Solid ;
+    hr:validFrom "2022-09-05"^^xsd:date ;
+    hr:validTo "2025-03-31"^^xsd:date ;
+    hr:recordedOn "2025-03-31"^^xsd:date .
+rl:L011 a hr:ReportingLine ;
+    hr:subordinatePosition pos:POS0011 ;
+    hr:supervisorPosition pos:POS0003 ;
+    hr:lineType hrv:Solid ;
+    hr:validFrom "2025-04-01"^^xsd:date ;
+    hr:recordedOn "2025-04-01"^^xsd:date .
+rl:L012 a hr:ReportingLine ;
+    hr:subordinatePosition pos:POS0012 ;
+    hr:supervisorPosition pos:POS0003 ;
+    hr:lineType hrv:Solid ;
+    hr:validFrom "2023-06-05"^^xsd:date ;
+    hr:recordedOn "2023-06-05"^^xsd:date .
+rl:L013 a hr:ReportingLine ;
+    hr:subordinatePosition pos:POS0013 ;
+    hr:supervisorPosition pos:POS0005 ;
+    hr:lineType hrv:Solid ;
+    hr:validFrom "2026-01-05"^^xsd:date ;
+    hr:recordedOn "2026-01-05"^^xsd:date .
+rl:L014 a hr:ReportingLine ;
+    hr:subordinatePosition pos:POS0014 ;
+    hr:supervisorPosition pos:POS0004 ;
+    hr:lineType hrv:Solid ;
+    hr:validFrom "2019-09-02"^^xsd:date ;
+    hr:recordedOn "2019-09-02"^^xsd:date .
+rl:L015 a hr:ReportingLine ;
+    hr:subordinatePosition pos:POS0012 ;
+    hr:supervisorPosition pos:POS0006 ;
+    hr:lineType hrv:Dotted ;
+    hr:validFrom "2024-01-01"^^xsd:date ;
+    hr:recordedOn "2024-01-01"^^xsd:date .
+
+asg:P000001-20180108 a hr:Assignment ;
+    hr:assignedEmployment emp:P000001-20180108 ;
+    hr:assignedPosition pos:POS0001 ;
+    hr:assignmentType hrv:Primary ;
+    hr:assignmentFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2018-01-08"^^xsd:date ;
+    hr:recordedOn "2018-01-08"^^xsd:date .
+asg:P000002-20190304 a hr:Assignment ;
+    hr:assignedEmployment emp:P000002-20190304 ;
+    hr:assignedPosition pos:POS0002 ;
+    hr:assignmentType hrv:Primary ;
+    hr:assignmentFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2019-03-04"^^xsd:date ;
+    hr:recordedOn "2019-03-04"^^xsd:date .
+asg:P000003-20200203 a hr:Assignment ;
+    hr:assignedEmployment emp:P000003-20200203 ;
+    hr:assignedPosition pos:POS0003 ;
+    hr:assignmentType hrv:Primary ;
+    hr:assignmentFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2020-02-03"^^xsd:date ;
+    hr:recordedOn "2020-02-03"^^xsd:date .
+asg:P000004-20190902 a hr:Assignment ;
+    hr:assignedEmployment emp:P000004-20190902 ;
+    hr:assignedPosition pos:POS0004 ;
+    hr:assignmentType hrv:Primary ;
+    hr:assignmentFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2019-09-02"^^xsd:date ;
+    hr:recordedOn "2019-09-02"^^xsd:date .
+asg:P000005-20210412 a hr:Assignment ;
+    hr:assignedEmployment emp:P000005-20210412 ;
+    hr:assignedPosition pos:POS0005 ;
+    hr:assignmentType hrv:Primary ;
+    hr:assignmentFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2021-04-12"^^xsd:date ;
+    hr:recordedOn "2021-04-12"^^xsd:date .
+asg:P000006-20210111 a hr:Assignment ;
+    hr:assignedEmployment emp:P000006-20210111 ;
+    hr:assignedPosition pos:POS0006 ;
+    hr:assignmentType hrv:Primary ;
+    hr:assignmentFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2021-01-11"^^xsd:date ;
+    hr:recordedOn "2021-01-11"^^xsd:date .
+asg:P000010-20230605 a hr:Assignment ;
+    hr:assignedEmployment emp:P000010-20230605 ;
+    hr:assignedPosition pos:POS0012 ;
+    hr:assignmentType hrv:Primary ;
+    hr:assignmentFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2023-06-05"^^xsd:date ;
+    hr:recordedOn "2023-06-05"^^xsd:date .
+asg:P000007-20230109 a hr:Assignment ;
+    hr:assignedEmployment emp:P000007-20230109-b ;
+    hr:assignedPosition pos:POS0007 ;
+    hr:assignmentType hrv:Primary ;
+    hr:assignmentFte "0.8"^^xsd:decimal ;
+    hr:validFrom "2023-01-09"^^xsd:date ;
+    hr:recordedOn "2023-01-09"^^xsd:date .
+asg:P000008-20240603 a hr:Assignment ;
+    hr:assignedEmployment emp:P000008-20240603 ;
+    hr:assignedPosition pos:POS0008 ;
+    hr:assignmentType hrv:Primary ;
+    hr:assignmentFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2024-06-03"^^xsd:date ;
+    hr:recordedOn "2024-06-03"^^xsd:date .
+asg:P000009-20220905 a hr:Assignment ;
+    hr:assignedEmployment emp:P000009-20220905 ;
+    hr:assignedPosition pos:POS0010 ;
+    hr:assignmentType hrv:Primary ;
+    hr:assignmentFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2022-09-05"^^xsd:date ;
+    hr:validTo "2025-03-31"^^xsd:date ;
+    hr:recordedOn "2025-03-31"^^xsd:date .
+asg:P000009-20250401 a hr:Assignment ;
+    hr:assignedEmployment emp:P000009-20220905 ;
+    hr:assignedPosition pos:POS0011 ;
+    hr:assignmentType hrv:Primary ;
+    hr:assignmentFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2025-04-01"^^xsd:date ;
+    hr:recordedOn "2025-04-01"^^xsd:date ;
+    hr:follows asg:P000009-20220905 .
+asg:P000011-20220502 a hr:Assignment ;
+    hr:assignedEmployment emp:P000011-20220502-b ;
+    hr:assignedPosition pos:POS0008 ;
+    hr:assignmentType hrv:Primary ;
+    hr:assignmentFte "0.5"^^xsd:decimal ;
+    hr:validFrom "2022-05-02"^^xsd:date ;
+    hr:validTo "2024-02-29"^^xsd:date ;
+    hr:recordedOn "2024-02-29"^^xsd:date .
+asg:P000012-20260105 a hr:Assignment ;
+    hr:assignedEmployment emp:P000012-20260105 ;
+    hr:assignedPosition pos:POS0013 ;
+    hr:assignmentType hrv:Primary ;
+    hr:assignmentFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2026-01-05"^^xsd:date ;
+    hr:recordedOn "2026-01-05"^^xsd:date .
+asg:P000013-20230313 a hr:Assignment ;
+    hr:assignedEmployment emp:P000013-20230313-b ;
+    hr:assignedPosition pos:POS0014 ;
+    hr:assignmentType hrv:Primary ;
+    hr:assignmentFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2023-03-13"^^xsd:date ;
+    hr:validTo "2023-09-30"^^xsd:date ;
+    hr:recordedOn "2023-09-30"^^xsd:date .
+asg:P000013-20240115 a hr:Assignment ;
+    hr:assignedEmployment emp:P000013-20240115 ;
+    hr:assignedPosition pos:POS0014 ;
+    hr:assignmentType hrv:Primary ;
+    hr:assignmentFte "1.0"^^xsd:decimal ;
+    hr:validFrom "2024-01-15"^^xsd:date ;
+    hr:recordedOn "2024-01-15"^^xsd:date .
+
+lv:P000010-20261116 a hr:LeaveRecord ;
+    hr:leaveOf emp:P000010-20230605 ;
+    hr:leaveType hrv:AnnualLeave ;
+    hr:validFrom "2026-11-16"^^xsd:date ;
+    hr:validTo "2026-11-20"^^xsd:date ;
+    hr:recordedOn "2026-10-05"^^xsd:date .
+lv:P000007-20261012 a hr:LeaveRecord ;
+    hr:leaveOf emp:P000007-20230109-b ;
+    hr:leaveType hrv:SickLeave ;
+    hr:validFrom "2026-10-12"^^xsd:date ;
+    hr:validTo "2026-10-14"^^xsd:date ;
+    hr:recordedOn "2026-10-14"^^xsd:date .
+
+sa:01 a hr:SkillAssertion ;
+    hr:assertedFor p:P000007 ;
+    hr:assertsSkill sk:K8s ;
+    hr:proficiency hrv:Working ;
+    hr:evidenceSource hrv:ManagerConfirmed ;
+    hr:validFrom "2023-01-09"^^xsd:date ;
+    hr:validTo "2024-06-30"^^xsd:date ;
+    hr:recordedOn "2024-06-30"^^xsd:date .
+sa:02 a hr:SkillAssertion ;
+    hr:assertedFor p:P000007 ;
+    hr:assertsSkill sk:K8s ;
+    hr:proficiency hrv:Advanced ;
+    hr:evidenceSource hrv:Assessed ;
+    hr:validFrom "2024-07-01"^^xsd:date ;
+    hr:recordedOn "2024-07-01"^^xsd:date ;
+    hr:follows sa:01 .
+sa:03 a hr:SkillAssertion ;
+    hr:assertedFor p:P000007 ;
+    hr:assertsSkill sk:Python ;
+    hr:proficiency hrv:Advanced ;
+    hr:evidenceSource hrv:ManagerConfirmed ;
+    hr:validFrom "2023-01-09"^^xsd:date ;
+    hr:recordedOn "2023-01-09"^^xsd:date .
+sa:04 a hr:SkillAssertion ;
+    hr:assertedFor p:P000006 ;
+    hr:assertsSkill sk:Go ;
+    hr:proficiency hrv:Advanced ;
+    hr:evidenceSource hrv:ManagerConfirmed ;
+    hr:validFrom "2021-01-11"^^xsd:date ;
+    hr:recordedOn "2021-01-11"^^xsd:date .
+sa:05 a hr:SkillAssertion ;
+    hr:assertedFor p:P000006 ;
+    hr:assertsSkill sk:Terraform ;
+    hr:proficiency hrv:Working ;
+    hr:evidenceSource hrv:SelfDeclared ;
+    hr:validFrom "2021-01-11"^^xsd:date ;
+    hr:recordedOn "2021-01-11"^^xsd:date .
+sa:06 a hr:SkillAssertion ;
+    hr:assertedFor p:P000009 ;
+    hr:assertsSkill sk:ML ;
+    hr:proficiency hrv:Advanced ;
+    hr:evidenceSource hrv:Assessed ;
+    hr:validFrom "2022-09-05"^^xsd:date ;
+    hr:recordedOn "2022-09-05"^^xsd:date .
+sa:07 a hr:SkillAssertion ;
+    hr:assertedFor p:P000009 ;
+    hr:assertsSkill sk:Python ;
+    hr:proficiency hrv:Advanced ;
+    hr:evidenceSource hrv:ManagerConfirmed ;
+    hr:validFrom "2022-09-05"^^xsd:date ;
+    hr:recordedOn "2022-09-05"^^xsd:date .
+sa:08 a hr:SkillAssertion ;
+    hr:assertedFor p:P000010 ;
+    hr:assertsSkill sk:SQL ;
+    hr:proficiency hrv:Advanced ;
+    hr:evidenceSource hrv:Assessed ;
+    hr:validFrom "2023-06-05"^^xsd:date ;
+    hr:recordedOn "2023-06-05"^^xsd:date .
+sa:09 a hr:SkillAssertion ;
+    hr:assertedFor p:P000010 ;
+    hr:assertsSkill sk:Spark ;
+    hr:proficiency hrv:Working ;
+    hr:evidenceSource hrv:SelfDeclared ;
+    hr:validFrom "2023-06-05"^^xsd:date ;
+    hr:validTo "2025-12-31"^^xsd:date ;
+    hr:recordedOn "2025-12-31"^^xsd:date .
+sa:10 a hr:SkillAssertion ;
+    hr:assertedFor p:P000003 ;
+    hr:assertsSkill sk:ML ;
+    hr:proficiency hrv:ExpertLevel ;
+    hr:evidenceSource hrv:Assessed ;
+    hr:validFrom "2020-02-03"^^xsd:date ;
+    hr:recordedOn "2020-02-03"^^xsd:date .
+sa:11 a hr:SkillAssertion ;
+    hr:assertedFor p:P000013 ;
+    hr:assertsSkill sk:Interview ;
+    hr:proficiency hrv:Working ;
+    hr:evidenceSource hrv:SelfDeclared ;
+    hr:validFrom "2023-03-13"^^xsd:date ;
+    hr:validTo "2023-09-30"^^xsd:date ;
+    hr:recordedOn "2023-09-30"^^xsd:date .
+sa:12 a hr:SkillAssertion ;
+    hr:assertedFor p:P000013 ;
+    hr:assertsSkill sk:Interview ;
+    hr:proficiency hrv:Advanced ;
+    hr:evidenceSource hrv:ManagerConfirmed ;
+    hr:validFrom "2024-01-15"^^xsd:date ;
+    hr:recordedOn "2024-01-15"^^xsd:date .
+sa:13 a hr:SkillAssertion ;
+    hr:assertedFor p:P000008 ;
+    hr:assertsSkill sk:Go ;
+    hr:proficiency hrv:Working ;
+    hr:evidenceSource hrv:SelfDeclared ;
+    hr:validFrom "2024-06-03"^^xsd:date ;
+    hr:recordedOn "2024-06-03"^^xsd:date .
+sa:14 a hr:SkillAssertion ;
+    hr:assertedFor p:P000011 ;
+    hr:assertsSkill sk:Python ;
+    hr:proficiency hrv:Working ;
+    hr:evidenceSource hrv:SelfDeclared ;
+    hr:validFrom "2022-05-02"^^xsd:date ;
+    hr:validTo "2024-02-29"^^xsd:date ;
+    hr:recordedOn "2024-02-29"^^xsd:date .
+
+cred:01 a hr:Credential ;
+    hr:heldBy p:P000007 ;
+    hr:ofCertification cert:CloudArch ;
+    hr:validFrom "2022-06-01"^^xsd:date ;
+    hr:validTo "2025-05-31"^^xsd:date ;
+    hr:recordedOn "2022-06-01"^^xsd:date .
+cred:02 a hr:Credential ;
+    hr:heldBy p:P000007 ;
+    hr:ofCertification cert:CloudArch ;
+    hr:validFrom "2025-06-01"^^xsd:date ;
+    hr:validTo "2028-05-31"^^xsd:date ;
+    hr:recordedOn "2025-06-01"^^xsd:date ;
+    hr:follows cred:01 .
+cred:03 a hr:Credential ;
+    hr:heldBy p:P000010 ;
+    hr:ofCertification cert:Privacy ;
+    hr:validFrom "2024-12-01"^^xsd:date ;
+    hr:validTo "2026-11-30"^^xsd:date ;
+    hr:recordedOn "2024-12-01"^^xsd:date .
+cred:04 a hr:Credential ;
+    hr:heldBy p:P000008 ;
+    hr:ofCertification cert:Privacy ;
+    hr:validFrom "2024-07-01"^^xsd:date ;
+    hr:validTo "2027-06-30"^^xsd:date ;
+    hr:recordedOn "2024-07-01"^^xsd:date .
+lr:01 a hr:LearningRecord ;
+    hr:learner p:P000007 ;
+    hr:completedCourse crs:K8sPractice ;
+    hr:validFrom "2024-05-20"^^xsd:date ;
+    hr:recordedOn "2024-05-20"^^xsd:date .
+lr:02 a hr:LearningRecord ;
+    hr:learner p:P000010 ;
+    hr:completedCourse crs:AdvSQL ;
+    hr:validFrom "2024-03-12"^^xsd:date ;
+    hr:recordedOn "2024-03-12"^^xsd:date .
+lr:03 a hr:LearningRecord ;
+    hr:learner p:P000010 ;
+    hr:completedCourse crs:PrivacyEss ;
+    hr:validFrom "2024-12-01"^^xsd:date ;
+    hr:recordedOn "2024-12-01"^^xsd:date .
+lr:04 a hr:LearningRecord ;
+    hr:learner p:P000008 ;
+    hr:completedCourse crs:PrivacyEss ;
+    hr:validFrom "2024-07-01"^^xsd:date ;
+    hr:recordedOn "2024-07-01"^^xsd:date .
+rev:01 a hr:PerformanceReview ;
+    hr:reviewOf emp:P000007-20230109-b ;
+    hr:reviewer p:P000006 ;
+    hr:rating 4 ;
+    hr:validFrom "2025-07-01"^^xsd:date ;
+    hr:validTo "2025-12-31"^^xsd:date ;
+    hr:recordedOn "2026-01-20"^^xsd:date .
+rev:02 a hr:PerformanceReview ;
+    hr:reviewOf emp:P000008-20240603 ;
+    hr:reviewer p:P000006 ;
+    hr:rating 3 ;
+    hr:validFrom "2025-07-01"^^xsd:date ;
+    hr:validTo "2025-12-31"^^xsd:date ;
+    hr:recordedOn "2026-01-20"^^xsd:date .
+rev:03 a hr:PerformanceReview ;
+    hr:reviewOf emp:P000009-20220905 ;
+    hr:reviewer p:P000003 ;
+    hr:rating 5 ;
+    hr:validFrom "2025-07-01"^^xsd:date ;
+    hr:validTo "2025-12-31"^^xsd:date ;
+    hr:recordedOn "2026-01-20"^^xsd:date .
+rev:04 a hr:PerformanceReview ;
+    hr:reviewOf emp:P000010-20230605 ;
+    hr:reviewer p:P000003 ;
+    hr:rating 4 ;
+    hr:validFrom "2025-07-01"^^xsd:date ;
+    hr:validTo "2025-12-31"^^xsd:date ;
+    hr:recordedOn "2026-01-20"^^xsd:date .
+rev:05 a hr:PerformanceReview ;
+    hr:reviewOf emp:P000006-20210111 ;
+    hr:reviewer p:P000002 ;
+    hr:rating 4 ;
+    hr:validFrom "2025-07-01"^^xsd:date ;
+    hr:validTo "2025-12-31"^^xsd:date ;
+    hr:recordedOn "2026-01-20"^^xsd:date .
+rev:06 a hr:PerformanceReview ;
+    hr:reviewOf emp:P000003-20200203 ;
+    hr:reviewer p:P000001 ;
+    hr:rating 5 ;
+    hr:validFrom "2025-07-01"^^xsd:date ;
+    hr:validTo "2025-12-31"^^xsd:date ;
+    hr:recordedOn "2026-01-20"^^xsd:date .
+sn:01 a hr:SuccessorNomination ;
+    hr:nominatedFor pos:POS0006 ;
+    hr:nominee p:P000007 ;
+    hr:readiness hrv:ReadyOneTwo ;
+    hr:validFrom "2026-01-20"^^xsd:date ;
+    hr:recordedOn "2026-01-20"^^xsd:date .
+sn:02 a hr:SuccessorNomination ;
+    hr:nominatedFor pos:POS0003 ;
+    hr:nominee p:P000009 ;
+    hr:readiness hrv:ReadyLater ;
+    hr:validFrom "2026-01-20"^^xsd:date ;
+    hr:recordedOn "2026-01-20"^^xsd:date .
+
+req:R001 a hr:Requisition ; hr:requisitionFor pos:POS0008 ; hr:openedOn "2024-03-04"^^xsd:date ; hr:closedOn "2024-06-03"^^xsd:date .
+req:R002 a hr:Requisition ; hr:requisitionFor pos:POS0009 ; hr:openedOn "2026-09-01"^^xsd:date .
+app:A001 a hr:Application ; hr:applicant p:P000008 ; hr:appliesTo req:R001 ; hr:appliedOn "2024-03-20"^^xsd:date ; hr:applicationSource hrv:Referral .
+app:A002 a hr:Application ; hr:applicant p:P000014 ; hr:appliesTo req:R001 ; hr:appliedOn "2024-03-22"^^xsd:date ; hr:applicationSource hrv:JobBoard .
+app:A003 a hr:Application ; hr:applicant p:P000015 ; hr:appliesTo req:R001 ; hr:appliedOn "2024-04-02"^^xsd:date ; hr:applicationSource hrv:JobBoard .
+app:A004 a hr:Application ; hr:applicant p:P000016 ; hr:appliesTo req:R002 ; hr:appliedOn "2026-09-20"^^xsd:date ; hr:applicationSource hrv:Agency .
+st:A001-1 a hr:StageEntry ; hr:stageOf app:A001 ; hr:stage hrv:StageApplied ; hr:enteredOn "2024-03-20"^^xsd:date .
+st:A001-2 a hr:StageEntry ; hr:stageOf app:A001 ; hr:stage hrv:StageScreen ; hr:enteredOn "2024-03-27"^^xsd:date .
+st:A001-3 a hr:StageEntry ; hr:stageOf app:A001 ; hr:stage hrv:StageInterview ; hr:enteredOn "2024-04-10"^^xsd:date .
+st:A001-4 a hr:StageEntry ; hr:stageOf app:A001 ; hr:stage hrv:StageOffer ; hr:enteredOn "2024-05-02"^^xsd:date .
+st:A001-5 a hr:StageEntry ; hr:stageOf app:A001 ; hr:stage hrv:StageHired ; hr:enteredOn "2024-05-10"^^xsd:date .
+st:A002-1 a hr:StageEntry ; hr:stageOf app:A002 ; hr:stage hrv:StageApplied ; hr:enteredOn "2024-03-22"^^xsd:date .
+st:A002-2 a hr:StageEntry ; hr:stageOf app:A002 ; hr:stage hrv:StageScreen ; hr:enteredOn "2024-03-29"^^xsd:date .
+st:A002-3 a hr:StageEntry ; hr:stageOf app:A002 ; hr:stage hrv:StageRejected ; hr:enteredOn "2024-04-12"^^xsd:date .
+st:A003-1 a hr:StageEntry ; hr:stageOf app:A003 ; hr:stage hrv:StageApplied ; hr:enteredOn "2024-04-02"^^xsd:date .
+st:A003-2 a hr:StageEntry ; hr:stageOf app:A003 ; hr:stage hrv:StageScreen ; hr:enteredOn "2024-04-09"^^xsd:date .
+st:A003-3 a hr:StageEntry ; hr:stageOf app:A003 ; hr:stage hrv:StageInterview ; hr:enteredOn "2024-04-16"^^xsd:date .
+st:A003-4 a hr:StageEntry ; hr:stageOf app:A003 ; hr:stage hrv:StageOffer ; hr:enteredOn "2024-04-25"^^xsd:date .
+st:A003-5 a hr:StageEntry ; hr:stageOf app:A003 ; hr:stage hrv:StageWithdrawn ; hr:enteredOn "2024-05-01"^^xsd:date .
+st:A004-1 a hr:StageEntry ; hr:stageOf app:A004 ; hr:stage hrv:StageApplied ; hr:enteredOn "2026-09-20"^^xsd:date .
+st:A004-2 a hr:StageEntry ; hr:stageOf app:A004 ; hr:stage hrv:StageScreen ; hr:enteredOn "2026-09-25"^^xsd:date .
+st:A004-3 a hr:StageEntry ; hr:stageOf app:A004 ; hr:stage hrv:StageInterview ; hr:enteredOn "2026-10-12"^^xsd:date .
+off:O001 a hr:Offer ; hr:offerFor app:A001 ; hr:offeredOn "2024-05-02"^^xsd:date ; hr:acceptedOn "2024-05-10"^^xsd:date ; hr:resultsIn emp:P000008-20240603 .
+off:O002 a hr:Offer ; hr:offerFor app:A003 ; hr:offeredOn "2024-04-25"^^xsd:date ; hr:declinedOn "2024-05-01"^^xsd:date .

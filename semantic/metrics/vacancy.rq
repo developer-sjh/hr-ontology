@@ -1,0 +1,17 @@
+# metric: vacancy
+# term: Vacancy
+# params: asOf known
+# description: Positions that exist on the day and are not filled to their budgeted FTE, with the FTE still unfilled.
+SELECT ?positionId ?title ?budget (COALESCE(?filled, 0) AS ?filledFte) ((?budget - COALESCE(?filled, 0)) AS ?unfilledFte) WHERE {
+  ?pos a hr:Position ; hr:positionId ?positionId .
+#include PositionDetailsAt det=?det pos=?pos asOf=?asOf known=?known
+  ?det hr:budgetedFte ?budget ; hr:hasProfile ?profile .
+  ?profile hr:jobTitle ?title .
+  OPTIONAL {
+    SELECT ?pos (SUM(?f) AS ?filled) WHERE {
+#include PrimaryAssignment asg=?a emp=?e pos=?pos fte=?f asOf=?asOf known=?known
+    } GROUP BY ?pos
+  }
+  FILTER(?budget > COALESCE(?filled, 0))
+}
+ORDER BY DESC(?budget - COALESCE(?filled, 0)) ?positionId

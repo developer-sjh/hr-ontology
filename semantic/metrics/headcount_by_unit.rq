@@ -1,0 +1,25 @@
+# metric: headcount_by_unit
+# term: Headcount
+# params: asOf known
+# description: Headcount per unit including everything underneath it (units up to three levels deep), using the structure valid on the day.
+SELECT ?unit ?unitCode (COUNT(DISTINCT ?person) AS ?headcount) WHERE {
+#include ActiveEmployment emp=?emp person=?person asOf=?asOf known=?known
+#include PrimaryAssignment asg=?asg emp=?emp pos=?pos fte=?afte asOf=?asOf known=?known
+#include PositionDetailsAt det=?det pos=?pos asOf=?asOf known=?known
+  ?det hr:inUnit ?home .
+  {
+    ?det hr:inUnit ?unit .
+  } UNION {
+#include ParentUnit child=?home parent=?unit asOf=?asOf known=?known
+  } UNION {
+#include ParentUnit child=?home parent=?mid1 asOf=?asOf known=?known
+#include ParentUnit child=?mid1 parent=?unit asOf=?asOf known=?known
+  } UNION {
+#include ParentUnit child=?home parent=?mid2 asOf=?asOf known=?known
+#include ParentUnit child=?mid2 parent=?mid3 asOf=?asOf known=?known
+#include ParentUnit child=?mid3 parent=?unit asOf=?asOf known=?known
+  }
+  ?unit hr:unitCode ?unitCode .
+}
+GROUP BY ?unit ?unitCode
+ORDER BY ?unitCode

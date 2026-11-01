@@ -1,0 +1,15 @@
+# metric: average_pay_by_unit
+# term: Average pay
+# sensitivity: Restricted
+# params: asOf known
+# description: Average full-time base pay per unit (direct members only) for pay records valid on the day. Currencies are not mixed: one row per unit and currency.
+SELECT ?unitCode ?cur (COUNT(DISTINCT ?person) AS ?people) (AVG(?amount) AS ?average) WHERE {
+#include ActiveEmployment emp=?emp person=?person asOf=?asOf known=?known
+#include PrimaryAssignment asg=?asg emp=?emp pos=?pos fte=?afte asOf=?asOf known=?known
+#include PositionDetailsAt det=?det pos=?pos asOf=?asOf known=?known
+  ?det hr:inUnit ?unit . ?unit hr:unitCode ?unitCode .
+  ?pay a hr:Compensation ; hr:compensationOf ?emp ; hr:baseAmount ?amount ; hr:currency ?cur .
+#include ValidRecord rec=?pay asOf=?asOf known=?known
+}
+GROUP BY ?unitCode ?cur
+ORDER BY ?unitCode ?cur

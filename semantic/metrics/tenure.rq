@@ -1,0 +1,11 @@
+# metric: tenure
+# term: Tenure
+# params: asOf known
+# description: Completed years of continuous service in the current employment. A rehire starts again from the return date.
+SELECT ?personId ?name ?since ((YEAR(?asOf) - YEAR(?since) - IF(MONTH(?asOf) * 100 + DAY(?asOf) < MONTH(?since) * 100 + DAY(?since), 1, 0)) AS ?years) WHERE {
+#include ActiveEmployment emp=?emp person=?person asOf=?asOf known=?known
+  ?emp hr:validFrom ?since .
+  ?person hr:personId ?personId .
+#include DisplayName person=?person name=?name asOf=?asOf known=?known
+}
+ORDER BY DESC(?years) ?personId

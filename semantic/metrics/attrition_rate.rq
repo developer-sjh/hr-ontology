@@ -1,0 +1,15 @@
+# metric: attrition_rate
+# term: Attrition rate
+# params: periodStart periodEnd known
+# description: Leavers in the period divided by the average of the headcount on the first and last day.
+SELECT ?leavers ?headcountStart ?headcountEnd ((?leavers / ((?headcountStart + ?headcountEnd) / 2)) AS ?rate) WHERE {
+  { SELECT (COUNT(DISTINCT ?emp) AS ?leavers) WHERE {
+#include LeaverInPeriod emp=?emp sep=?sep reason=?reason start=?periodStart end=?periodEnd known=?known
+  } }
+  { SELECT (COUNT(DISTINCT ?p1) AS ?headcountStart) WHERE {
+#include ActiveEmployment emp=?e1 person=?p1 asOf=?periodStart known=?known
+  } }
+  { SELECT (COUNT(DISTINCT ?p2) AS ?headcountEnd) WHERE {
+#include ActiveEmployment emp=?e2 person=?p2 asOf=?periodEnd known=?known
+  } }
+}

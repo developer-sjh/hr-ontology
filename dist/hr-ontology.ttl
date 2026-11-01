@@ -1,0 +1,1391 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix hr: <https://example.org/hr/ontology#> .
+@prefix hrv: <https://example.org/hr/vocab#> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+hr:acceptedOn a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "accepted on"@en ;
+    rdfs:domain hr:Offer ;
+    rdfs:range xsd:date ;
+    skos:definition "Date the candidate accepted. Absent if declined or pending."@en .
+
+hr:applicant a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "applicant"@en ;
+    rdfs:domain hr:Application ;
+    rdfs:range hr:Person ;
+    skos:definition "The person who applied."@en .
+
+hr:applicationSource a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "application source"@en ;
+    rdfs:domain hr:Application ;
+    rdfs:range skos:Concept ;
+    skos:definition "Where the candidate came from: referral, job board, agency or internal. Value from the ApplicationSource vocabulary."@en .
+
+hr:appliedOn a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "applied on"@en ;
+    rdfs:domain hr:Application ;
+    rdfs:range xsd:date ;
+    skos:definition "Date the application was received."@en .
+
+hr:appliesTo a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "applies to"@en ;
+    rdfs:domain hr:Application ;
+    rdfs:range hr:Requisition ;
+    skos:definition "The requisition applied for."@en .
+
+hr:assertedFor a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "asserted for"@en ;
+    rdfs:domain hr:SkillAssertion ;
+    rdfs:range hr:Person ;
+    skos:definition "The person the skill statement is about."@en .
+
+hr:assertsSkill a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "asserts skill"@en ;
+    rdfs:domain hr:SkillAssertion ;
+    rdfs:range hr:Skill ;
+    skos:definition "The skill that is claimed."@en .
+
+hr:assignedEmployment a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "assigned employment"@en ;
+    rdfs:domain hr:Assignment ;
+    rdfs:range hr:Employment ;
+    skos:definition "The employment that holds the position."@en .
+
+hr:assignedPosition a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "assigned position"@en ;
+    rdfs:domain hr:Assignment ;
+    rdfs:range hr:Position ;
+    skos:definition "The position that is filled."@en .
+
+hr:assignmentFte a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "assignment FTE"@en ;
+    rdfs:domain hr:Assignment ;
+    rdfs:range xsd:decimal ;
+    skos:definition "Share of full-time capacity the person gives to this position. Greater than 0 and at most 1."@en .
+
+hr:assignmentType a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "assignment type"@en ;
+    rdfs:domain hr:Assignment ;
+    rdfs:range skos:Concept ;
+    skos:definition "Primary, secondary or acting. Value from the AssignmentType vocabulary."@en .
+
+hr:atGrade a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "at grade"@en ;
+    rdfs:domain hr:Compensation ;
+    rdfs:range hr:Grade ;
+    skos:definition "The grade the pay is set against. Required."@en .
+
+hr:bandCurrency a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "band currency"@en ;
+    rdfs:domain hr:PayBand ;
+    rdfs:range xsd:string ;
+    skos:definition "ISO 4217 currency code of the band amounts."@en .
+
+hr:bandGrade a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "band grade"@en ;
+    rdfs:domain hr:PayBand ;
+    rdfs:range hr:Grade ;
+    skos:definition "The grade the band applies to."@en .
+
+hr:bandMax a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "band maximum"@en ;
+    rdfs:domain hr:PayBand ;
+    rdfs:range xsd:decimal ;
+    skos:definition "Highest annual base pay in the band."@en .
+
+hr:bandMin a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "band minimum"@en ;
+    rdfs:domain hr:PayBand ;
+    rdfs:range xsd:decimal ;
+    skos:definition "Lowest annual base pay in the band."@en .
+
+hr:baseAmount a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "base amount"@en ;
+    rdfs:domain hr:Compensation ;
+    rdfs:range xsd:decimal ;
+    skos:definition "Annual base pay before tax, stated as the full-time rate. It is not scaled by the employment FTE."@en .
+
+hr:basedAt a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "based at"@en ;
+    rdfs:domain hr:PositionDetails ;
+    rdfs:range hr:Location ;
+    skos:definition "The location where the position is based."@en .
+
+hr:budgetedFte a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "budgeted FTE"@en ;
+    rdfs:domain hr:PositionDetails ;
+    rdfs:range xsd:decimal ;
+    skos:definition "Full-time-equivalent capacity budgeted for the position, greater than 0 and at most 1 per seat."@en .
+
+hr:certifiesSkill a owl:ObjectProperty ;
+    rdfs:label "certifies skill"@en ;
+    rdfs:domain hr:Certification ;
+    rdfs:range hr:Skill ;
+    skos:definition "A skill that holding the certification is evidence of."@en .
+
+hr:chargedTo a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "charged to"@en ;
+    rdfs:domain hr:PositionDetails ;
+    rdfs:range hr:CostCenter ;
+    skos:definition "The cost centre that pays for the position."@en .
+
+hr:childUnit a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "child unit"@en ;
+    rdfs:domain hr:UnitStructure ;
+    rdfs:range hr:OrganizationalUnit ;
+    skos:definition "The unit that sits underneath in this structure record."@en .
+
+hr:closedOn a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "closed on"@en ;
+    rdfs:domain hr:Requisition ;
+    rdfs:range xsd:date ;
+    skos:definition "Date the requisition was closed, filled or cancelled. Absent while open."@en .
+
+hr:compensationOf a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "compensation of"@en ;
+    rdfs:domain hr:Compensation ;
+    rdfs:range hr:Employment ;
+    skos:definition "The employment that is paid."@en .
+
+hr:completedCourse a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "completed course"@en ;
+    rdfs:domain hr:LearningRecord ;
+    rdfs:range hr:Course ;
+    skos:definition "The course that was completed."@en .
+
+hr:contractEnd a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "contract end"@en ;
+    rdfs:domain hr:Employment ;
+    rdfs:range xsd:date ;
+    skos:definition "Planned end date of a fixed-term contract."@en .
+
+hr:contributionPercent a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "contribution percent"@en ;
+    rdfs:domain hr:BenefitEnrollment ;
+    rdfs:range xsd:decimal ;
+    skos:definition "Percent of salary the employee contributes, from 0 to 100."@en .
+
+hr:costCenterCode a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "cost centre code"@en ;
+    rdfs:domain hr:CostCenter ;
+    rdfs:range xsd:string ;
+    skos:definition "Unique finance code of the cost centre."@en .
+
+hr:costCenterOf a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "cost centre of"@en ;
+    rdfs:domain hr:CostCenter ;
+    rdfs:range hr:LegalEntity ;
+    skos:definition "The legal entity that owns the cost centre."@en .
+
+hr:countryCode a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "country code"@en ;
+    rdfs:domain hr:Country ;
+    rdfs:range xsd:string ;
+    skos:definition "ISO 3166-1 alpha-2 code, two capital letters."@en .
+
+hr:currency a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "currency"@en ;
+    rdfs:domain hr:Compensation ;
+    rdfs:range xsd:string ;
+    skos:definition "ISO 4217 currency code of the pay amount."@en .
+
+hr:declinedOn a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "declined on"@en ;
+    rdfs:domain hr:Offer ;
+    rdfs:range xsd:date ;
+    skos:definition "Date the candidate declined. Absent if accepted or pending."@en .
+
+hr:detailsOf a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "details of"@en ;
+    rdfs:domain hr:PositionDetails ;
+    rdfs:range hr:Position ;
+    skos:definition "The position these details describe."@en .
+
+hr:employee a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "employee"@en ;
+    rdfs:domain hr:Employment ;
+    rdfs:range hr:Person ;
+    skos:definition "The person who is employed."@en .
+
+hr:employer a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "employer"@en ;
+    rdfs:domain hr:Employment ;
+    rdfs:range hr:LegalEntity ;
+    skos:definition "The legal entity that employs the person."@en .
+
+hr:employerMatchPercent a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "employer match percent"@en ;
+    rdfs:domain hr:BenefitPlan ;
+    rdfs:range xsd:decimal ;
+    skos:definition "Percent of salary the employer matches when the employee contributes at least this much. Zero if the plan has no match."@en .
+
+hr:employmentType a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "employment type"@en ;
+    rdfs:domain hr:Employment ;
+    rdfs:range skos:Concept ;
+    skos:definition "Permanent, fixed-term, contractor or intern. Value from the EmploymentType vocabulary. Whether someone is full-time or part-time follows from fte, not from type."@en .
+
+hr:enrolledEmployment a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "enrolled employment"@en ;
+    rdfs:domain hr:BenefitEnrollment ;
+    rdfs:range hr:Employment ;
+    skos:definition "The employment that participates."@en .
+
+hr:enteredOn a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "entered on"@en ;
+    rdfs:domain hr:StageEntry ;
+    rdfs:range xsd:date ;
+    skos:definition "Date the application entered the stage."@en .
+
+hr:evidenceSource a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "evidence source"@en ;
+    rdfs:domain hr:SkillAssertion ;
+    rdfs:range skos:Concept ;
+    skos:definition "How the level is known: self-declared, manager-confirmed or formally assessed. Value from the EvidenceSource vocabulary."@en .
+
+hr:fte a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "FTE"@en ;
+    rdfs:domain hr:Employment ;
+    rdfs:range xsd:decimal ;
+    skos:definition "Full-time equivalent of the employment: 1.0 is full time, 0.5 is half time. Greater than 0 and at most 1."@en .
+
+hr:fullName a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "full name"@en ;
+    rdfs:domain hr:NameRecord ;
+    rdfs:range xsd:string ;
+    skos:definition "The name as written, in display order."@en .
+
+hr:gradeCode a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "grade code"@en ;
+    rdfs:domain hr:Grade ;
+    rdfs:range xsd:string ;
+    skos:definition "Unique code of the grade, for example G5."@en .
+
+hr:gradeLevel a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "grade level"@en ;
+    rdfs:domain hr:Grade ;
+    rdfs:range xsd:integer ;
+    skos:definition "Seniority as a whole number; a higher number is more senior."@en .
+
+hr:hasProfile a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "has profile"@en ;
+    rdfs:domain hr:PositionDetails ;
+    rdfs:range hr:JobProfile ;
+    skos:definition "The job profile of the position."@en .
+
+hr:heldBy a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "held by"@en ;
+    rdfs:domain hr:Credential ;
+    rdfs:range hr:Person ;
+    skos:definition "The person who holds the credential."@en .
+
+hr:implementedBy a owl:AnnotationProperty ;
+    rdfs:label "implemented by"@en ;
+    skos:definition "Points a glossary term to the file that implements its definition."@en .
+
+hr:inPlan a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "in plan"@en ;
+    rdfs:domain hr:BenefitEnrollment ;
+    rdfs:range hr:BenefitPlan ;
+    skos:definition "The plan the employment participates in."@en .
+
+hr:inUnit a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "in unit"@en ;
+    rdfs:domain hr:PositionDetails ;
+    rdfs:range hr:OrganizationalUnit ;
+    skos:definition "The organisational unit the position sits in."@en .
+
+hr:isMandatory a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "is mandatory"@en ;
+    rdfs:domain hr:Course ;
+    rdfs:range xsd:boolean ;
+    skos:definition "True when everyone in scope must complete the course (for example compliance training)."@en .
+
+hr:issuer a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "issuer"@en ;
+    rdfs:domain hr:Certification ;
+    rdfs:range xsd:string ;
+    skos:definition "Name of the body that awards the certification."@en .
+
+hr:jobFamily a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "job family"@en ;
+    rdfs:domain hr:JobProfile ;
+    rdfs:range skos:Concept ;
+    skos:definition "Group of related jobs, such as Engineering. Value from the JobFamily vocabulary."@en .
+
+hr:jobTitle a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "job title"@en ;
+    rdfs:domain hr:JobProfile ;
+    rdfs:range xsd:string ;
+    skos:definition "The standard title of the job profile."@en .
+
+hr:learner a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "learner"@en ;
+    rdfs:domain hr:LearningRecord ;
+    rdfs:range hr:Person ;
+    skos:definition "The person who took the course."@en .
+
+hr:leaveOf a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "leave of"@en ;
+    rdfs:domain hr:LeaveRecord ;
+    rdfs:range hr:Employment ;
+    skos:definition "The employment that is absent."@en .
+
+hr:leaveType a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "leave type"@en ;
+    rdfs:domain hr:LeaveRecord ;
+    rdfs:range skos:Concept ;
+    skos:definition "Annual, sick, parental or unpaid. Value from the LeaveType vocabulary. Medical detail is never stored."@en .
+
+hr:levelRank a owl:DatatypeProperty ;
+    rdfs:label "level rank"@en ;
+    rdfs:domain skos:Concept ;
+    rdfs:range xsd:integer ;
+    skos:definition "Order of a concept inside an ordered scheme, such as proficiency or application stage."@en .
+
+hr:lineType a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "line type"@en ;
+    rdfs:domain hr:ReportingLine ;
+    rdfs:range skos:Concept ;
+    skos:definition "Solid (management) or dotted (matrix). Value from the ReportingLineType vocabulary."@en .
+
+hr:locatedIn a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "located in"@en ;
+    rdfs:domain hr:Location ;
+    rdfs:range hr:Country ;
+    skos:definition "The country a location is in."@en .
+
+hr:mayRead a owl:ObjectProperty ;
+    rdfs:label "may read"@en ;
+    rdfs:domain hr:AccessRole ;
+    rdfs:range skos:Concept ;
+    skos:definition "A sensitivity level that holders of the role may read, within the role's scope."@en .
+
+hr:nameOf a owl:ObjectProperty ;
+    rdfs:label "name of"@en ;
+    rdfs:domain hr:NameRecord ;
+    rdfs:range hr:Person ;
+    skos:definition "The person this name record belongs to."@en .
+
+hr:nameType a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "name type"@en ;
+    rdfs:domain hr:NameRecord ;
+    rdfs:range skos:Concept ;
+    skos:definition "Whether the name is the legal name or a preferred name. Value from the NameType vocabulary."@en .
+
+hr:nominatedFor a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "nominated for"@en ;
+    rdfs:domain hr:SuccessorNomination ;
+    rdfs:range hr:Position ;
+    skos:definition "The position the nominee could succeed into."@en .
+
+hr:nominee a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "nominee"@en ;
+    rdfs:domain hr:SuccessorNomination ;
+    rdfs:range hr:Person ;
+    skos:definition "The person nominated."@en .
+
+hr:noticeGivenOn a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "notice given on"@en ;
+    rdfs:domain hr:Separation ;
+    rdfs:range xsd:date ;
+    skos:definition "Date on which notice was given or received."@en .
+
+hr:noticePeriodDays a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "notice period (days)"@en ;
+    rdfs:domain hr:Employment ;
+    rdfs:range xsd:nonNegativeInteger ;
+    skos:definition "Contractual notice period in calendar days."@en .
+
+hr:ofCertification a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "of certification"@en ;
+    rdfs:domain hr:Credential ;
+    rdfs:range hr:Certification ;
+    skos:definition "The certification that was awarded."@en .
+
+hr:offerFor a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "offer for"@en ;
+    rdfs:domain hr:Offer ;
+    rdfs:range hr:Application ;
+    skos:definition "The application the offer was made on."@en .
+
+hr:offeredOn a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "offered on"@en ;
+    rdfs:domain hr:Offer ;
+    rdfs:range xsd:date ;
+    skos:definition "Date the offer was made."@en .
+
+hr:openedOn a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "opened on"@en ;
+    rdfs:domain hr:Requisition ;
+    rdfs:range xsd:date ;
+    skos:definition "Date the requisition was approved and opened."@en .
+
+hr:parentUnit a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "parent unit"@en ;
+    rdfs:domain hr:UnitStructure ;
+    rdfs:range hr:OrganizationalUnit ;
+    skos:definition "The unit that sits above in this structure record."@en .
+
+hr:payChangeReason a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "pay change reason"@en ;
+    rdfs:domain hr:Compensation ;
+    rdfs:range skos:Concept ;
+    skos:definition "Why the pay was set or changed: hire, merit, promotion, market adjustment or correction. Value from the PayChangeReason vocabulary."@en .
+
+hr:personId a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "person ID"@en ;
+    rdfs:domain hr:Person ;
+    rdfs:range xsd:string ;
+    skos:definition "Stable, immutable identifier issued once per person (format P followed by six digits). Never reused, never derived from a name."@en .
+
+hr:planKind a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "plan kind"@en ;
+    rdfs:domain hr:BenefitPlan ;
+    rdfs:range skos:Concept ;
+    skos:definition "Medical, dental or retirement. Value from the BenefitKind vocabulary."@en .
+
+hr:positionId a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "position ID"@en ;
+    rdfs:domain hr:Position ;
+    rdfs:range xsd:string ;
+    skos:definition "Stable identifier of the position (format POS followed by four digits)."@en .
+
+hr:previousEmployment a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "previous employment"@en ;
+    rdfs:domain hr:Employment ;
+    rdfs:range hr:Employment ;
+    rdfs:subPropertyOf hr:follows ;
+    skos:definition "The earlier employment period of the same person. Set on a rehire to link back to the period that ended."@en .
+
+hr:probationEnd a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "probation end"@en ;
+    rdfs:domain hr:Employment ;
+    rdfs:range xsd:date ;
+    skos:definition "Last day of the probation period, if there is one."@en .
+
+hr:proficiency a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "proficiency"@en ;
+    rdfs:domain hr:SkillAssertion ;
+    rdfs:range skos:Concept ;
+    skos:definition "Level from Awareness to Expert. Value from the ProficiencyLevel vocabulary."@en .
+
+hr:profileGrade a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "profile grade"@en ;
+    rdfs:domain hr:JobProfile ;
+    rdfs:range hr:Grade ;
+    skos:definition "The grade of the job profile."@en .
+
+hr:rating a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "rating"@en ;
+    rdfs:domain hr:PerformanceReview ;
+    rdfs:range xsd:integer ;
+    skos:definition "Whole number from 1 (lowest) to 5 (highest)."@en .
+
+hr:readiness a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "readiness"@en ;
+    rdfs:domain hr:SuccessorNomination ;
+    rdfs:range skos:Concept ;
+    skos:definition "Ready now, ready in one to two years, or later. Value from the Readiness vocabulary."@en .
+
+hr:recordedOn a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "recorded on"@en ;
+    rdfs:domain hr:TemporalRecord ;
+    rdfs:range xsd:date ;
+    skos:definition "Date on which the organisation learned of and recorded this fact. Allows the question 'what did we know on date X'."@en .
+
+hr:registeredIn a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "registered in"@en ;
+    rdfs:domain hr:LegalEntity ;
+    rdfs:range hr:Country ;
+    skos:definition "The country in which a legal entity is registered."@en .
+
+hr:requisitionFor a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "requisition for"@en ;
+    rdfs:domain hr:Requisition ;
+    rdfs:range hr:Position ;
+    skos:definition "The position the requisition aims to fill."@en .
+
+hr:resultsIn a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "results in"@en ;
+    rdfs:domain hr:Offer ;
+    rdfs:range hr:Employment ;
+    skos:definition "The employment that started because the offer was accepted."@en .
+
+hr:retentionPeriod a owl:AnnotationProperty ;
+    rdfs:label "retention period"@en ;
+    rdfs:range xsd:duration ;
+    skos:definition "How long records of this class may be kept after the end of the employment relationship, as an ISO 8601 duration. A design input for deletion jobs, not enforced here."@en .
+
+hr:reviewOf a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "review of"@en ;
+    rdfs:domain hr:PerformanceReview ;
+    rdfs:range hr:Employment ;
+    skos:definition "The employment that was reviewed."@en .
+
+hr:reviewer a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "reviewer"@en ;
+    rdfs:domain hr:PerformanceReview ;
+    rdfs:range hr:Person ;
+    skos:definition "The person who gave the rating."@en .
+
+hr:scope a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "scope"@en ;
+    rdfs:domain hr:AccessRole ;
+    rdfs:range xsd:string ;
+    skos:definition "The limit on what the role may read, in plain words, for example 'own team only'."@en .
+
+hr:sensitivity a owl:AnnotationProperty ;
+    rdfs:label "sensitivity"@en ;
+    rdfs:range skos:Concept ;
+    skos:definition "Classification of a class or property, taken from the SensitivityLevel vocabulary. Drives which data may be shared and which SHACL rule set applies."@en .
+
+hr:separationOf a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "separation of"@en ;
+    rdfs:domain hr:Separation ;
+    rdfs:range hr:Employment ;
+    skos:definition "The employment that this separation ends."@en .
+
+hr:separationReason a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "separation reason"@en ;
+    rdfs:domain hr:Separation ;
+    rdfs:range skos:Concept ;
+    skos:definition "Why the employment ended. Value from the SeparationReason vocabulary; its broader concept gives the category (voluntary, involuntary or other), so the category is never stored twice."@en .
+
+hr:stage a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "stage"@en ;
+    rdfs:domain hr:StageEntry ;
+    rdfs:range skos:Concept ;
+    skos:definition "Applied, screen, interview, offer, hired, rejected or withdrawn. Value from the ApplicationStage vocabulary."@en .
+
+hr:stageOf a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "stage of"@en ;
+    rdfs:domain hr:StageEntry ;
+    rdfs:range hr:Application ;
+    skos:definition "The application this entry belongs to."@en .
+
+hr:steward a owl:AnnotationProperty ;
+    rdfs:label "steward"@en ;
+    skos:definition "The role accountable for the definition of this term."@en .
+
+hr:subordinatePosition a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "subordinate position"@en ;
+    rdfs:domain hr:ReportingLine ;
+    rdfs:range hr:Position ;
+    skos:definition "The position that reports."@en .
+
+hr:supersedes a owl:ObjectProperty ;
+    rdfs:label "supersedes"@en ;
+    rdfs:domain hr:TemporalRecord ;
+    rdfs:range hr:TemporalRecord ;
+    skos:definition "This record corrects an earlier record about the same period. The earlier record stays in the graph; queries about what was known now ignore superseded records."@en .
+
+hr:supervisorPosition a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "supervisor position"@en ;
+    rdfs:domain hr:ReportingLine ;
+    rdfs:range hr:Position ;
+    skos:definition "The position that is reported to."@en .
+
+hr:teachesSkill a owl:ObjectProperty ;
+    rdfs:label "teaches skill"@en ;
+    rdfs:domain hr:Course ;
+    rdfs:range hr:Skill ;
+    skos:definition "A skill that completing the course builds."@en .
+
+hr:unitCode a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "unit code"@en ;
+    rdfs:domain hr:OrganizationalUnit ;
+    rdfs:range xsd:string ;
+    skos:definition "Short unique code of the unit."@en .
+
+hr:unitType a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "unit type"@en ;
+    rdfs:domain hr:OrganizationalUnit ;
+    rdfs:range skos:Concept ;
+    skos:definition "Division, department or team. Value from the UnitType vocabulary."@en .
+
+hr:validFrom a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "valid from"@en ;
+    rdfs:domain hr:TemporalRecord ;
+    rdfs:range xsd:date ;
+    skos:definition "First day on which the record is true (inclusive)."@en .
+
+hr:validTo a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "valid to"@en ;
+    rdfs:domain hr:TemporalRecord ;
+    rdfs:range xsd:date ;
+    skos:definition "Last day on which the record is true (inclusive). Absent means the record is still current."@en .
+
+hr:withinEntity a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "within entity"@en ;
+    rdfs:domain hr:OrganizationalUnit ;
+    rdfs:range hr:LegalEntity ;
+    skos:definition "The legal entity the unit belongs to."@en .
+
+<https://example.org/hr/ontology/compensation> a owl:Ontology ;
+    dcterms:created "2026-10-31"^^xsd:date ;
+    dcterms:description "Restricted: pay bands, compensation records, benefit plans and enrolments."@en ;
+    dcterms:modified "2026-10-31"^^xsd:date ;
+    dcterms:title "HR Ontology, compensation module"@en ;
+    owl:imports <https://example.org/hr/ontology/core>,
+        <https://example.org/hr/ontology/employment>,
+        <https://example.org/hr/ontology/organisation> ;
+    owl:versionIRI <https://example.org/hr/ontology/compensation/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
+    hr:sensitivity hrv:Restricted .
+
+<https://example.org/hr/ontology/hiring> a owl:Ontology ;
+    dcterms:created "2026-10-31"^^xsd:date ;
+    dcterms:description "Requisitions, applications, stage history and offers."@en ;
+    dcterms:modified "2026-10-31"^^xsd:date ;
+    dcterms:title "HR Ontology, hiring module"@en ;
+    owl:imports <https://example.org/hr/ontology/core>,
+        <https://example.org/hr/ontology/employment>,
+        <https://example.org/hr/ontology/organisation> ;
+    owl:versionIRI <https://example.org/hr/ontology/hiring/1.0.0> ;
+    owl:versionInfo "1.0.0" .
+
+<https://example.org/hr/ontology/talent> a owl:Ontology ;
+    dcterms:created "2026-10-31"^^xsd:date ;
+    dcterms:description "Skills, skill assertions, certifications, learning, performance reviews and succession."@en ;
+    dcterms:modified "2026-10-31"^^xsd:date ;
+    dcterms:title "HR Ontology, talent module"@en ;
+    owl:imports <https://example.org/hr/ontology/core>,
+        <https://example.org/hr/ontology/employment>,
+        <https://example.org/hr/ontology/organisation> ;
+    owl:versionIRI <https://example.org/hr/ontology/talent/1.0.0> ;
+    owl:versionInfo "1.0.0" .
+
+<https://example.org/hr/vocab> a owl:Ontology ;
+    dcterms:created "2026-10-31"^^xsd:date ;
+    dcterms:modified "2026-10-31"^^xsd:date ;
+    dcterms:title "HR Ontology, controlled vocabularies"@en ;
+    owl:versionIRI <https://example.org/hr/vocab/1.0.0> ;
+    owl:versionInfo "1.0.0" .
+
+hrv:Acting a skos:Concept ;
+    skos:inScheme hrv:AssignmentType ;
+    skos:prefLabel "Acting"@en .
+
+hrv:Advanced a skos:Concept ;
+    skos:inScheme hrv:ProficiencyLevel ;
+    skos:prefLabel "Advanced"@en ;
+    hr:levelRank 3 .
+
+hrv:Agency a skos:Concept ;
+    skos:inScheme hrv:ApplicationSource ;
+    skos:prefLabel "Agency"@en .
+
+hrv:AnnualLeave a skos:Concept ;
+    skos:inScheme hrv:LeaveType ;
+    skos:prefLabel "Annual leave"@en .
+
+hrv:Assessed a skos:Concept ;
+    skos:inScheme hrv:EvidenceSource ;
+    skos:prefLabel "Formally assessed"@en .
+
+hrv:Awareness a skos:Concept ;
+    skos:inScheme hrv:ProficiencyLevel ;
+    skos:prefLabel "Awareness"@en ;
+    hr:levelRank 1 .
+
+hrv:BenefitRetirement a skos:Concept ;
+    skos:inScheme hrv:BenefitKind ;
+    skos:prefLabel "Retirement"@en .
+
+hrv:ContractEnd a skos:Concept ;
+    skos:broader hrv:OtherExit ;
+    skos:inScheme hrv:SeparationReason ;
+    skos:prefLabel "End of contract"@en .
+
+hrv:Contractor a skos:Concept ;
+    skos:inScheme hrv:EmploymentType ;
+    skos:prefLabel "Contractor"@en .
+
+hrv:Data a skos:Concept ;
+    skos:inScheme hrv:JobFamily ;
+    skos:prefLabel "Data"@en .
+
+hrv:Dental a skos:Concept ;
+    skos:inScheme hrv:BenefitKind ;
+    skos:prefLabel "Dental"@en .
+
+hrv:Department a skos:Concept ;
+    skos:inScheme hrv:UnitType ;
+    skos:prefLabel "Department"@en .
+
+hrv:Dismissal a skos:Concept ;
+    skos:broader hrv:Involuntary ;
+    skos:inScheme hrv:SeparationReason ;
+    skos:prefLabel "Dismissal"@en .
+
+hrv:Division a skos:Concept ;
+    skos:inScheme hrv:UnitType ;
+    skos:prefLabel "Division"@en .
+
+hrv:Dotted a skos:Concept ;
+    skos:definition "A matrix relationship for work direction, not line management."@en ;
+    skos:inScheme hrv:ReportingLineType ;
+    skos:prefLabel "Dotted line"@en .
+
+hrv:Engineering a skos:Concept ;
+    skos:inScheme hrv:JobFamily ;
+    skos:prefLabel "Engineering"@en .
+
+hrv:Executive a skos:Concept ;
+    skos:inScheme hrv:JobFamily ;
+    skos:prefLabel "Executive"@en .
+
+hrv:ExpertLevel a skos:Concept ;
+    skos:inScheme hrv:ProficiencyLevel ;
+    skos:prefLabel "Expert"@en ;
+    hr:levelRank 4 .
+
+hrv:Finance a skos:Concept ;
+    skos:inScheme hrv:JobFamily ;
+    skos:prefLabel "Finance"@en .
+
+hrv:FixedTerm a skos:Concept ;
+    skos:inScheme hrv:EmploymentType ;
+    skos:prefLabel "Fixed-term"@en .
+
+hrv:Intern a skos:Concept ;
+    skos:inScheme hrv:EmploymentType ;
+    skos:prefLabel "Intern"@en .
+
+hrv:JobBoard a skos:Concept ;
+    skos:inScheme hrv:ApplicationSource ;
+    skos:prefLabel "Job board"@en .
+
+hrv:LegalName a skos:Concept ;
+    skos:inScheme hrv:NameType ;
+    skos:prefLabel "Legal name"@en .
+
+hrv:ManagerConfirmed a skos:Concept ;
+    skos:inScheme hrv:EvidenceSource ;
+    skos:prefLabel "Manager-confirmed"@en .
+
+hrv:Medical a skos:Concept ;
+    skos:inScheme hrv:BenefitKind ;
+    skos:prefLabel "Medical"@en .
+
+hrv:ParentalLeave a skos:Concept ;
+    skos:inScheme hrv:LeaveType ;
+    skos:prefLabel "Parental leave"@en .
+
+hrv:PayCorrection a skos:Concept ;
+    skos:inScheme hrv:PayChangeReason ;
+    skos:prefLabel "Correction"@en .
+
+hrv:PayHire a skos:Concept ;
+    skos:inScheme hrv:PayChangeReason ;
+    skos:prefLabel "Hire"@en .
+
+hrv:PayMarket a skos:Concept ;
+    skos:inScheme hrv:PayChangeReason ;
+    skos:prefLabel "Market adjustment"@en .
+
+hrv:PayMerit a skos:Concept ;
+    skos:inScheme hrv:PayChangeReason ;
+    skos:prefLabel "Merit"@en .
+
+hrv:PayPromotion a skos:Concept ;
+    skos:inScheme hrv:PayChangeReason ;
+    skos:prefLabel "Promotion"@en .
+
+hrv:PeopleOps a skos:Concept ;
+    skos:inScheme hrv:JobFamily ;
+    skos:prefLabel "People operations"@en .
+
+hrv:Permanent a skos:Concept ;
+    skos:inScheme hrv:EmploymentType ;
+    skos:prefLabel "Permanent"@en .
+
+hrv:PreferredName a skos:Concept ;
+    skos:inScheme hrv:NameType ;
+    skos:prefLabel "Preferred name"@en .
+
+hrv:Primary a skos:Concept ;
+    skos:definition "The main position. One at a time per person."@en ;
+    skos:inScheme hrv:AssignmentType ;
+    skos:prefLabel "Primary"@en .
+
+hrv:ReadyLater a skos:Concept ;
+    skos:inScheme hrv:Readiness ;
+    skos:prefLabel "Ready later"@en .
+
+hrv:ReadyNow a skos:Concept ;
+    skos:inScheme hrv:Readiness ;
+    skos:prefLabel "Ready now"@en .
+
+hrv:ReadyOneTwo a skos:Concept ;
+    skos:inScheme hrv:Readiness ;
+    skos:prefLabel "Ready in 1 to 2 years"@en .
+
+hrv:Redundancy a skos:Concept ;
+    skos:broader hrv:Involuntary ;
+    skos:inScheme hrv:SeparationReason ;
+    skos:prefLabel "Redundancy"@en .
+
+hrv:Referral a skos:Concept ;
+    skos:inScheme hrv:ApplicationSource ;
+    skos:prefLabel "Referral"@en .
+
+hrv:Resignation a skos:Concept ;
+    skos:broader hrv:Voluntary ;
+    skos:inScheme hrv:SeparationReason ;
+    skos:prefLabel "Resignation"@en .
+
+hrv:Retirement a skos:Concept ;
+    skos:broader hrv:Voluntary ;
+    skos:inScheme hrv:SeparationReason ;
+    skos:prefLabel "Retirement"@en .
+
+hrv:Secondary a skos:Concept ;
+    skos:inScheme hrv:AssignmentType ;
+    skos:prefLabel "Secondary"@en .
+
+hrv:SelfDeclared a skos:Concept ;
+    skos:inScheme hrv:EvidenceSource ;
+    skos:prefLabel "Self-declared"@en .
+
+hrv:SickLeave a skos:Concept ;
+    skos:inScheme hrv:LeaveType ;
+    skos:prefLabel "Sick leave"@en .
+
+hrv:Solid a skos:Concept ;
+    skos:definition "The management line. Each position has at most one at a time."@en ;
+    skos:inScheme hrv:ReportingLineType ;
+    skos:prefLabel "Solid line"@en .
+
+hrv:SourceInternal a skos:Concept ;
+    skos:inScheme hrv:ApplicationSource ;
+    skos:prefLabel "Internal move"@en .
+
+hrv:StageApplied a skos:Concept ;
+    skos:inScheme hrv:ApplicationStage ;
+    skos:prefLabel "Applied"@en ;
+    hr:levelRank 1 .
+
+hrv:StageHired a skos:Concept ;
+    skos:inScheme hrv:ApplicationStage ;
+    skos:prefLabel "Hired"@en ;
+    hr:levelRank 5 .
+
+hrv:StageInterview a skos:Concept ;
+    skos:inScheme hrv:ApplicationStage ;
+    skos:prefLabel "Interview"@en ;
+    hr:levelRank 3 .
+
+hrv:StageOffer a skos:Concept ;
+    skos:inScheme hrv:ApplicationStage ;
+    skos:prefLabel "Offer"@en ;
+    hr:levelRank 4 .
+
+hrv:StageRejected a skos:Concept ;
+    skos:inScheme hrv:ApplicationStage ;
+    skos:prefLabel "Rejected"@en ;
+    hr:levelRank 9 .
+
+hrv:StageScreen a skos:Concept ;
+    skos:inScheme hrv:ApplicationStage ;
+    skos:prefLabel "Screen"@en ;
+    hr:levelRank 2 .
+
+hrv:StageWithdrawn a skos:Concept ;
+    skos:inScheme hrv:ApplicationStage ;
+    skos:prefLabel "Withdrawn"@en ;
+    hr:levelRank 9 .
+
+hrv:Team a skos:Concept ;
+    skos:inScheme hrv:UnitType ;
+    skos:prefLabel "Team"@en .
+
+hrv:UnpaidLeave a skos:Concept ;
+    skos:inScheme hrv:LeaveType ;
+    skos:prefLabel "Unpaid leave"@en .
+
+hrv:Working a skos:Concept ;
+    skos:inScheme hrv:ProficiencyLevel ;
+    skos:prefLabel "Working"@en ;
+    hr:levelRank 2 .
+
+hr:follows a owl:ObjectProperty ;
+    rdfs:label "follows"@en ;
+    rdfs:domain hr:TemporalRecord ;
+    rdfs:range hr:TemporalRecord ;
+    skos:definition "This record continues an earlier record of the same kind for a later period, for example a promotion following the previous position."@en .
+
+hrv:OtherExit a skos:Concept ;
+    skos:definition "Neither side chose it, for example the contract ran out."@en ;
+    skos:inScheme hrv:SeparationReason ;
+    skos:prefLabel "Other exit"@en ;
+    skos:topConceptOf hrv:SeparationReason .
+
+hr:AccessRole a owl:Class ;
+    rdfs:label "Access role"@en ;
+    skos:definition "A kind of user of HR data, with the sensitivity levels that kind of user may read and the scope that limits it. A design input for the system that enforces access; nothing in this project enforces it."@en ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Data Governance" .
+
+hr:Credential a owl:Class ;
+    rdfs:label "Credential"@en ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    skos:definition "The award of a certification to a person. It is valid from the issue date to the day before expiry. A renewal is a new credential that follows the old one."@en ;
+    hr:retentionPeriod "P3Y"^^xsd:duration ;
+    hr:sensitivity hrv:Confidential ;
+    hr:steward "Talent" .
+
+hr:LearningRecord a owl:Class ;
+    rdfs:label "Learning record"@en ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    skos:definition "A person's completion of a course. The valid period is the day completed; it never expires on its own."@en ;
+    hr:retentionPeriod "P3Y"^^xsd:duration ;
+    hr:sensitivity hrv:Confidential ;
+    hr:steward "Learning" .
+
+hr:LeaveRecord a owl:Class ;
+    rdfs:label "Leave record"@en ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    skos:definition "A period of approved absence of an employment. Entitlements and accrual rules are not modelled yet."@en ;
+    hr:retentionPeriod "P3Y"^^xsd:duration ;
+    hr:sensitivity hrv:Confidential ;
+    hr:steward "HR Operations" .
+
+hr:Location a owl:Class ;
+    rdfs:label "Location"@en ;
+    skos:closeMatch schema:Place ;
+    skos:definition "A physical or remote work site where people are based."@en ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Facilities" .
+
+hr:UnitStructure a owl:Class ;
+    rdfs:label "Unit structure"@en ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    skos:definition "A period during which a unit reported into a parent unit. The top unit has no parent record. A reorganisation closes one record and opens another."@en ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Organisation Design" .
+
+hrv:Involuntary a skos:Concept ;
+    skos:definition "The employer ended the employment."@en ;
+    skos:inScheme hrv:SeparationReason ;
+    skos:prefLabel "Involuntary"@en ;
+    skos:topConceptOf hrv:SeparationReason .
+
+hrv:NameType a skos:ConceptScheme ;
+    skos:prefLabel "Name type"@en .
+
+hrv:ReportingLineType a skos:ConceptScheme ;
+    skos:prefLabel "Reporting line type"@en .
+
+hrv:Voluntary a skos:Concept ;
+    skos:definition "The person chose to leave."@en ;
+    skos:inScheme hrv:SeparationReason ;
+    skos:prefLabel "Voluntary"@en ;
+    skos:topConceptOf hrv:SeparationReason .
+
+hr:BenefitEnrollment a owl:Class ;
+    rdfs:label "Benefit enrollment"@en ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    skos:definition "An employment's participation in a benefit plan for a period, with the contribution the employee chose. Only the fact of enrolment is stored, never health information."@en ;
+    hr:retentionPeriod "P7Y"^^xsd:duration ;
+    hr:sensitivity hrv:Restricted ;
+    hr:steward "Benefits" .
+
+hr:BenefitPlan a owl:Class ;
+    rdfs:label "Benefit plan"@en ;
+    skos:definition "A benefit the employer offers, such as medical cover or a retirement plan, with its employer match. Plan terms are company information, not personal data."@en ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Benefits" .
+
+hr:Certification a owl:Class ;
+    rdfs:label "Certification"@en ;
+    skos:definition "A qualification that an issuer can award, for example a cloud architect certificate. The award to a person is a Credential."@en ;
+    hr:sensitivity hrv:Public ;
+    hr:steward "Talent" .
+
+hr:CostCenter a owl:Class ;
+    rdfs:label "Cost centre"@en ;
+    skos:definition "An accounting bucket to which the cost of positions is charged."@en ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Finance" .
+
+hr:Country a owl:Class ;
+    rdfs:label "Country"@en ;
+    skos:definition "A country, identified by its ISO 3166-1 alpha-2 code."@en ;
+    hr:sensitivity hrv:Public ;
+    hr:steward "Data Governance" .
+
+hr:Course a owl:Class ;
+    rdfs:label "Course"@en ;
+    skos:closeMatch schema:Course ;
+    skos:definition "A training course the organisation offers or recognises."@en ;
+    hr:sensitivity hrv:Public ;
+    hr:steward "Learning" .
+
+hr:NameRecord a owl:Class ;
+    rdfs:label "Name record"@en ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    skos:definition "A name a person used for a period. A name change is a new record, so identity never depends on a name and former names stay available."@en ;
+    hr:retentionPeriod "P7Y"^^xsd:duration ;
+    hr:sensitivity hrv:Confidential ;
+    hr:steward "HR Operations" .
+
+hr:PerformanceReview a owl:Class ;
+    rdfs:label "Performance review"@en ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    skos:definition "A rating of an employment for a review period, given by a reviewer. Valid for the review period it covers."@en ;
+    hr:retentionPeriod "P3Y"^^xsd:duration ;
+    hr:sensitivity hrv:Confidential ;
+    hr:steward "Talent" .
+
+hr:ReportingLine a owl:Class ;
+    rdfs:label "Reporting line"@en ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    skos:definition "A period during which one position reports to another. A solid line is the management line; a dotted line is a matrix relationship. Reporting follows seats, so a vacant seat keeps its line."@en ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Organisation Design" .
+
+hr:Separation a owl:Class ;
+    rdfs:label "Separation"@en ;
+    skos:definition "The event that ends an employment: its reason and notice. The last day is the validTo of the employment, which is the single place that date is held."@en ;
+    hr:retentionPeriod "P7Y"^^xsd:duration ;
+    hr:sensitivity hrv:Confidential ;
+    hr:steward "HR Operations" .
+
+hr:Skill a owl:Class ;
+    rdfs:label "Skill"@en ;
+    rdfs:subClassOf skos:Concept ;
+    skos:definition "A capability from the organisation's skill taxonomy. Skills form a hierarchy with skos:broader so that 'Kubernetes' is understood as a kind of 'Cloud infrastructure'. Map each skill to ESCO or O*NET with skos:closeMatch."@en ;
+    hr:sensitivity hrv:Public ;
+    hr:steward "Talent" .
+
+hr:StageEntry a owl:Class ;
+    rdfs:label "Stage entry"@en ;
+    skos:definition "The date an application entered a stage. The latest entry is the current stage; the full list is the history."@en ;
+    hr:retentionPeriod "P1Y"^^xsd:duration ;
+    hr:sensitivity hrv:Confidential ;
+    hr:steward "Talent Acquisition" .
+
+hr:SuccessorNomination a owl:Class ;
+    rdfs:label "Successor nomination"@en ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    skos:definition "A person named as a possible successor for a position, with how ready they are, for a period."@en ;
+    hr:retentionPeriod "P3Y"^^xsd:duration ;
+    hr:sensitivity hrv:Confidential ;
+    hr:steward "Talent" .
+
+<https://example.org/hr/ontology/employment> a owl:Ontology ;
+    dcterms:created "2026-10-31"^^xsd:date ;
+    dcterms:description "Employment periods, separations, assignments to positions and leave."@en ;
+    dcterms:modified "2026-10-31"^^xsd:date ;
+    dcterms:title "HR Ontology, employment module"@en ;
+    owl:imports <https://example.org/hr/ontology/core>,
+        <https://example.org/hr/ontology/organisation> ;
+    owl:versionIRI <https://example.org/hr/ontology/employment/1.0.0> ;
+    owl:versionInfo "1.0.0" .
+
+hrv:AssignmentType a skos:ConceptScheme ;
+    skos:prefLabel "Assignment type"@en .
+
+hrv:BenefitKind a skos:ConceptScheme ;
+    skos:prefLabel "Benefit kind"@en .
+
+hrv:EvidenceSource a skos:ConceptScheme ;
+    skos:prefLabel "Evidence source"@en .
+
+hrv:Readiness a skos:ConceptScheme ;
+    skos:prefLabel "Readiness"@en .
+
+hrv:UnitType a skos:ConceptScheme ;
+    skos:prefLabel "Unit type"@en .
+
+hr:Assignment a owl:Class ;
+    rdfs:label "Assignment"@en ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    skos:definition "A period during which an employment filled (part of) a position. It must lie inside the employment. A person has one primary assignment at a time and may also have secondary or acting ones."@en ;
+    hr:retentionPeriod "P7Y"^^xsd:duration ;
+    hr:sensitivity hrv:Confidential ;
+    hr:steward "HR Operations" .
+
+hr:JobProfile a owl:Class ;
+    rdfs:label "Job profile"@en ;
+    skos:closeMatch schema:Occupation ;
+    skos:definition "A reusable description of a kind of job: its title, family and grade. Many positions can share one profile."@en ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Reward" .
+
+hr:LegalEntity a owl:Class ;
+    rdfs:label "Legal entity"@en ;
+    rdfs:subClassOf org:FormalOrganization ;
+    skos:definition "A company registered in one country that can legally employ people and be the employer in an employment relationship."@en ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Legal" .
+
+hr:PayBand a owl:Class ;
+    rdfs:label "Pay band"@en ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    skos:definition "The minimum and maximum annual base pay allowed for a grade in a currency, for a period."@en ;
+    hr:retentionPeriod "P7Y"^^xsd:duration ;
+    hr:sensitivity hrv:Restricted ;
+    hr:steward "Reward" .
+
+hr:Requisition a owl:Class ;
+    rdfs:label "Requisition"@en ;
+    skos:closeMatch schema:JobPosting ;
+    skos:definition "An approved request to fill a position. It opens on a date, closes on a date (filled or cancelled) and is the starting point for time to fill."@en ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Talent Acquisition" .
+
+hr:SkillAssertion a owl:Class ;
+    rdfs:label "Skill assertion"@en ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    skos:definition "A statement that a person has a skill at a proficiency level for a period, with its source. A change of level is a new record that follows the old one, so skill growth and loss are visible."@en ;
+    hr:retentionPeriod "P3Y"^^xsd:duration ;
+    hr:sensitivity hrv:Confidential ;
+    hr:steward "Talent" .
+
+<https://example.org/hr/ontology/organisation> a owl:Ontology ;
+    dcterms:created "2026-10-31"^^xsd:date ;
+    dcterms:description "Legal entities, organisational units, cost centres, job profiles, grades, positions and reporting lines."@en ;
+    dcterms:modified "2026-10-31"^^xsd:date ;
+    dcterms:title "HR Ontology, organisation module"@en ;
+    owl:imports <https://example.org/hr/ontology/core> ;
+    owl:versionIRI <https://example.org/hr/ontology/organisation/1.0.0> ;
+    owl:versionInfo "1.0.0" .
+
+hrv:ApplicationSource a skos:ConceptScheme ;
+    skos:prefLabel "Application source"@en .
+
+hrv:EmploymentType a skos:ConceptScheme ;
+    skos:prefLabel "Employment type"@en .
+
+hrv:LeaveType a skos:ConceptScheme ;
+    skos:prefLabel "Leave type"@en .
+
+hrv:ProficiencyLevel a skos:ConceptScheme ;
+    skos:prefLabel "Proficiency level"@en .
+
+hrv:Public a skos:Concept ;
+    skos:definition "Safe to share outside the organisation."@en ;
+    skos:inScheme hrv:SensitivityLevel ;
+    skos:prefLabel "Public"@en ;
+    skos:topConceptOf hrv:SensitivityLevel .
+
+hrv:Restricted a skos:Concept ;
+    skos:definition "Pay, benefits and similar. Named individuals only, kept apart from other data."@en ;
+    skos:inScheme hrv:SensitivityLevel ;
+    skos:prefLabel "Restricted"@en ;
+    skos:topConceptOf hrv:SensitivityLevel .
+
+hr:Compensation a owl:Class ;
+    rdfs:label "Compensation"@en ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    skos:definition "The annual base pay of an employment for a period, at a grade, with the reason it was set. Each pay change is a new record that follows the previous one. Every record must name a grade."@en ;
+    hr:retentionPeriod "P7Y"^^xsd:duration ;
+    hr:sensitivity hrv:Restricted ;
+    hr:steward "Reward" .
+
+hr:Grade a owl:Class ;
+    rdfs:label "Grade"@en ;
+    skos:definition "A level in the organisation's job architecture. Pay bands attach to grades in the sensitive compensation module."@en ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Reward" .
+
+hr:Offer a owl:Class ;
+    rdfs:label "Offer"@en ;
+    skos:definition "An offer of employment made on an application. If accepted, it leads to an employment, which is how source of hire and time to fill connect to the employment record. Offered pay is not stored here."@en ;
+    hr:retentionPeriod "P1Y"^^xsd:duration ;
+    hr:sensitivity hrv:Confidential ;
+    hr:steward "Talent Acquisition" .
+
+<https://example.org/hr/ontology/core> a owl:Ontology ;
+    dcterms:created "2026-10-31"^^xsd:date ;
+    dcterms:creator "HR Ontology working group (fictional)" ;
+    dcterms:description "Annotation properties, the temporal record pattern, people, names and places shared by all other HR modules."@en ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:modified "2026-10-31"^^xsd:date ;
+    dcterms:title "HR Ontology, core module"@en ;
+    owl:versionIRI <https://example.org/hr/ontology/core/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
+    skos:note "Fictional example for illustration. Contains no real data."@en .
+
+hrv:JobFamily a skos:ConceptScheme ;
+    skos:prefLabel "Job family"@en .
+
+hrv:PayChangeReason a skos:ConceptScheme ;
+    skos:prefLabel "Pay change reason"@en .
+
+hr:Application a owl:Class ;
+    rdfs:label "Application"@en ;
+    skos:definition "A person's application to a requisition."@en ;
+    hr:retentionPeriod "P1Y"^^xsd:duration ;
+    hr:sensitivity hrv:Confidential ;
+    hr:steward "Talent Acquisition" .
+
+hr:OrganizationalUnit a owl:Class ;
+    rdfs:label "Organizational unit"@en ;
+    rdfs:subClassOf org:OrganizationalUnit ;
+    skos:definition "A division, department or team inside a legal entity. Its place in the hierarchy is held in UnitStructure records, not on the unit itself, so reorganisations keep history."@en ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Organisation Design" .
+
+hr:PositionDetails a owl:Class ;
+    rdfs:label "Position details"@en ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    skos:definition "The unit, job profile, cost centre, location and budgeted FTE of a position for a period. Moving a position to another unit adds a record; the position keeps its identity."@en ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Organisation Design" .
+
+hr:Position a owl:Class ;
+    rdfs:label "Position"@en ;
+    rdfs:subClassOf org:Post ;
+    skos:definition "A seat in the organisation that exists independently of the person in it. It can be filled, partly filled or vacant. Its attributes over time are held in PositionDetails records."@en ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Organisation Design" .
+
+hrv:ApplicationStage a skos:ConceptScheme ;
+    skos:prefLabel "Application stage"@en .
+
+hrv:SensitivityLevel a skos:ConceptScheme ;
+    skos:prefLabel "Sensitivity level"@en .
+
+hr:Person a owl:Class ;
+    rdfs:label "Person"@en ;
+    rdfs:subClassOf foaf:Person ;
+    skos:closeMatch schema:Person ;
+    skos:definition "A natural person known to the organisation: an employee, a former employee, a contractor or a candidate. Identified only by personId, never by name."@en ;
+    hr:retentionPeriod "P7Y"^^xsd:duration ;
+    hr:sensitivity hrv:Confidential ;
+    hr:steward "HR Operations" .
+
+hrv:SeparationReason a skos:ConceptScheme ;
+    skos:prefLabel "Separation reason"@en .
+
+hrv:Confidential a skos:Concept ;
+    skos:definition "Personal data. Only people with an HR need to know."@en ;
+    skos:inScheme hrv:SensitivityLevel ;
+    skos:prefLabel "Confidential"@en ;
+    skos:topConceptOf hrv:SensitivityLevel .
+
+hrv:Internal a skos:Concept ;
+    skos:definition "For anyone in the organisation, not for outsiders."@en ;
+    skos:inScheme hrv:SensitivityLevel ;
+    skos:prefLabel "Internal"@en ;
+    skos:topConceptOf hrv:SensitivityLevel .
+
+hr:Employment a owl:Class ;
+    rdfs:label "Employment"@en ;
+    rdfs:subClassOf hr:TemporalRecord ;
+    skos:closeMatch org:Membership ;
+    skos:definition "A period during which a person worked for one legal entity under one set of terms (type and FTE). A change of terms is a new record. A person who leaves and returns has two records. It says when someone worked here; Assignment says which seat they filled."@en ;
+    hr:retentionPeriod "P7Y"^^xsd:duration ;
+    hr:sensitivity hrv:Confidential ;
+    hr:steward "HR Operations" .
+
+hr:TemporalRecord a owl:Class ;
+    rdfs:label "Temporal record"@en ;
+    skos:definition "Any fact that is true for a period and may later be corrected. It carries when it was true (validFrom, validTo, both inclusive) and when the organisation recorded it (recordedOn). Nothing is overwritten: a change is a new record."@en ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Data Governance" .
+

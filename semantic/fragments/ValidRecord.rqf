@@ -1,0 +1,9 @@
+# fragment: ValidRecord
+# params: rec asOf known
+# A temporal record is "valid" on a day when that day is inside its validFrom..validTo (validTo missing = still open),
+# the organisation had recorded it by the "known" date, and no correction recorded by then replaced it.
+@{rec} hr:validFrom @{_f} ; hr:recordedOn @{_r} .
+OPTIONAL { @{rec} hr:validTo @{_t} }
+FILTER(@{_f} <= @{asOf} && COALESCE(@{_t}, "9999-12-31"^^xsd:date) >= @{asOf})
+FILTER(@{_r} <= @{known})
+FILTER NOT EXISTS { @{_s} hr:supersedes @{rec} ; hr:recordedOn @{_sr} . FILTER(@{_sr} <= @{known}) }

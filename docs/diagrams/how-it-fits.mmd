@@ -1,0 +1,33 @@
+flowchart TB
+  subgraph SRC["Hand-written sources"]
+    ONT["ontology/*.ttl<br/>6 modules + vocabularies"]
+    SHP["shapes/core.shacl.ttl<br/>rules, ordinary data"]
+    SSH["shapes/sensitive.shacl.ttl<br/>rules, pay and benefits"]
+    GLO["semantic/glossary.ttl<br/>agreed definitions"]
+    ACC["semantic/access-policy.ttl<br/>who may see what"]
+    FRG["semantic/fragments/*.rqf<br/>shared logic, written once"]
+    MET["semantic/metrics/*.rq<br/>+ metrics-sensitive/"]
+    DAT["data/*.ttl<br/>fictional sample data"]
+  end
+  BUILD["build.py<br/>lint + merge"]
+  DIST["dist/<br/>release files + manifest"]
+  VAL["validate.py<br/>two separate checks"]
+  LAY["semantic/layer.py<br/>runs a metric as of a day,<br/>as known on a day"]
+  TST["tests/<br/>71 tests"]
+  ONT --> BUILD
+  GLO --> BUILD
+  ACC --> BUILD
+  MET --> BUILD
+  FRG --> BUILD
+  DAT --> BUILD
+  BUILD -->|"fails the build on any lint error"| DIST
+  ONT --> VAL
+  DAT --> VAL
+  SHP -->|ordinary| VAL
+  SSH -->|restricted only| VAL
+  DIST --> LAY
+  FRG --> LAY
+  MET --> LAY
+  TST -.->|"break copies, expect failures"| BUILD
+  TST -.-> VAL
+  TST -.->|"hand-worked answers"| LAY

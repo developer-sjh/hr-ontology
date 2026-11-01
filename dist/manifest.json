@@ -1,0 +1,33 @@
+{
+  "files": {
+    "hr-access-policy.ttl": {
+      "sha256": "55e79b834e3860e0304d43830e7939b9b0818698e3d6bd4ea1c865adf5f269ce",
+      "triples": 30
+    },
+    "hr-glossary.ttl": {
+      "sha256": "0a48c67f607585a21d34605be0743a9572cfcf0254e21df42627357b7fda10c0",
+      "triples": 86
+    },
+    "hr-ontology.ttl": {
+      "sha256": "10e0f47f839c9e0c547e7b4eb6dd9b9699b4594d1041158c87c832bc47a45269",
+      "triples": 1153
+    },
+    "hr-sample-data.ttl": {
+      "sha256": "a863c1a97efaf1c749b51a0ed91e3e4912a6e5ce08fbe987a7302f10ff316f11",
+      "triples": 1231
+    },
+    "hr-sensitive-sample-data.ttl": {
+      "sha256": "2ab047652d48054addfe1f58aef3b332d507939662bcedd7e51ee1dd3e8b165f",
+      "triples": 272
+    },
+    "hr-sensitive-shapes.ttl": {
+      "sha256": "c1e08df0b612010c0de0f6704d8a61be93aba29030cd3391a270412b0f129ca9",
+      "triples": 149
+    },
+    "hr-shapes.ttl": {
+      "sha256": "1db69ceb41b7469a0b6dcb9f23dcebfbd747e73bb26bcaa53fb81b2582e20cbc",
+      "triples": 704
+    }
+  },
+  "ontology_version": "1.0.0"
+}

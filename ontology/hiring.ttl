@@ -1,0 +1,128 @@
+@prefix hr:      <https://example.org/hr/ontology#> .
+@prefix hrv:     <https://example.org/hr/vocab#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix schema:  <https://schema.org/> .
+
+# =====================================================================
+# HR Ontology, hiring module
+# Requisitions to fill positions, applications, stage history, offers.
+# A candidate is a Person who has an Application. Interview feedback
+# is deferred.
+# =====================================================================
+
+<https://example.org/hr/ontology/hiring> a owl:Ontology ;
+    owl:versionIRI <https://example.org/hr/ontology/hiring/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
+    owl:imports <https://example.org/hr/ontology/core>, <https://example.org/hr/ontology/organisation>, <https://example.org/hr/ontology/employment> ;
+    dcterms:title "HR Ontology, hiring module"@en ;
+    dcterms:description "Requisitions, applications, stage history and offers."@en ;
+    dcterms:created "2026-10-31"^^xsd:date ;
+    dcterms:modified "2026-10-31"^^xsd:date .
+
+hr:Requisition a owl:Class ;
+    rdfs:label "Requisition"@en ;
+    skos:definition "An approved request to fill a position. It opens on a date, closes on a date (filled or cancelled) and is the starting point for time to fill."@en ;
+    skos:closeMatch schema:JobPosting ;
+    hr:sensitivity hrv:Internal ;
+    hr:steward "Talent Acquisition" .
+
+hr:requisitionFor a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "requisition for"@en ;
+    skos:definition "The position the requisition aims to fill."@en ;
+    rdfs:domain hr:Requisition ; rdfs:range hr:Position .
+
+hr:openedOn a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "opened on"@en ;
+    skos:definition "Date the requisition was approved and opened."@en ;
+    rdfs:domain hr:Requisition ; rdfs:range xsd:date .
+
+hr:closedOn a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "closed on"@en ;
+    skos:definition "Date the requisition was closed, filled or cancelled. Absent while open."@en ;
+    rdfs:domain hr:Requisition ; rdfs:range xsd:date .
+
+hr:Application a owl:Class ;
+    rdfs:label "Application"@en ;
+    skos:definition "A person's application to a requisition."@en ;
+    hr:sensitivity hrv:Confidential ;
+    hr:retentionPeriod "P1Y"^^xsd:duration ;
+    hr:steward "Talent Acquisition" .
+
+hr:applicant a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "applicant"@en ;
+    skos:definition "The person who applied."@en ;
+    rdfs:domain hr:Application ; rdfs:range hr:Person .
+
+hr:appliesTo a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "applies to"@en ;
+    skos:definition "The requisition applied for."@en ;
+    rdfs:domain hr:Application ; rdfs:range hr:Requisition .
+
+hr:appliedOn a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "applied on"@en ;
+    skos:definition "Date the application was received."@en ;
+    rdfs:domain hr:Application ; rdfs:range xsd:date .
+
+hr:applicationSource a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "application source"@en ;
+    skos:definition "Where the candidate came from: referral, job board, agency or internal. Value from the ApplicationSource vocabulary."@en ;
+    rdfs:domain hr:Application ; rdfs:range skos:Concept .
+
+hr:StageEntry a owl:Class ;
+    rdfs:label "Stage entry"@en ;
+    skos:definition "The date an application entered a stage. The latest entry is the current stage; the full list is the history."@en ;
+    hr:sensitivity hrv:Confidential ;
+    hr:retentionPeriod "P1Y"^^xsd:duration ;
+    hr:steward "Talent Acquisition" .
+
+hr:stageOf a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "stage of"@en ;
+    skos:definition "The application this entry belongs to."@en ;
+    rdfs:domain hr:StageEntry ; rdfs:range hr:Application .
+
+hr:stage a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "stage"@en ;
+    skos:definition "Applied, screen, interview, offer, hired, rejected or withdrawn. Value from the ApplicationStage vocabulary."@en ;
+    rdfs:domain hr:StageEntry ; rdfs:range skos:Concept .
+
+hr:enteredOn a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "entered on"@en ;
+    skos:definition "Date the application entered the stage."@en ;
+    rdfs:domain hr:StageEntry ; rdfs:range xsd:date .
+
+hr:Offer a owl:Class ;
+    rdfs:label "Offer"@en ;
+    skos:definition "An offer of employment made on an application. If accepted, it leads to an employment, which is how source of hire and time to fill connect to the employment record. Offered pay is not stored here."@en ;
+    hr:sensitivity hrv:Confidential ;
+    hr:retentionPeriod "P1Y"^^xsd:duration ;
+    hr:steward "Talent Acquisition" .
+
+hr:offerFor a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "offer for"@en ;
+    skos:definition "The application the offer was made on."@en ;
+    rdfs:domain hr:Offer ; rdfs:range hr:Application .
+
+hr:offeredOn a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "offered on"@en ;
+    skos:definition "Date the offer was made."@en ;
+    rdfs:domain hr:Offer ; rdfs:range xsd:date .
+
+hr:acceptedOn a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "accepted on"@en ;
+    skos:definition "Date the candidate accepted. Absent if declined or pending."@en ;
+    rdfs:domain hr:Offer ; rdfs:range xsd:date .
+
+hr:declinedOn a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "declined on"@en ;
+    skos:definition "Date the candidate declined. Absent if accepted or pending."@en ;
+    rdfs:domain hr:Offer ; rdfs:range xsd:date .
+
+hr:resultsIn a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "results in"@en ;
+    skos:definition "The employment that started because the offer was accepted."@en ;
+    rdfs:domain hr:Offer ; rdfs:range hr:Employment .

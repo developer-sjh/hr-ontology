@@ -1,0 +1,8 @@
+# fragment: LeaverInPeriod
+# params: emp sep reason start end known
+# THE definition of a leaver: an employment whose last day falls inside the period and that has a recorded separation.
+@{emp} a hr:Employment ; hr:validTo @{_end} ; hr:recordedOn @{_r} .
+FILTER(@{_end} >= @{start} && @{_end} <= @{end})
+FILTER(@{_r} <= @{known})
+FILTER NOT EXISTS { @{_s} hr:supersedes @{emp} ; hr:recordedOn @{_sr} . FILTER(@{_sr} <= @{known}) }
+@{sep} hr:separationOf @{emp} ; hr:separationReason @{reason} .

@@ -1,0 +1,7 @@
+# metric: headcount
+# term: Headcount
+# params: asOf known
+# description: People with a valid employment on the day.
+SELECT (COUNT(DISTINCT ?person) AS ?headcount) WHERE {
+#include ActiveEmployment emp=?emp person=?person asOf=?asOf known=?known
+}

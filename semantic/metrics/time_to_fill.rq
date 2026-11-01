@@ -1,0 +1,13 @@
+# metric: time_to_fill
+# term: Time to fill
+# params:
+# derive: days = days_between(?opened, ?started)
+# description: For each requisition that led to a hire: the day it opened and the first day of the resulting employment. Days between them are derived by the layer.
+SELECT ?requisition ?opened ?started WHERE {
+  ?req a hr:Requisition ; hr:openedOn ?opened .
+  ?app hr:appliesTo ?req .
+  ?offer hr:offerFor ?app ; hr:acceptedOn ?accepted ; hr:resultsIn ?emp .
+  ?emp hr:validFrom ?started .
+  BIND(STRAFTER(STR(?req), "requisition/") AS ?requisition)
+}
+ORDER BY ?opened
